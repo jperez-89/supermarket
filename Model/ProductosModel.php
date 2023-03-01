@@ -1,0 +1,158 @@
+<?php
+
+class ProductosModel extends Crud
+{
+     public $id;
+     public $codigo;
+     public $nombre;
+     public $precio;
+     public $stock;
+     public $descripcion;
+     public $medida;
+     public $state;
+     public $ruta;
+     public $img;
+
+
+     public function __construct()
+     {
+          parent::__construct();
+     }
+
+     public static function insertProducto(string $codigo, string $nombre, int $precio, int $cantidad, string $descripcion, string $medida, string $imagen)
+     {
+          $crud = new Crud();
+          $return = 0;
+
+          $request = self::SearchProductbByCode($codigo);
+
+          if (empty($request)) {
+               $query_insert = "INSERT INTO producto (codigo, name, price, description, measure, state, img) VALUES (?,?,?,?,?,?,?)";
+               $arrData = array($codigo, $nombre, $precio, $descripcion, $medida, 1, $imagen);
+
+               $request = $crud->Insert_Register($query_insert, $arrData);
+
+               if ($request > 0) {
+                    $query_insert = "INSERT INTO inventario (idProducto, cantidad) VALUES (?,?)";
+                    $arrData = array($request, $cantidad);
+
+                    $return = $crud->Insert_Register($query_insert, $arrData);
+               }
+          } else {
+               $return = 'existe';
+          }
+          return $return;
+     }
+
+     public static function SelectProductos()
+     {
+          $crud = new Crud();
+
+          $sql = "SELECT p.id, p.codigo, p.name, p.description, um.unidad, p.price, i.cantidad, p.minimo, p.state, p.img 
+          FROM producto p 
+          INNER JOIN unidad_medida um ON um.nomenclatura = p.measure
+          INNER JOIN inventario i ON i.idProducto = p.id";
+
+          $request = $crud->get_AllRegister($sql);
+          return $request;
+     }
+
+     public function selectCantProductos()
+     {
+          $sql = "SELECT count(id) as Cantidad FROM producto";
+          $request = $this->get_CountRegister($sql);
+          return $request;
+     }
+
+     public static function SearchProductbByCode(string $codigo)
+     {
+          $crud = new Crud();
+          $sql = "SELECT p.*, i.cantidad FROM producto p INNER JOIN inventario i ON i.idProducto = p.id WHERE p.codigo = $codigo";
+          $request = $crud->get_OneRegister($sql);
+          return $request;
+     }
+
+     public static function updateProducto(string $codigo, int $id, string $nombre, int $precio, int $cantidad, string $descripcion, string $medida, string $img)
+     {
+          $crud = new Crud();
+          $return = 0;
+
+          $request = self::SearchProductbByCode($codigo);
+          
+          if (!empty($request)) {
+               if ($img == "") {
+                    // Actualiza la informacion
+                    $u_Producto = "UPDATE producto SET codigo = ?, name = ?, price = ?, description = ?, measure = ? WHERE codigo = $codigo";
+                    $arrData = array($codigo, $nombre, $precio, $descripcion, $medida);
+                    
+                    
+                    if ($cantidad != '') {
+                         $u_Inventario = "UPDATE inventario SET cantidad = cantidad + ? WHERE idProducto = " .$request['id'];
+                         $arrDataa = array($cantidad);
+                    }
+               } else {
+                    // Actualiza la informacion e imagen
+                    $u_Producto = "UPDATE producto SET codigo = ?, name = ?, price = ?, description = ?, measure = ?, img = ? WHERE codigo = $codigo";
+                    $arrData = array($codigo, $nombre, $precio, $descripcion, $medida, $img);
+
+                    if ($cantidad != '') {
+                         $u_Inventario = "UPDATE inventario SET cantidad = cantidad + ? WHERE idProducto = " .$request['id'];
+                         $arrDataa = array($cantidad);
+                    }
+               }
+
+               if ($crud->update_Register($u_Producto, $arrData)) {
+                    $return = $crud->update_Register($u_Inventario, $arrDataa);
+               }
+          }
+
+          return $return;
+     }
+
+     public static function deleteProducto(string $codigo)
+     {
+          $crud = new Crud();
+          $request = self::SearchProductbByCode($codigo);
+
+          if (!empty($request)) {
+               $sql = "UPDATE producto SET state = ? WHERE codigo = $codigo";
+               $arrData = array(0);
+               $request = $crud->update_Register($sql, $arrData);
+               if ($request) {
+                    $request = "ok";
+               } else {
+                    $request = "error";
+               }
+          } else {
+               $request = "exist";
+          }
+          return $request;
+     }
+
+     public static function enableProduct(string $codigo)
+     {
+          $crud = new Crud();
+          $request = self::SearchProductbByCode($codigo);
+
+          if (!empty($request)) {
+               $sql = "UPDATE producto SET state = ? WHERE codigo = $codigo";
+               $arrData = array(1);
+               $request = $crud->update_Register($sql, $arrData);
+               if ($request) {
+                    $request = "ok";
+               } else {
+                    $request = "error";
+               }
+          } else {
+               $request = "exist";
+          }
+          return $request;
+     }
+
+     public function selectUnidadMedida()
+     {
+          $sql = "SELECT unidad, nomenclatura FROM unidad_medida";
+          $request = $this->get_AllRegister($sql);
+          return $request;
+     }
+}

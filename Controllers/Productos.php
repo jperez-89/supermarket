@@ -1,0 +1,263 @@
+<?php
+require 'vendor/autoload.php';
+
+use Picqer\Barcode\BarcodeGeneratorHTML;
+
+class Productos extends Controllers
+{
+     public function __construct()
+     {
+          parent::__construct();
+     }
+
+     public function Productos()
+     {
+          $data['page_title'] = "Supermarket  - Productos";
+          $data['page_name'] = "Productos";
+          $data['page_functions'] = "js/function_Products.js";
+          // Hacemos el enlace a la vista
+          $this->views->getViews($this, 'productos', $data);
+     }
+
+     public function setProducto()
+     {
+          $id = intval($_POST['idProducto']);
+          $codigo = strClean($_POST['txtCodigo']);
+          $nombre = strClean($_POST['txtNombre']);
+          $Precio = intval($_POST['txtPrecio']);
+          $Stock = intval($_POST['txtStock']);
+          $Descripcion = strClean($_POST['txtDescripcion']);
+          $Medida = strClean($_POST['selecMedida']);
+          $img = '';
+
+          // Metodo para insertar
+          if (isset($_POST['op']) && $_POST['op'] === '') {
+               $image = $_FILES['image'];
+               // Inserta producto con imagen
+               if (!empty($image['name'])) {
+                    if ($image['error'] > 0) {
+                         $arrResponse = array('status' => false, 'msg' => 'Error en la imagen');
+                    } else {
+                         $tipoImg = $_FILES['image']['type'];
+                         $extensiones = array('image/jpg', 'image/jpeg', 'image/png', 'image/gif', 'application/pdf');
+
+                         if (in_array($tipoImg, $extensiones)) {
+                              $nombreImg = $_FILES['image']['name'];
+                              $rutaTemporal = $_FILES['image']['tmp_name'];
+
+                              $ruta = productosImg();
+                              $archivo = $ruta . $nombreImg;
+
+                              $request_Producto = ProductosModel::insertProducto($codigo, $nombre, $Precio, $Stock, $Descripcion, $Medida, $nombreImg);
+
+                              if (!$request_Producto) { // Se hace esta validacion por que la tabla inventario no tiene id auto incremental
+                                   if (!file_exists($ruta)) {
+                                        mkdir($ruta);
+                                   }
+
+                                   $resultado = move_uploaded_file($rutaTemporal, $archivo);
+
+                                   if ($resultado) {
+                                        $arrResponse = array('status' => true, 'msg' => 'Datos guardados');
+                                   } else {
+                                        $arrResponse = array('status' => false, 'msg' => 'No es posible almacenar la imagen');
+                                   }
+                              } else if ($request_Producto == 'existe') {
+                                   $arrResponse = array('status' => false, 'msg' => 'Atencion! El producto ya existe');
+                              } else {
+                                   $arrResponse = array('status' => false, 'msg' => 'No es posible almacenar los datos');
+                              }
+                         } else {
+                              $arrResponse = array('status' => false, 'msg' => 'Tipo de imagen no permitida');
+                         }
+                    }
+               }
+               // Inserta producto sin imagen
+               else {
+                    $request_Producto = ProductosModel::insertProducto($codigo, $nombre, $Precio, $Stock, $Descripcion, $Medida, 'sinfoto.png');
+
+                    if (!$request_Producto) {
+                         $arrResponse = array('status' => true, 'msg' => 'Datos guardados');
+                    } else if ($request_Producto == 'existe') {
+                         $arrResponse = array('status' => false, 'msg' => 'Atencion! El producto ya existe');
+                    } else {
+                         $arrResponse = array('status' => false, 'msg' => 'No es posible almacenar los datos');
+                    }
+               }
+          }
+          // Metodo para actualizar
+          else {
+               $image = $_FILES['image'];
+               // Se actualiza la informacion
+               if (empty($image['name'])) {
+                    $request_Producto = ProductosModel::updateProducto($codigo, $id, $nombre, $Precio, $Stock, $Descripcion, $Medida, $img);
+
+                    if ($request_Producto > 0) {
+                         $arrResponse = array('status' => true, 'msg' => 'Datos actualizados');
+                    } else {
+                         $arrResponse = array('status' => false, 'msg' => 'No es posible almacenar los datos');
+                    }
+               }
+               // Se actualiza informacion e imagen
+               else {
+                    if ($image['error'] > 0) {
+                         $arrResponse = array('status' => false, 'msg' => 'Error en la imagen');
+                    } else {
+                         // Eliminar la imagen anterior
+                         $imgProducto = ProductosModel::SearchProductbByCode($codigo);
+
+                         if (isset($imgProducto['img'])) {
+                              if (file_exists(productosImg() . $imgProducto['img'])) {
+                                   unlink(productosImg() . $imgProducto['img']);
+                              }
+                         }
+
+                         $tipoImg = $_FILES['image']['type'];
+                         $extensiones = array('image/jpeg', 'image/png', 'image/gif', 'application/pdf');
+
+                         if (in_array($tipoImg, $extensiones)) {
+                              $nombreImg = $_FILES['image']['name'];
+                              $rutaTemporal = $_FILES['image']['tmp_name'];
+
+                              $ruta = productosImg();
+                              $archivo = $ruta . $nombreImg;
+
+                              $request_Producto = ProductosModel::updateProducto($codigo, $id, $nombre, $Precio, $Stock, $Descripcion, $Medida, $nombreImg);
+
+                              if ($request_Producto > 0) {
+                                   if (!file_exists($ruta)) {
+                                        mkdir($ruta);
+                                   }
+
+                                   $resultado = move_uploaded_file($rutaTemporal, $archivo);
+
+                                   if ($resultado) {
+                                        $arrResponse = array('status' => true, 'msg' => 'Datos actualizados');
+                                   } else {
+                                        $arrResponse = array('status' => false, 'msg' => 'No es posible almacenar la imagen');
+                                   }
+                              } else {
+                                   $arrResponse = array('status' => false, 'msg' => 'No es posible almacenar los datos');
+                              }
+                         } else {
+                              $arrResponse = array('status' => false, 'msg' => 'Tipo de imagen no permitida');
+                         }
+                    }
+               }
+          }
+
+          echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+          die();
+     }
+
+     public function getProductos()
+     {
+          $arrdatos = ProductosModel::selectProductos();
+          $bar = new BarcodeGeneratorHTML();
+
+          for ($i = 0; $i < count($arrdatos); $i++) {
+
+               if ($arrdatos[$i]['state'] == 1) {
+                    $arrdatos[$i]['code'] = '<div class="">' . $bar->getBarcode($arrdatos[$i]['codigo'], $bar::TYPE_EAN_13) . '</div>';
+
+                    $arrdatos[$i]['img'] = '<img onerror=this.onerror=null;this.src="' . productosImg() . 'sinfoto.png" class="pequena" src="' . productosImg() . $arrdatos[$i]['img'] . '" alt="' . $arrdatos[$i]['name'] . '" >';
+
+                    $arrdatos[$i]['state'] = '<span class="badge badge-success">Activo</span>';
+
+                    $arrdatos[$i]['options'] = '
+                                             <button onClick="fntEditProduct(' . $arrdatos[$i]['codigo'] . ')" class="btn btn-primary2">
+                                                  <i class="fas fa-pencil-alt"></i>
+                                             </button>
+                                             <button onClick="fntDeleteProduct(' . $arrdatos[$i]['codigo'] . ')" class="btn btn-danger2">
+                                                  <i class="fas fa-trash"></i>
+                                             </button>';
+                    if ($arrdatos[$i]['cantidad'] <= $arrdatos[$i]['minimo']) {
+                         $arrdatos[$i]['cantidad'] = '<span class="badge badge-danger">' . $arrdatos[$i]['cantidad'] . '</span>';
+                    }
+               } else {
+                    $arrdatos[$i]['code'] = '<div class="">' . $bar->getBarcode($arrdatos[$i]['codigo'], $bar::TYPE_EAN_13) . '</div>';
+
+                    $arrdatos[$i]['img'] = '<img onerror=this.onerror=null;this.src="' . productosImg() . 'sinfoto.png" class="pequena" src="' . productosImg() . $arrdatos[$i]['img'] . '" alt="' . $arrdatos[$i]['name'] . '" >';
+                    $arrdatos[$i]['state'] = ' <span class="badge badge-danger">Inactivo</span>';
+
+                    $arrdatos[$i]['options'] = '
+                                             <button onClick="fntEnableProduct(' . $arrdatos[$i]['codigo'] . ')" class="btn btn-success2">
+                                                  <i class="fas fa-sync-alt"></i>
+                                             </button>
+                                             <button disabled onClick="fntDeleteProduct(' . $arrdatos[$i]['codigo'] . ')" class="btn btn-danger2">
+                                                  <i class="fas fa-trash"></i>
+                                             </button>';
+               }
+          }
+          echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
+          die();
+     }
+
+     public function getProducto(string $codigo)
+     {
+          $codigo = strClean($codigo);
+          if ($codigo > 0) {
+               $arrdatos = ProductosModel::SearchProductbByCode($codigo);
+
+               if (empty($arrdatos)) {
+                    $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados');
+               } else {
+                    $arrResponse = array('status' => true, 'data' => $arrdatos);
+               }
+               echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+          }
+          die();
+     }
+
+     public function deleteProduct()
+     {
+          if ($_POST) {
+               $codigo = intval($_POST['codigo']);
+               $resquestDelete = $this->model->deleteProducto($codigo);
+
+               if ($resquestDelete == 'ok') {
+                    $arrResponse = array('status' => true, 'msg' => 'Producto eliminado');
+               } elseif ($resquestDelete == 'exist') {
+                    $arrResponse = array('status' => false, 'msg' => 'No es posible eliminar el producto, aún tienes disponible.');
+               } else {
+                    $arrResponse = array('status' => false, 'msg' => 'No es posible eliminar los datos.');
+               }
+               echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+          }
+          die();
+     }
+
+     public function enableProduct()
+     {
+          if ($_POST) {
+               $codigo = intval($_POST['codigo']);
+               $resquestDelete = $this->model->enableProduct($codigo);
+
+               if ($resquestDelete == 'ok') {
+                    $arrResponse = array('status' => true, 'msg' => 'Producto Habilitado.');
+               } elseif ($resquestDelete == 'exist') {
+                    $arrResponse = array('status' => false, 'msg' => 'No es posible habilitar el producto');
+               } else {
+                    $arrResponse = array('status' => false, 'msg' => 'No es posible eliminar los datos.');
+               }
+               echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+          }
+          die();
+     }
+
+     public function getUnidadMedida()
+     {
+          $arrdatos = $this->model->selectUnidadMedida();
+
+          echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
+          die();
+     }
+
+     public function getCantProductos()
+     {
+          $arrdatos = $this->model->selectCantProductos();
+
+          echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
+          die();
+     }
+}
