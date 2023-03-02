@@ -1,6 +1,6 @@
 <!-- Modal -->
 <div class="modal fade" id="modalProducto" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-hidden="true">
-     <div class="modal-dialog">
+     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
           <div class="modal-content">
                <div class="modal-header headerRegister">
                     <h2 class="tile-title" id="titleModal">Nuevo Producto</h2>
@@ -10,7 +10,7 @@
                          <div class="tile-body">
                               <form id="frmProducto" name="frmProducto" enctype="multipart/form-data">
                                    <input type="hidden" name="idProducto" id="idProducto" value="">
-                                   <div class="form-group">
+                                   <!-- <div class="form-group">
                                         <div id="btnCamaraIn" style="display: none;">
                                              <button class="btn btn-light d-block w-100">Escanear Código de Barras con cámara</button>
                                         </div>
@@ -18,13 +18,13 @@
                                              <button class="btn btn-light d-block w-100">Ocultar Camara</button>
                                         </div>
                                         <div id="reader" style="width: 450px; display: none; position: relative; padding: 0px; border: 1px solid silver;"></div>
-                                   </div>
+                                   </div> -->
                                    <div class="form-group">
-                                        <label for="txtCodigo" class="control-label">Escanear Código de Barras</label>
+                                        <label for="txtCodigo" class="control-label">Código de Barras</label>
                                         <div class="input-group">
                                              <div class="input-group-text"><i class="fa fa-barcode"></i></div>
-                                             <input type="text" class="form-control" name="txtCodigo" id="txtCodigo" autocomplete="off""> 
-                                              <!-- onchange=" buscarArticulo(); </div> -->
+                                             <input type="text" class="form-control" name="txtCodigo" id="txtCodigo" placeholder="Escanear o digitar" autocomplete="off">
+                                             <!-- onchange=" buscarArticulo(); </div> -->
                                         </div>
                                    </div>
                                    <div class="form-group">
@@ -36,19 +36,28 @@
                                         <input class="form-control" id="txtDescripcion" name="txtDescripcion" type="text" placeholder="Descripción">
                                    </div>
                                    <div class="form-group">
-                                        <label for="txtPrecio" class="control-label">Precio</label>
+                                        <label for="txtPrecio" class="control-label">Precio Compra</label>
                                         <div class="input-group">
                                              <div class="input-group-text">₡</div>
                                              <input class="form-control" id="txtPrecio" name="txtPrecio" type="text" placeholder="Precio">
                                         </div>
                                    </div>
                                    <div class="form-group">
-                                        <label for="txtStock" class="control-label">Stock</label>
-                                        <input class="form-control" id="txtStock" name="txtStock" type="text" placeholder="Cantidad en stock">
+                                        <label for="txtStock" class="control-label">Cantidad</label>
+                                        <input class="form-control" id="txtStock" name="txtStock" type="text" placeholder="Cantidad">
+                                   </div>
+                                   <div class="form-group">
+                                        <label for="txtMinimo" class="control-label">Cantidad mínima</label>
+                                        <input class="form-control" id="txtMinimo" name="txtMinimo" type="text" placeholder="Cantidad mínima">
                                    </div>
                                    <div class="form-group">
                                         <label for="selecMedida" class="control-label">Medida</label>
                                         <select class="form-control" name="selecMedida" id="selecMedida">
+                                        </select>
+                                   </div>
+                                   <div class="form-group">
+                                        <label for="selecIVA" class="control-label">IVA</label>
+                                        <select class="form-control" name="selecIVA" id="selecIVA">
                                         </select>
                                    </div>
                                    <div class="form-group">

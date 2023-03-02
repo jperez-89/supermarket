@@ -5,6 +5,7 @@ var selecMedida = document.querySelector("#selecMedida");
 
 document.addEventListener("DOMContentLoaded", function () {
   CargaUnidades();
+  CargaImpuesto()
 
   tableProductos = $("#tblProductos").DataTable({
     aProcessing: true,
@@ -37,6 +38,9 @@ document.addEventListener("DOMContentLoaded", function () {
     },
     {
       data: "price"
+    },
+    {
+      data: "valor"
     },
     {
       data: "cantidad"
@@ -75,6 +79,7 @@ frmProducto.onsubmit = function (e) {
   var stock = document.querySelector("#txtStock").value;
   var description = document.querySelector("#txtDescripcion").value;
   var measure = document.querySelector("#selecMedida").value;
+  var iva = document.querySelector("#selecIVA").value;
   var image = document.querySelector("#image").value;
   var frmDatos = new FormData(this);
   frmDatos.append('op', '');
@@ -103,7 +108,7 @@ frmProducto.onsubmit = function (e) {
     if (objData.status) {
       frmProducto.reset();
       tableProductos.ajax.reload()
-      CerrarCamara()
+      // CerrarCamara()
 
       $("#modalProducto").modal("hide");
       swal("", objData.msg, "success");
@@ -116,8 +121,8 @@ frmProducto.onsubmit = function (e) {
 function fntEditProduct(codigo) {
   document.querySelector("#titleModal").innerHTML = "Actualizar Producto";
   document.querySelector("#btnText").innerHTML = "Actualizar";
-  $('#btnCamaraIn').css('display', 'inline');
-  $('#btnCamaraOut').css('display', 'none');
+  // $('#btnCamaraIn').css('display', 'inline');
+  // $('#btnCamaraOut').css('display', 'none');
 
   const url = `${base_url}productos/getProducto/${codigo}`;
   const response = fnt_Fetch(url)
@@ -131,6 +136,7 @@ function fntEditProduct(codigo) {
       document.getElementById("txtStock").placeholder = 'Cantidad a sumar';
       document.querySelector("#txtDescripcion").value = objData.data.description;
       document.querySelector("#selecMedida").value = objData.data.measure;
+      document.querySelector("#selecIVA").value = objData.data.idIVA;
       document.querySelector("#imgProducto").src = `./assets/images/productos/${objData.data.img}`;
 
       $("#modalProducto").modal("show");
@@ -224,7 +230,7 @@ function OpenModal() {
   document.querySelector("#btnText").innerHTML = "Guardar";
   document.querySelector("#frmProducto").reset();
   document.querySelector("#imgProducto").src = "";
-  $('#btnCamaraIn').css('display', 'inline');
+  // $('#btnCamaraIn').css('display', 'inline');
   $("#modalProducto").modal("show");
 }
 
@@ -245,19 +251,22 @@ function CargaUnidades() {
     });
 }
 
-// Funcion para mostrar la imagen cargada --------------------------
-// var input = document.querySelector('input[type=file]');
-// input.onchange = function () {
-//   var file = input.files[0];
-//   var fileReader = new FileReader();
-//   fileReader.onload = function (e) {
-//     {
-//       let image = document.getElementById('imgProducto');
-//       image.src = e.target.result;
-//     }
-//   }
-//   fileReader.readAsDataURL(file);
-// }
+function CargaImpuesto() {
+  const url = `${base_url}productos/getImpuestos`;
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      selecIVA.options[0] = new Option("Seleccione una opción", "0");
+      arrIVA = data;
+
+      for (let i = 1; i <= arrIVA.length; i++) {
+        selecIVA.options[i] = new Option(
+          arrIVA[i - 1]["valor"],
+          arrIVA[i - 1]["id"]
+        );
+      }
+    });
+}
 
 $(".cerrarModal").click(function () {
   CerrarCamara();
@@ -279,21 +288,15 @@ $('#btnCamaraOut').click(function (e) {
   CerrarCamara();
 });
 
-// var lastMessage;
-// var codeId = 0;
+
+/** Funcion para habilitar la camara cuando se agrega un producto
+var lastMessage;
+var codeId = 0;
 
 function onScanSuccess(decodedText, decodedResult) {
   $("#txtCodigo").val(decodedText);
   PlayAudio();
   $('#txtCodigo').focus();
-  // html5QrcodeScanner.pause();
-  // console.log(`${decodedText} -- ${decodedResult.result.format.formatName}`);
-
-  // if (lastMessage !== decodedText) {
-  //   lastMessage = decodedText;
-  //   printScanResultPretty(codeId, decodedText, decodedResult);
-  //   ++codeId;
-  // }
 }
 
 var qrboxFunction = function (viewfinderWidth, viewfinderHeight) {
@@ -343,3 +346,19 @@ function CerrarCamara() {
   html5QrcodeScanner.clear();
   $('#reader').css('display', 'none');
 }
+ */
+
+/* Funcion para mostrar la imagen cargada
+var input = document.querySelector('input[type=file]');
+input.onchange = function () {
+  var file = input.files[0];
+  var fileReader = new FileReader();
+  fileReader.onload = function (e) {
+    {
+      let image = document.getElementById('imgProducto');
+      image.src = e.target.result;
+    }
+  }
+  fileReader.readAsDataURL(file);
+}
+*/

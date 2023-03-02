@@ -1,6 +1,5 @@
 <?php
 require 'vendor/autoload.php';
-
 use Picqer\Barcode\BarcodeGeneratorHTML;
 
 class Productos extends Controllers
@@ -28,6 +27,7 @@ class Productos extends Controllers
           $Stock = intval($_POST['txtStock']);
           $Descripcion = strClean($_POST['txtDescripcion']);
           $Medida = strClean($_POST['selecMedida']);
+          $iva = strClean($_POST['selecIVA']);
           $img = '';
 
           // Metodo para insertar
@@ -48,7 +48,7 @@ class Productos extends Controllers
                               $ruta = productosImg();
                               $archivo = $ruta . $nombreImg;
 
-                              $request_Producto = ProductosModel::insertProducto($codigo, $nombre, $Precio, $Stock, $Descripcion, $Medida, $nombreImg);
+                              $request_Producto = ProductosModel::insertProducto($codigo, $nombre, $Precio, $Stock, $Descripcion, $Medida, $iva, $nombreImg);
 
                               if (!$request_Producto) { // Se hace esta validacion por que la tabla inventario no tiene id auto incremental
                                    if (!file_exists($ruta)) {
@@ -74,7 +74,7 @@ class Productos extends Controllers
                }
                // Inserta producto sin imagen
                else {
-                    $request_Producto = ProductosModel::insertProducto($codigo, $nombre, $Precio, $Stock, $Descripcion, $Medida, 'sinfoto.png');
+                    $request_Producto = ProductosModel::insertProducto($codigo, $nombre, $Precio, $Stock, $Descripcion, $Medida, $iva, 'sinfoto.png');
 
                     if (!$request_Producto) {
                          $arrResponse = array('status' => true, 'msg' => 'Datos guardados');
@@ -90,7 +90,7 @@ class Productos extends Controllers
                $image = $_FILES['image'];
                // Se actualiza la informacion
                if (empty($image['name'])) {
-                    $request_Producto = ProductosModel::updateProducto($codigo, $id, $nombre, $Precio, $Stock, $Descripcion, $Medida, $img);
+                    $request_Producto = ProductosModel::updateProducto($codigo, $id, $nombre, $Precio, $Stock, $Descripcion, $Medida, $iva, $img);
 
                     if ($request_Producto > 0) {
                          $arrResponse = array('status' => true, 'msg' => 'Datos actualizados');
@@ -122,7 +122,7 @@ class Productos extends Controllers
                               $ruta = productosImg();
                               $archivo = $ruta . $nombreImg;
 
-                              $request_Producto = ProductosModel::updateProducto($codigo, $id, $nombre, $Precio, $Stock, $Descripcion, $Medida, $nombreImg);
+                              $request_Producto = ProductosModel::updateProducto($codigo, $id, $nombre, $Precio, $Stock, $Descripcion, $Medida, $iva, $nombreImg);
 
                               if ($request_Producto > 0) {
                                    if (!file_exists($ruta)) {
@@ -158,6 +158,8 @@ class Productos extends Controllers
           for ($i = 0; $i < count($arrdatos); $i++) {
 
                if ($arrdatos[$i]['state'] == 1) {
+                    $arrdatos[$i]['valor'] = $arrdatos[$i]['valor']."<span>%</span>";
+
                     $arrdatos[$i]['code'] = '<div class="">' . $bar->getBarcode($arrdatos[$i]['codigo'], $bar::TYPE_EAN_13) . '</div>';
 
                     $arrdatos[$i]['img'] = '<img onerror=this.onerror=null;this.src="' . productosImg() . 'sinfoto.png" class="pequena" src="' . productosImg() . $arrdatos[$i]['img'] . '" alt="' . $arrdatos[$i]['name'] . '" >';
@@ -248,6 +250,14 @@ class Productos extends Controllers
      public function getUnidadMedida()
      {
           $arrdatos = $this->model->selectUnidadMedida();
+
+          echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
+          die();
+     }
+
+     public function getImpuestos()
+     {
+          $arrdatos = ProductosModel::selectImpuestos();
 
           echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
           die();

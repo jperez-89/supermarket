@@ -28,6 +28,7 @@
                                         <th>Descripción</th>
                                         <th>Medida</th>
                                         <th>Precio</th>
+                                        <th>IVA</th>
                                         <th>Cantidad</th>
                                         <th>Mínimo</th>
                                         <th>Estado</th>

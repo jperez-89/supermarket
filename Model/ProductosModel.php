@@ -13,13 +13,12 @@ class ProductosModel extends Crud
      public $ruta;
      public $img;
 
-
      public function __construct()
      {
           parent::__construct();
      }
 
-     public static function insertProducto(string $codigo, string $nombre, int $precio, int $cantidad, string $descripcion, string $medida, string $imagen)
+     public static function insertProducto(string $codigo, string $nombre, int $precio, int $cantidad, string $descripcion, string $medida, int $iva, string $imagen)
      {
           $crud = new Crud();
           $return = 0;
@@ -27,8 +26,8 @@ class ProductosModel extends Crud
           $request = self::SearchProductbByCode($codigo);
 
           if (empty($request)) {
-               $query_insert = "INSERT INTO producto (codigo, name, price, description, measure, state, img) VALUES (?,?,?,?,?,?,?)";
-               $arrData = array($codigo, $nombre, $precio, $descripcion, $medida, 1, $imagen);
+               $query_insert = "INSERT INTO producto (codigo, name, price, description, measure, iva, state, img) VALUES (?,?,?,?,?,?,?,?)";
+               $arrData = array($codigo, $nombre, $precio, $descripcion, $medida, $iva, 1, $imagen);
 
                $request = $crud->Insert_Register($query_insert, $arrData);
 
@@ -48,10 +47,11 @@ class ProductosModel extends Crud
      {
           $crud = new Crud();
 
-          $sql = "SELECT p.id, p.codigo, p.name, p.description, um.unidad, p.price, i.cantidad, p.minimo, p.state, p.img 
+          $sql = "SELECT p.id, p.codigo, p.name, p.description, im.valor, um.unidad, p.price, i.cantidad, p.minimo, p.state, p.img 
           FROM producto p 
           INNER JOIN unidad_medida um ON um.nomenclatura = p.measure
-          INNER JOIN inventario i ON i.idProducto = p.id";
+          INNER JOIN inventario i ON i.idProducto = p.id
+          INNER JOIN impuesto im ON im.id = p.iva";
 
           $request = $crud->get_AllRegister($sql);
           return $request;
@@ -67,12 +67,16 @@ class ProductosModel extends Crud
      public static function SearchProductbByCode(string $codigo)
      {
           $crud = new Crud();
-          $sql = "SELECT p.*, i.cantidad FROM producto p INNER JOIN inventario i ON i.idProducto = p.id WHERE p.codigo = $codigo";
+          $sql = "SELECT p.*, i.cantidad, im.id AS idIVA 
+          FROM producto p 
+          INNER JOIN inventario i ON i.idProducto = p.id 
+          INNER JOIN impuesto im ON im.id = p.iva 
+          WHERE p.codigo = $codigo";
           $request = $crud->get_OneRegister($sql);
           return $request;
      }
 
-     public static function updateProducto(string $codigo, int $id, string $nombre, int $precio, int $cantidad, string $descripcion, string $medida, string $img)
+     public static function updateProducto(string $codigo, int $id, string $nombre, int $precio, int $cantidad, string $descripcion, string $medida, int $iva, string $img)
      {
           $crud = new Crud();
           $return = 0;
@@ -82,8 +86,8 @@ class ProductosModel extends Crud
           if (!empty($request)) {
                if ($img == "") {
                     // Actualiza la informacion
-                    $u_Producto = "UPDATE producto SET codigo = ?, name = ?, price = ?, description = ?, measure = ? WHERE codigo = $codigo";
-                    $arrData = array($codigo, $nombre, $precio, $descripcion, $medida);
+                    $u_Producto = "UPDATE producto SET codigo = ?, name = ?, price = ?, description = ?, measure = ?, iva = ? WHERE codigo = $codigo";
+                    $arrData = array($codigo, $nombre, $precio, $descripcion, $medida, $iva);
                     
                     
                     if ($cantidad != '') {
@@ -92,8 +96,8 @@ class ProductosModel extends Crud
                     }
                } else {
                     // Actualiza la informacion e imagen
-                    $u_Producto = "UPDATE producto SET codigo = ?, name = ?, price = ?, description = ?, measure = ?, img = ? WHERE codigo = $codigo";
-                    $arrData = array($codigo, $nombre, $precio, $descripcion, $medida, $img);
+                    $u_Producto = "UPDATE producto SET codigo = ?, name = ?, price = ?, description = ?, measure = ?, iva = ?, img = ? WHERE codigo = $codigo";
+                    $arrData = array($codigo, $nombre, $precio, $descripcion, $medida, $iva, $img);
 
                     if ($cantidad != '') {
                          $u_Inventario = "UPDATE inventario SET cantidad = cantidad + ? WHERE idProducto = " .$request['id'];
@@ -153,6 +157,16 @@ class ProductosModel extends Crud
      {
           $sql = "SELECT unidad, nomenclatura FROM unidad_medida";
           $request = $this->get_AllRegister($sql);
+          return $request;
+     }
+
+     public static function selectImpuestos()
+     {
+          $crud = new Crud();
+
+          $sql = "SELECT * FROM impuesto";
+          $request = $crud->get_AllRegister($sql);
+
           return $request;
      }
 }
