@@ -344,9 +344,9 @@ class FacturacionModel extends Crud
           $pdf->Cell(80, 5, mb_convert_encoding('*** GRACIAS POR SU VISITA ***', "UTF-8"), 0, 1, 'C');
           $pdf->Cell(80, 5, mb_convert_encoding('*** RESOLUCION DGT-R-033-2019 ***', "UTF-8"), 0, 1, 'C');
 
-          if ($pdf->Output('assets/facturas/', 'factura-' . $request["nfactura"] . '.pdf', 'F')) {
+          // if ($pdf->Output('assets/facturas/', 'factura-' . $request["nfactura"] . '.pdf', 'F')) {
                $pdf->Output('assets/facturas/', 'factura-' . $request["nfactura"] . '.pdf', 'I');
-          }
+          // }
      }
 
      // public static function verPDF($idFactura)
