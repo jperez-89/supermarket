@@ -140,7 +140,7 @@ class Facturacion extends Controllers
 
                if (!empty($data)) {
                     foreach ($data as $key => $value) {
-                         $idFactura = $value['idFactura'];
+                         $idVenta = $value['idVenta'];
                          $codigo = $value['co'];
                          $cantidad = $value['ca'];
                          $preUnitario = $value['pUnit'];
@@ -150,7 +150,7 @@ class Facturacion extends Controllers
 
                          $idProducto = FacturacionModel::selectProductoByCode($codigo);
 
-                         $request = FacturacionModel::setDetaFactura($idFactura, $idProducto['id'], $cantidad, $preUnitario, $subTotal, $iva, $total);
+                         $request = FacturacionModel::setDetaFactura($idVenta, $idProducto['id'], $cantidad, $preUnitario, $subTotal, $iva, $total);
                     }
                }
 
@@ -184,25 +184,81 @@ class Facturacion extends Controllers
      public function GeneraFactura()
      {
           if (isset($_POST)) {
-               $idFactura = intval($_POST['idFactura']);
-               $idFactura = intval($_POST['tipoFactura']);
+               $idVenta = intval($_POST['idVenta']);
+               $tipoFactura = intval($_POST['tipoFactura']);
 
-               $Factura = FacturacionModel::selectFacturaById($idFactura);
+               $Factura = FacturacionModel::selectFacturaById($idVenta);
 
                if (!empty($Factura)) {
-                    $input = $Factura['id'];
-                    $tipoFactura = $Factura['codigo'];
-                    $leng = 10;
-                    $result = str_pad($input, $leng, "0", STR_PAD_LEFT); // $start, $count, $digits
+                    switch ($tipoFactura) {
+                              // F.E
+                         case '01':
+                              $idFactura = FacturacionModel::selectLastIdFactura();
 
-                    $result = sucursal . terminal . $tipoFactura . $result;
+                              if (!empty($idFactura['idFactura'])) {
+                                   $idFactura['idFactura'] += 1;
+                              } else {
+                                   $idFactura['idFactura'] = 1;
+                              }
 
-                    $request = FacturacionModel::updateNumeroFactura($Factura['id'], $result);
+                              $codigo = $Factura['codigo'];
+                              $leng = 10;
+                              $result = str_pad($idFactura['idFactura'], $leng, "0", STR_PAD_LEFT); // $start, $count, $digits
+
+                              $nDocumento = sucursal . terminal . $codigo . $result;
+
+                              $request = FacturacionModel::insertNumeroFactura($nDocumento, $Factura['id']);
+                              break;
+
+                              // T.E
+                         case '02':
+                              $idTiquete = FacturacionModel::selectLastIdTiquete();
+
+                              if (empty($idTiquete['idTiquete'])) {
+                                   $idTiquete['idTiquete'] = 1;
+                              } else {
+                                   $idTiquete['idTiquete'] += 1;
+                              }
+
+                              $codigo = $Factura['codigo'];
+                              $leng = 10;
+                              $result = str_pad($idTiquete['idTiquete'], $leng, "0", STR_PAD_LEFT); // $start, $count, $digits
+
+                              $nDocumento = sucursal . terminal . $codigo . $result;
+
+                              $request = FacturacionModel::insertNumeroTiquete($nDocumento, $Factura['id']);
+                              break;
+
+                              // Voucher
+                         case '03':
+                              $idVoucher = FacturacionModel::selectLastIdVoucher();
+
+                              if (empty($idVoucher['idVoucher'])) {
+                                   $idVoucher['idVoucher'] = 1;
+                              } else {
+                                   $idVoucher['idVoucher'] += 1;
+                              }
+
+                              $codigo = $Factura['codigo'];
+                              $leng = 10;
+                              $result = str_pad($idVoucher['idVoucher'], $leng, "0", STR_PAD_LEFT); // $start, $count, $digits
+
+                              $nDocumento = sucursal . terminal . $codigo . $result;
+
+                              $request = FacturacionModel::insertNumeroVoucher($nDocumento, $Factura['id']);
+                              break;
+                    }
 
                     if ($request > 0) {
-                         $arrResponse = array('status' => true, 'msg' => 'Datos Guardados', 'nfactura' => $result);
+                         $response = FacturacionModel::updateNumeroFactura($Factura['id'], $nDocumento);
+
+                         if ($response > 0) {
+                              $arrResponse = array('status' => true, 'msg' => 'Datos Guardados', 'nfactura' => $nDocumento);
+                         } else {
+                              $arrResponse = array('status' => false, 'msg' => 'No se genero # de factura');
+                         }
                     } else {
-                         $arrResponse = array('status' => false, 'msg' => 'No se genero # de factura');
+                         $arrResponse = array('status' => false, 'msg' => 'No se generó el # de documento');
                     }
                } else {
                     $arrResponse = array('status' => false, 'msg' => 'No existe la factura');
