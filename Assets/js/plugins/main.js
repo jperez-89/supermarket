@@ -72,6 +72,18 @@ async function swalMixin(icon, title, position, timer) {
 	})
 }
 
+async function swalConfirmed(text, icon) {
+	var res = await Swal.fire({
+		title: "",
+		text: text,
+		icon: icon,
+		confirmButtonText: "OK",
+		confirmButtonColor: '#35b8e0',
+		allowOutsideClick: false
+	})
+	return res;
+}
+
 function generarPDF(id) {
 	url = `${base_url}facturacion/generarPDF/${id}`;
 	window.open(url, 'blank');

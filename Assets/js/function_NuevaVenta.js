@@ -459,7 +459,7 @@ function CalcularTotales(tabla, cfilas) {
 }
 //#endregion
 
-//#region OTRAS FUNCIONES
+//#region Otras funciones
 function getTipoDocumento() {
      const url = `${base_url}facturacion/getTipoDocumento`
      const response = fnt_Fetch(url);
@@ -567,7 +567,7 @@ function getUrl() {
 }
 //#endregion
 
-//#region FACTURACION
+//#region Facturacion
 $('#btnFacturar').click(function (e) {
      e.preventDefault();
      detaFactura = Array();
@@ -611,7 +611,7 @@ $('#btnFacturar').click(function (e) {
                     $.post(url, { datos: detaFactura }, (info) => {
                          const response = JSON.parse(info)
                          if (response.status) {
-                              GenerarFactura(idVenta, tipoFactura);
+                              Pago(totalFactura, idVenta, tipoFactura);
                          } else {
                               swal("", response.msg, "error");
                          }
@@ -644,4 +644,45 @@ const GenerarFactura = async (idVenta, tipoFactura) => {
           }
      })
 }
+
+function Pago(montoCancelar, idVenta, tipoFactura) {
+     Swal.fire({
+          title: 'Monto a cancelar ' + montoCancelar,
+          text: 'Paga con:',
+          input: 'text',
+          inputAttributes: {
+               autocapitalize: 'off'
+          },
+          showCancelButton: true,
+          confirmButtonText: 'Facturar',
+          showLoaderOnConfirm: true,
+          confirmButtonColor: '#35b8e0',
+          cancelButtonColor: '#6c757d',
+          preConfirm: (pagaCon) => {
+               if (pagaCon != "") {
+                    return JSON.stringify({ pagaCon: pagaCon, montoCancelar: montoCancelar, idVenta: idVenta, tipoFactura: tipoFactura })
+               } else {
+                    swal("", "Digitar monto a pagar", 'info')
+               }
+          },
+          allowOutsideClick: false,
+     }).then((result) => {
+          if (result.isConfirmed) {
+               var res = JSON.parse(result.value)
+
+               let vuelto = Math.round(res.pagaCon - res.montoCancelar);
+
+               const re = swalConfirmed(`Vuelto ${vuelto}`, "success")
+               re.then((result) => {
+                    if (result.isConfirmed) {
+                         GenerarFactura(res.idVenta, res.tipoFactura);
+                    } else {
+                         alert('Confirmar el vuelto para generar factutra');
+                    }
+               });
+          } else if (result.isDismissed) {
+          }
+     });
+}
 //#endregion
+
