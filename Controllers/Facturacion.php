@@ -294,7 +294,7 @@ class Facturacion extends Controllers
                                              <button onclick="fntVerVenta(' . $arrdatos[$i]['id'] . ')" class="btn btn-primary2" title:"Ver Factura">
                                                   <i class="fas fa-eye"></i>
                                              </button>
-                                             <button onclick=generarPDF("' . strClean($arrdatos[$i]['nfactura']) . '") class="btn btn-danger2" title:"Ver PDF">
+                                             <button onclick=verFactura("' . strClean($arrdatos[$i]['nfactura']) . '") class="btn btn-danger2" title:"Ver PDF">
                                                   <i class="far fa-file-pdf"></i>
                                              </button>
                                              <button onclick="fntReenviarFactura(' . $arrdatos[$i]['id'] . ')" class="btn btn-success2" title:"Reenviar Factura">
@@ -327,15 +327,13 @@ class Facturacion extends Controllers
           die();
      }
 
-     public function generarPDF($idFactura)
+     public function generarPDF()
      {
-          $request = FacturacionModel::generarPDF($idFactura);
+          $idVenta = $_GET['iv'];
+          $pagaCon = $_GET['pc'];
+          $Vuelto = $_GET['v'];
+
+          $request = FacturacionModel::generarPDF($idVenta, $pagaCon, $Vuelto);
           die();
      }
-
-     // public function verPDF($idFactura)
-     // {
-     //      $request = FacturacionModel::verPDF($idFactura);
-     //      die();
-     // }
 }

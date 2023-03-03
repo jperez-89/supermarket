@@ -14,6 +14,9 @@ document.addEventListener("DOMContentLoaded", function () {
           },
           columns: [
                {
+                    data: "id",
+               },
+               {
                     data: "fecha",
                },
                {
@@ -40,11 +43,6 @@ document.addEventListener("DOMContentLoaded", function () {
           'iDisplayLenght': 15,
      });
 });
-
-// function fntverPDF(id) {
-//      url = `${base_url}facturacion/verPDF/${id}`;
-//      window.open(url, 'blank');
-// }
 
 function fntVerVenta(id) {
      alert('id factura '+id);

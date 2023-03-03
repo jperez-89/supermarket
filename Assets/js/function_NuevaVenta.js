@@ -6,7 +6,7 @@ var listaIdentificacion = document.getElementById('listaIdentificacion');
 var listaNombre = document.getElementById('listaNombre');
 var listaProductos = document.getElementById('listaProductos');
 const btnAgregarProducto = document.querySelector("#btnAgregarProducto");
-var NuevaCantidad = 0, NuevoSubtotal = 0, existe = false, cantidad = 0, precio = 0, iva = 0, subTotal = 0, total = 0, miva = 0, DatosTabla, idProducto, cfilas = 0, idFactura, tipoFactura = 3, codigo;
+var NuevaCantidad = 0, NuevoSubtotal = 0, existe = false, CantExistente = 0, cantidad = 0, precio = 0, iva = 0, subTotal = 0, total = 0, miva = 0, DatosTabla, idProducto, cfilas = 0, idFactura, tipoFactura = 3, codigo;
 
 window.onload = function () {
      FechaActual();
@@ -196,7 +196,7 @@ btnAgregarProducto.onclick = function () {
           $("#nombreProducto").focus();
           swal("", "Debe agregar un producto", "error");
           return false;
-     } else if (cantidad == '' || cantidad < 1) {
+     } else if (cantidad == '') {
           $("#Cantidad").focus();
           swal("", "Agregar cantidad válida", "error");
           return false;
@@ -208,37 +208,47 @@ btnAgregarProducto.onclick = function () {
      // ------------ PROCESO EN CASO DE QUE SEA EL PRIMER PRODUCTO ------------------------------
      if (cfilas == 0) {
 
-          CalcularTotalLinea(precio, cantidad);
-          AgregarLinea(tabla, codigo, cantidad, NombreProducto.value, precio, subTotal, miva, total);
+          CalcularTotalLinea(Number(precio), Number(cantidad));
           cfilas += 1;
+          AgregarLinea(tabla, cfilas, codigo, cantidad, NombreProducto.value, precio, subTotal, miva, total);
      }
      // ------------ PROCESO EN CASO DE QUE YA EXISTA EL PRODUCTO -------------------------------
      else {
+          // infoTable = tabla.fnGetNodes();
+          // for (let i = 0; i < infoTable.length; i++) {
+          //      if (infoTable[i].cells[1].innerHTML == codigo) {
+          //           existe = true;
+          //           var CantExistente = infoTable[i].cells[2].childNodes[0].children.cantidadT.value;
+          //           nfila = i;
+          //           break;
+          //      }
+          // };
+
           // BUSCAR SI EXISTE EL CODIGO
-          for (var i = 0; i < cfilas; i++) {
-               // Vamos obteniendo los datos de la fila
-               DatosTabla = tabla.fnGetData(i);
-               //Validamos si el codigo a ingresar existe
-               if (DatosTabla[0] == codigo) {
-                    existe = true;
-                    var CantExistente = $("#cantidadT").val();  //DatosTabla[1];
-                    nfila = i;
-                    break;
-               }
-          }
+          // for (var i = 0; i < cfilas; i++) {
+          //      // Vamos obteniendo los datos de la fila
+          //      DatosTabla = tabla.fnGetData(i);
+          //      //Validamos si el codigo a ingresar existe
+          //      if (DatosTabla[1] == codigo) {
+          //           existe = true;
+          //           var CantExistente = $("#cantidadT").val();  //DatosTabla[1];
+          //           nfila = i;
+          //           break;
+          //      }
+          // }
           // ------------ SI EXISTE EL CODIGO SE ACTUALIZA LAS CANTIDADES Y TOTALES DE LINEA -------------------------------
-          if (existe) {
+          if (buscarCodigo(tabla, codigo)) {
                NuevaCantidad = Number(CantExistente) + Number(cantidad);
-               tabla.fnUpdate(`<div class="w-100"><input name="cantidadT" id="cantidadT" type="number" value="${NuevaCantidad}" min="1" class="form-control text-center" ></div>`, nfila, 1, 0, false);
+               tabla.fnUpdate(`<div class="w-100"><input name="cantidadT" id="cantidadT" type="number" value="${NuevaCantidad}" min="1" class="form-control text-center" ></div>`, nfila, 2, 0, false);
 
                NuevoIva = (precio * porceIva) * NuevaCantidad;
-               tabla.fnUpdate(Number.parseFloat(NuevoIva).toFixed(2), nfila, 5, 0, false);
+               tabla.fnUpdate(Number.parseFloat(NuevoIva).toFixed(2), nfila, 6, 0, false);
 
                NuevoSubtotal = (precio * NuevaCantidad);
-               tabla.fnUpdate(Number.parseFloat(NuevoSubtotal).toFixed(2), nfila, 4, 0, false);
+               tabla.fnUpdate(Number.parseFloat(NuevoSubtotal).toFixed(2), nfila, 5, 0, false);
 
                NuevoTotal = NuevoSubtotal + NuevoIva;
-               tabla.fnUpdate(Number.parseFloat(NuevoTotal).toFixed(2), nfila, 6, 0, false);
+               tabla.fnUpdate(Number.parseFloat(NuevoTotal).toFixed(2), nfila, 7, 0, false);
                /* Dato, nfila, ncolumna, 0, false */
 
                // se cambia a falso por que en el if del for no se implemento el else, para que no se ejecute tantas veces por si no se valida el if
@@ -246,15 +256,28 @@ btnAgregarProducto.onclick = function () {
           }
           // ------------ SI NO EXISTE EL CODIGO DEL PRODUCTO, AGREGA LA INFORMACION A LA TABLA ----------------------
           else {
-               CalcularTotalLinea(precio, cantidad);
-               AgregarLinea(tabla, codigo, cantidad, NombreProducto.value, precio, subTotal, miva, total);
+               CalcularTotalLinea(Number(precio), Number(cantidad));
                cfilas += 1;
+               AgregarLinea(tabla, cfilas, codigo, cantidad, NombreProducto.value, precio, subTotal, miva, total);
           }
      }
      $("#nombreProducto").focus();
      LimpiarCampos();
      CalcularTotales(tabla, cfilas);
 };
+
+function buscarCodigo(tabla, codigo) {
+     infoTable = tabla.fnGetNodes();
+     for (let i = 0; i < infoTable.length; i++) {
+          if (infoTable[i].cells[1].innerHTML == codigo) {
+               existe = true;
+               CantExistente = infoTable[i].cells[2].childNodes[0].children.cantidadT.value;
+               nfila = i;
+               break;
+          }
+     };
+     return existe;
+}
 
 $('#txtCodigo').change(function (e) {
      e.preventDefault();
@@ -269,53 +292,40 @@ $('#txtCodigo').change(function (e) {
           if (info.status) {
                codigo = $("#txtCodigo").val();
                NombreProduct = info.data.name;
-               price = info.data.price;
-               porceIva = info.data.valor;
+               precio = info.data.price;
+               porceIva = info.data.valor / 100;
                cantidad = 1;
 
                // INSERTA PRIMER PRODUCTO
                if (cfilas == 0) {
-                    CalcularTotalLinea(price, cantidad);
-                    AgregarLinea(tabla, codigo, cantidad, NombreProduct, price, subTotal, miva, total);
+                    CalcularTotalLinea(Number(precio), Number(cantidad));
                     cfilas += 1;
+                    AgregarLinea(tabla, cfilas, codigo, cantidad, NombreProduct, precio, subTotal, miva, total);
                }
                // SI EXISTE EL CODIGO SE ACTUALIZA LAS CANTIDADES Y TOTALES DE LINEA
-               else {
-                    infoTable = tabla.fnGetNodes();
-                    for (let i = 0; i < infoTable.length; i++) {
-                         if (infoTable[i].cells[0].innerHTML == codigo) {
-                              existe = true;
-                              var CantExistente = infoTable[i].cells[1].childNodes[0].children.cantidadT.value;
-                              nfila = i;
-                              break;
-                         }
-                    };
+               else if (buscarCodigo(tabla, codigo)) {
+                    NuevaCantidad = Number(CantExistente) + Number(cantidad);
+                    tabla.fnUpdate(`<div class="w-100"><input name="cantidadT" id="cantidadT" type="number" value="${NuevaCantidad}" min="1" class="form-control text-center" ></div>`, nfila, 2, 0, false);
 
-                    if (existe) {
-                         NuevaCantidad = Number(CantExistente) + Number(cantidad);
-                         tabla.fnUpdate(`<div class="w-100"><input name="cantidadT" id="cantidadT" type="number" value="${NuevaCantidad}" min="1" class="form-control text-center" ></div>`, nfila, 1, 0, false);
+                    NuevoIva = (precio * porceIva) * NuevaCantidad;
+                    tabla.fnUpdate(Number.parseFloat(NuevoIva).toFixed(2), nfila, 6, 0, false);
 
-                         NuevoIva = (price * porceIva) * NuevaCantidad;
-                         tabla.fnUpdate(Number.parseFloat(NuevoIva).toFixed(2), nfila, 5, 0, false);
+                    NuevoSubtotal = (precio * NuevaCantidad);
+                    tabla.fnUpdate(Number.parseFloat(NuevoSubtotal).toFixed(2), nfila, 5, 0, false);
 
-                         NuevoSubtotal = (price * NuevaCantidad);
-                         tabla.fnUpdate(Number.parseFloat(NuevoSubtotal).toFixed(2), nfila, 4, 0, false);
+                    NuevoTotal = NuevoSubtotal + NuevoIva;
+                    tabla.fnUpdate(Number.parseFloat(NuevoTotal).toFixed(2), nfila, 7, 0, false);
+                    /* Dato, nfila, ncolumna, 0, false */
 
-                         NuevoTotal = NuevoSubtotal + NuevoIva;
-                         tabla.fnUpdate(Number.parseFloat(NuevoTotal).toFixed(2), nfila, 6, 0, false);
-                         /* Dato, nfila, ncolumna, 0, false */
-
-                         // se cambia a falso por que en el if del for no se implemento el else, para que no se ejecute tantas veces por si no se valida el if
-                         existe = false;
-                    }
-                    //SI NO EXISTE EL CODIGO DEL PRODUCTO, AGREGA LA INFORMACION A LA TABLA ----------------------
-                    else {
-                         CalcularTotalLinea(price, cantidad);
-                         AgregarLinea(tabla, codigo, cantidad, NombreProduct, price, subTotal, miva, total);
-                         cfilas += 1;
-                    }
+                    // se cambia a falso por que en el if del for no se implemento el else, para que no se ejecute tantas veces por si no se valida el if
+                    existe = false;
                }
-
+               //SI NO EXISTE EL CODIGO DEL PRODUCTO, AGREGA LA INFORMACION A LA TABLA ----------------------
+               else {
+                    CalcularTotalLinea(Number(precio), Number(cantidad));
+                    cfilas += 1;
+                    AgregarLinea(tabla, cfilas, codigo, cantidad, NombreProduct, precio, subTotal, miva, total);
+               }
                CalcularTotales(tabla, cfilas);
 
                $("#txtCodigo").val('');
@@ -326,21 +336,17 @@ $('#txtCodigo').change(function (e) {
      });
 });
 
-function AgregarLinea(tabla, codigo, cantidad, NombreProducto, precio, subTotal, miva, total) {
+function AgregarLinea(tabla, cfilas, codigo, cantidad, NombreProducto, precio, subTotal, miva, total) {
      tabla.fnAddData([
+          cfilas,
           codigo,
           `<div class="w-100"><input name="cantidadT" id="cantidadT" type="number" value="${cantidad}" min="1" class="form-control text-center"></div>`,
-          // cantidad,
           `<div class="w-100">${NombreProducto}</div>`,
           Number.parseFloat(precio).toFixed(2),
           Number.parseFloat(subTotal).toFixed(2),
           Number.parseFloat(miva).toFixed(2),
           Number.parseFloat(total).toFixed(2),
-          `<div class="flex-center">
-                         <div class="btn-group">
-                              <i id="btnEliminarLinea" class="fa fa-trash btn btn-danger2" title="Eliminar Linea"></i>
-                         </div>
-                         </div>`,
+          `<div class="flex-center"> <div class="btn-group"> <i id="btnEliminarLinea" class="fa fa-trash btn btn-danger2" title="Eliminar Linea"></i> </div> </div>`,
      ]);
 }
 //#endregion
@@ -354,8 +360,8 @@ $(document).on('change', '#cantidadT', function (e) {
 
      // De la tabla obtiene los datos de esa fila 
      data = tabla.fnGetData(nFila);
-     let preUnitario = data[3];
-     codigo = data[0];
+     let preUnitario = data[4];
+     codigo = data[1];
 
      const url = `${base_url}facturacion/getProducto`;
      const datos = new FormData();
@@ -367,15 +373,15 @@ $(document).on('change', '#cantidadT', function (e) {
      response.then((info) => {
           if (info.status) {
                if (parseInt(info.data.cantidad) >= parseInt(cant)) {
-                    CalcularTotalLinea(preUnitario, cant);
+                    CalcularTotalLinea(Number(preUnitario), Number(cant));
 
-                    tabla.fnUpdate(subTotal.toFixed(2), nFila, 4, 0, false);
-                    tabla.fnUpdate(miva.toFixed(2), nFila, 5, 0, false);
-                    tabla.fnUpdate(total.toFixed(2), nFila, 6, 0, false);
+                    tabla.fnUpdate(subTotal.toFixed(2), nFila, 5, 0, false);
+                    tabla.fnUpdate(miva.toFixed(2), nFila, 6, 0, false);
+                    tabla.fnUpdate(total.toFixed(2), nFila, 7, 0, false);
 
                     CalcularTotales(tabla, cfilas);
                } else {
-                    tabla.fnUpdate(`<div class="w-100"><input name="cantidadT" id="cantidadT" type="number" value="${parseInt(info.data.cantidad)}" min="1" class="form-control text-center"></div>`, nFila, 1, 0, false);
+                    tabla.fnUpdate(`<div class="w-100"><input name="cantidadT" id="cantidadT" type="number" value="${parseInt(info.data.cantidad)}" min="1" class="form-control text-center"></div>`, nFila, 2, 0, false);
                     swal('', `Solo hay ${parseInt(info.data.cantidad)} en existencia`, "info");
                }
           } else {
@@ -434,7 +440,7 @@ $(document).on('click', '#btnEliminarLinea', function (e) {
 //#region Calculos
 function CalcularTotalLinea(precio, cantidad) {
      miva = (precio * porceIva) * cantidad;
-     subTotal = Number(precio * cantidad);
+     subTotal = precio * cantidad;
      total = subTotal + miva;
 }
 
@@ -446,9 +452,9 @@ function CalcularTotales(tabla, cfilas) {
      for (var i = 0; i < cfilas; i++) {
           DatosTabla = tabla.fnGetData(i);
 
-          SubTotal += Number(DatosTabla[4]);
-          SubTotalIVA += Number(DatosTabla[5]);
-          TotalFactura += Number(DatosTabla[6]);
+          SubTotal += Number(DatosTabla[5]);
+          SubTotalIVA += Number(DatosTabla[6]);
+          TotalFactura += Number(DatosTabla[7]);
      }
 
      document.querySelector("#Subtotal").value = Number.parseFloat(SubTotal).toFixed(2);
@@ -597,12 +603,12 @@ $('#btnFacturar').click(function (e) {
                     idVenta = res.id;
 
                     for (let i = 0; i < infoTable.length; i++) {
-                         co = infoTable[i].cells[0].innerHTML;
-                         ca = infoTable[i].cells[1].childNodes[0].children.cantidadT.value;
-                         pUnit = infoTable[i].cells[3].innerHTML;
-                         sub = infoTable[i].cells[4].innerHTML;
-                         iva = infoTable[i].cells[5].innerHTML;
-                         tot = infoTable[i].cells[6].innerHTML;
+                         co = infoTable[i].cells[1].innerHTML;
+                         ca = infoTable[i].cells[2].childNodes[0].children.cantidadT.value;
+                         pUnit = infoTable[i].cells[4].innerHTML;
+                         sub = infoTable[i].cells[5].innerHTML;
+                         iva = infoTable[i].cells[6].innerHTML;
+                         tot = infoTable[i].cells[7].innerHTML;
 
                          detaFactura.push({ idVenta, co, ca, pUnit, sub, iva, tot });
                     };
@@ -624,26 +630,6 @@ $('#btnFacturar').click(function (e) {
           swal('', 'No hay datos para procesar', "info");
      }
 });
-
-const GenerarFactura = async (idVenta, tipoFactura) => {
-     const url = `${base_url}facturacion/GeneraFactura`
-     datos = new FormData();
-     datos.append('idVenta', idVenta);
-     datos.append('tipoFactura', tipoFactura);
-
-     const response = fnt_Fetch(url, 'post', datos);
-     response.then((response) => {
-          if (response.status) {
-               swalMixin('success', 'Documento ' + response.nfactura, 'bottom-end', 1600);
-               setTimeout(`location.href='${base_url}facturacion/nueva_venta'`, 1600);
-
-               /* Funcion esta en archivo main.js */
-               generarPDF(idVenta);
-          } else {
-               swal('', response.msg, 'error');
-          }
-     })
-}
 
 function Pago(montoCancelar, idVenta, tipoFactura) {
      Swal.fire({
@@ -670,12 +656,12 @@ function Pago(montoCancelar, idVenta, tipoFactura) {
           if (result.isConfirmed) {
                var res = JSON.parse(result.value)
 
-               let vuelto = Math.round(res.pagaCon - res.montoCancelar);
+               let Vuelto = Math.round(res.pagaCon - res.montoCancelar);
 
-               const re = swalConfirmed(`Vuelto ${vuelto}`, "success")
+               const re = swalConfirmed(`Vuelto ${Vuelto}`, "success")
                re.then((result) => {
                     if (result.isConfirmed) {
-                         GenerarFactura(res.idVenta, res.tipoFactura);
+                         GenerarFactura(res.idVenta, res.tipoFactura, res.pagaCon, Vuelto);
                     } else {
                          alert('Confirmar el vuelto para generar factutra');
                     }
@@ -683,6 +669,26 @@ function Pago(montoCancelar, idVenta, tipoFactura) {
           } else if (result.isDismissed) {
           }
      });
+}
+
+const GenerarFactura = async (idVenta, tipoFactura, pagaCon, Vuelto) => {
+     const url = `${base_url}facturacion/GeneraFactura`
+     datos = new FormData();
+     datos.append('idVenta', idVenta);
+     datos.append('tipoFactura', tipoFactura);
+
+     const response = fnt_Fetch(url, 'post', datos);
+     response.then((response) => {
+          if (response.status) {
+               swalMixin('success', 'Documento ' + response.nfactura, 'bottom-end', 1600);
+               setTimeout(`location.href='${base_url}facturacion/nueva_venta'`, 1600);
+
+               /* Funcion esta en archivo main.js */
+               generarPDF(idVenta, pagaCon, Vuelto);
+          } else {
+               swal('', response.msg, 'error');
+          }
+     })
 }
 //#endregion
 

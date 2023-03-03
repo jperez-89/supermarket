@@ -20,6 +20,7 @@
                          <table class="table table-centered w-100 table-sm" id="tblFacturas">
                               <thead>
                                    <tr>
+                                        <th>Id</th>
                                         <th>Fecha</th>
                                         <th># Factura</th>
                                         <th>Tipo</th>

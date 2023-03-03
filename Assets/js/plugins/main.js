@@ -84,8 +84,13 @@ async function swalConfirmed(text, icon) {
 	return res;
 }
 
-function generarPDF(id) {
-	url = `${base_url}facturacion/generarPDF/${id}`;
+function generarPDF(idVenta, pagaCon, Vuelto) {
+	url = `${base_url}facturacion/generarPDF/&iv=${idVenta}&pc=${pagaCon}&v=${Vuelto}`;
 	window.open(url, 'blank');
+}
+
+function verFactura(idVenta) {
+	url = `${base_url}assets/facturas/factura-${idVenta}.pdf`;
+	window.open(url, '_blank');
 }
 

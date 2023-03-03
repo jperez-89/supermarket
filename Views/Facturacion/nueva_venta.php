@@ -73,6 +73,7 @@
                                    <table id="tblFactura" class="table table-centered table-sm" style="width: 100%;">
                                         <thead>
                                              <tr>
+                                                  <th>id</th>
                                                   <th>Código</th>
                                                   <th>Cantidad</th>
                                                   <th>Nombre</th>
