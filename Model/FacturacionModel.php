@@ -261,10 +261,11 @@ class FacturacionModel extends Crud
                $condicion = 'PENDIENTE';
           }
 
-          $sql = "SELECT p.name, vd.cantidad, vd.preUnitario, vd.subtotal
+          $sql = "SELECT p.name, vd.cantidad, vd.preUnitario, vd.subtotal, i.codigo, i.valor
           FROM venta_detalle vd
           INNER JOIN producto p ON p.id = vd.idProducto
           INNER JOIN venta v ON v.id = vd.idFactura
+          INNER JOIN impuesto i ON i.id = p.iva
           WHERE v.id = " . $request['id'];
 
           $dFactura = $crud->get_AllRegister($sql);
@@ -283,7 +284,8 @@ class FacturacionModel extends Crud
           $pdf->Cell(15, 3, '+506 83182537', 0, 1, 'L');
           $pdf->Cell(30, 3, "EMAIL:", 0, 0, 'R');
           $pdf->Cell(20, 3, 'JRWC1989@GMAIL.COM', 0, 1, 'L');
-          $pdf->Cell(20, 3, '', 0, 1, 'L');
+          $pdf->Cell(75, 3, 'PITAHAYA, PUNTARENAS, DIAGONAL A LA IGLESIA CATOLICA', 0, 1, 'C');
+          $pdf->Ln();
 
           $pdf->Cell(24, 4, mb_convert_encoding($request['TipoDocumento'] . ' v4.3', 'UTF-8'), 0, 1, 'L');
           $pdf->Cell(8, 4, "Clave", 0, 0, 'L');
@@ -314,7 +316,7 @@ class FacturacionModel extends Crud
                $pdf->Cell(8, 5, number_format($dFactura[$i]['cantidad'], 2, '.', ','), 0, 0, 'L');
                $pdf->Cell(42, 5, mb_convert_encoding($dFactura[$i]['name'], 'UTF-8', 'ISO-8859-1'), 0, 0, 'L');
                $pdf->Cell(11, 5, number_format($dFactura[$i]['preUnitario'], 2, '.', ','), 0, 0, 'R');
-               $pdf->Cell(16, 5, number_format($dFactura[$i]['subtotal'], 2, '.', ','), 0, 1, 'R');
+               $pdf->Cell(16, 5, number_format($dFactura[$i]['subtotal'], 2, '.', ',') . $dFactura[$i]['codigo'], 0, 1, 'R');
           }
           $pdf->Cell(1, 5, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", 0, 0, 'L');
 
@@ -342,7 +344,15 @@ class FacturacionModel extends Crud
           $pdf->Cell(16, 4, 'VUELTO:', 0, 0, 'L');
           $pdf->Cell(5, 4, mb_convert_encoding($Vuelto, "UTF-8"), 0, 1, 'L');
           $pdf->Cell(1, 3, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", 0, 1, 'L');
+
+          $sql = "SELECT * FROM impuesto";
+          $impuesto = $crud->get_AllRegister($sql);
+
+          for ($i = 0; $i < count($impuesto); $i++) {
+               $pdf->Cell(15, 4, $impuesto[$i]['codigo'] . ': ' . $impuesto[$i]['valor'] . '%', 0, 0, 'C');
+          }
           $pdf->Ln();
+          $pdf->Cell(1, 3, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", 0, 1, 'L');
 
           $pdf->SetFont('Arial', '', 8);
           $pdf->Cell(80, 5, mb_convert_encoding('*** GRACIAS POR SU VISITA ***', "UTF-8"), 0, 1, 'C');
