@@ -31,7 +31,7 @@
 
           <!-- Navbar Right Menu-->
           <ul class="app-nav">
-               <h3 style="color: white; font-family: 'Poppins',sans-serif;"> <?php echo $_SESSION['name'] ?> </h3>
+               <h3 id="nombre" style="color: white; font-family: 'Poppins',sans-serif;"> <?php echo $_SESSION['name'] ?> </h3>
                <li class="dropdown">
                     <img data-toggle="dropdown" aria-label="Open Profile Menu" class=" settings" src="<?= media(); ?>images/avatar.png" alt="User Image">
                     <ul class="dropdown-menu settings-menu dropdown-menu-right">

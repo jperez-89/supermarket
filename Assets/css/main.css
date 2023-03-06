@@ -18140,6 +18140,12 @@ be a descendant of the grid when it is being dragged.
   border-radius: 50% !important;
 }
 
+@media (max-width: 474px) {
+  #nombre {
+    display: none;
+  }
+}
+
 img.pequena {
   width: 3rem;
   border-radius: 10px !important;
