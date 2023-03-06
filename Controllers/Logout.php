@@ -8,6 +8,4 @@ class Logout
           header('location: '.base_url());
      }
 }
-
-
 ?>

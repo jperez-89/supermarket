@@ -4,13 +4,9 @@
      <div class="app-sidebar__user">
           <img class="app-sidebar__user-avatar" src="<?= media(); ?>images/avatar.png" alt="User Image">
           <div>
-               <p class="app-sidebar__user-name">
-                    Jairo Pérez
-
-                    <!-- session_start();
-                    $_SESSION['username'] -->
-               </p>
-               <p id="RolUsuario" class="app-sidebar__user-designation">Administrador</p>
+               <!-- <p class="app-sidebar__user-name">
+               </p> -->
+               <p id="RolUsuario" class="app-sidebar__user-designation"><?php echo $_SESSION['rol'] ?> </p>
           </div>
      </div>
      <ul class="app-menu">
@@ -18,7 +14,7 @@
           <li>
                <a class="app-menu__item" href="<?= base_url() ?>">
                     <i class="app-menu__icon fa fa-dashboard"></i>
-                    <span class="app-menu__label">Panel de Control</span>
+                    <span class="app-menu__label">Dashboard</span>
                </a>
           </li>
 

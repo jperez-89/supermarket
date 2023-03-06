@@ -4,6 +4,11 @@ class  Roles extends Controllers
 {
      public function __construct()
      {
+          session_start();
+          if (!isset($_SESSION['login'])) {
+               header('Location: ' . base_url() . 'login');
+          }
+          
           // Ejecutar los metodos del Controllers
           parent::__construct();
      }

@@ -13,40 +13,31 @@ document.addEventListener(
       frmLogin.onsubmit = function (e) {
         e.preventDefault();
 
-        let email = document.querySelector("#txtUsername").value;
-        let password = document.querySelector("#txtPassword").value;
+        let usuario = document.getElementById("txtUsername").value;
+        let password = document.getElementById("txtPassword").value;
 
-        if (email == "" || password == "") {
-          swal("Please", "Enter your email and password.", "error");
+        if (usuario == "") {
+          txtUsername.focus();
+          swal("Por favor", "Ingrese su usuario", "error");
           return false;
+
+        } else if (password == "") {
+          txtPassword.focus();
+          swal("Por favor", "Ingrese su contraseña", "error");
+          return false;
+
         } else {
-          var request = window.XMLHttpRequest
-            ? new XMLHttpRequest()
-            : new ActiveXObject("Microsoft.XMLHTTP");
+          const url = `${base_url}login/LoginUser`;
+          frmDatos = new FormData(frmLogin);
 
-          var UrlUser = base_url + "Login/loginUser";
-          var frmData = new FormData(frmLogin);
-
-          //   Enviamos los datos por medio de ajax
-          request.open("POST", UrlUser, true);
-          request.send(frmData);
-
-          request.onreadystatechange = function () {
-            if (request.readyState != 4) return;
-            if (request.status == 200) {
-              var objData = JSON.parse(request.responseText);
-
-              if (objData.status) {
-                window.location = base_url + 'dashboard';
-              } else {
-                swal("Atención", objData.msg, "error");
-                document.querySelector("#txtPassword").value = "";
-              }
+          const response = fnt_Fetch(url, 'post', frmDatos)
+          response.then(objData => {
+            if (objData.status) {
+              window.location = `${base_url}dashboard`;
             } else {
-              swal("Atención", "Error en el proceso de autenticación", "error");
+              swal("Error", objData.msg, "error");
             }
-            return false;
-          };
+          });
         }
       };
     }

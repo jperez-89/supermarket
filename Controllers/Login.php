@@ -1,5 +1,4 @@
 <?php
-
 class  Login extends Controllers
 {
      public function __construct()
@@ -10,37 +9,35 @@ class  Login extends Controllers
           }
           // Ejecutar los metodos del Controllers
           parent::__construct();
-
-
      }
 
      public function Login()
      {
-          $data['page_title'] = "Supermarket - Iniciar";
+          $data['page_title'] = "Supermarket - Login";
           $data['page_functions'] = "js/function_login.js";
-          $data['page_name'] = "Supermarket S.A";
+          $data['page_name'] = "Supermarket";
           // Hacemos el enlace a la vista
           $this->views->getViews($this, 'Login', $data);
      }
 
-     public function loginUser()
+     public function LoginUser()
      {
           if ($_POST) {
                if (empty($_POST['txtUsername']) || empty($_POST['txtPassword'])) {
-                    $arrResponse = array('status' => false, 'msg' => 'Complete todos los campos.');
+                    $arrResponse = array('status' => false, 'msg' => 'Complete todos los campos');
                } else {
                     $user = strtolower(strClean($_POST['txtUsername']));
                     // $pass = hash("SHA256", $_POST['txtPassword']);
                     $pass =  strClean($_POST['txtPassword']);
-                    $requestUser = $this->model->loginUser($user, $pass);
+                    $request = LoginModel::loginUser($user, $pass);
 
-                    if (empty($requestUser)) {
-                         $arrResponse = array('status' => false, 'msg' => 'Usuario o contraseña incorrectos.');
+                    if (empty($request)) {
+                         $arrResponse = array('status' => false, 'msg' => 'Usuario o contraseña incorrectos');
                     } else {
-                         $arrData = $requestUser;
-                         // ObjFormat($arrData);
+                         $arrData = $request;
                          if ($arrData['username'] != "") {
-                              $_SESSION['username'] = $arrData['username'];
+                              $_SESSION['name'] = $arrData['name'] . ' ' . $arrData['surnames'];
+                              $_SESSION['rol'] = $arrData['nombreRol'];
                               $_SESSION['login'] = true;
                               $arrResponse = array('status' => true, 'msg' => 'ok');
                          } else {
