@@ -52,7 +52,8 @@
                                    <div class="col-md-4">
                                         <div class="form-group">
                                              <label for="txtContra" class="control-label">Contraseña</label>
-                                             <input class="form-control" id="txtContra" name="txtContra" type="text" placeholder="Contraseña">
+                                             <input class="form-control" id="txtContra" name="txtContra" type="password" placeholder="Contraseña">
+                                             <i class="fa fa-eye" style="position: relative;top: -26px;right: 10px;float: right;font-size: 16px;" onclick="if($('#txtContra').attr('type')=='text'){$('#txtContra').attr('type','password');$(this).attr('class','fa fa-eye');}else{$('#txtContra').attr('type','text');$(this).attr('class','fa fa-eye-slash');}"></i>
                                         </div>
                                    </div>
                               </div>
