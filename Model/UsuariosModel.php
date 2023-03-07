@@ -11,7 +11,7 @@ class UsuariosModel extends Crud
 
      public function selectUsers()
      {
-          $sql = "SELECT u.id, u.email, u.username, u.password, u.dni, u.name, u.surnames, u.phone, u.status, r.nombreRol as rol FROM user as u INNER JOIN rol as r on r.Id = u.idRol";
+          $sql = "SELECT u.id, u.email, u.username, u.password, u.dni, u.name, u.surnames, u.phone, u.status, r.Id AS idRol, r.nombreRol as rol FROM user as u INNER JOIN rol as r on r.Id = u.idRol";
           $resquest = $this->get_AllRegister($sql);
           return $resquest;
      }
@@ -51,10 +51,12 @@ class UsuariosModel extends Crud
           $this->idRol = $idRol;
 
           // Validamos si existe el producto
-          $sql = "SELECT * FROM user WHERE dni = '$this->DNI'";
+          $sql = "SELECT dni FROM user WHERE dni = '$this->DNI'";
           $resquest = $this->get_AllRegister($sql);
 
           if (empty($resquest)) {
+               $this->contra = password_hash($contra, PASSWORD_DEFAULT);
+
                $query_insert = "INSERT INTO user (email, username, password, dni, name, surnames, phone, idRol, status) VALUES(?,?,?,?,?,?,?,?,?)";
                $arrData = array($this->email, $this->usuario, $this->contra, $this->DNI, $this->nombre, $this->apellidos, $this->telefono, $this->idRol, 1);
                $resquest_insert = $this->Insert_Register($query_insert, $arrData);
@@ -77,10 +79,12 @@ class UsuariosModel extends Crud
           $this->idRol = $idRol;
 
           // Validamos si existe el producto
-          $sql = "SELECT * FROM user WHERE id = $this->id";
-          $resquest = $this->get_AllRegister($sql);
+          $sql = "SELECT id FROM user WHERE id = $this->id";
+          $resquest = $this->get_OneRegister($sql);
 
           if (!empty($resquest)) {
+               $this->contra = password_hash($contra, PASSWORD_DEFAULT);
+
                $query_update = "UPDATE user SET email = ?, username = ?, password = ?, name = ?, surnames = ?, phone = ?, idRol = ? WHERE id = $this->id";
 
                $arrData = array($this->email, $this->usuario, $this->contra, $this->nombre, $this->apellidos, $this->telefono, $this->idRol);

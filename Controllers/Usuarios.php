@@ -8,7 +8,7 @@ class  Usuarios extends Controllers
           if (!isset($_SESSION['login'])) {
                header('Location: ' . base_url() . 'login');
           }
-          
+
           // Ejecutar los metodos del Controllers
           parent::__construct();
      }
@@ -36,7 +36,7 @@ class  Usuarios extends Controllers
           $arrdatos = $this->model->selectUsers();
 
           for ($i = 0; $i < count($arrdatos); $i++) {
-               if ($arrdatos[$i]['status'] == 1) {
+               if ($arrdatos[$i]['status'] == 1 && $arrdatos[$i]['idRol'] == 1) {
                     // ESTADO
                     $arrdatos[$i]['status'] = '<div class=""> <span class="badge badge-success">Activo</span> </div> ';
 
@@ -45,7 +45,20 @@ class  Usuarios extends Controllers
                                              <button onclick="fntEditUser(' . $arrdatos[$i]['id'] . ')" class="btn btn-primary2">
                                                   <i class="fas fa-pencil-alt"></i>
                                              </button>
-                                             <button onclick="fntDeleteUser(' . $arrdatos[$i]['id'] . ')" class="btn btn-danger2">
+                                             <button disabled onclick="fntDeleteUser(' . $arrdatos[$i]['id'] . ')" class="btn btn-danger2">
+                                                  <i class="fas fa-trash"></i>
+                                             </button>
+                                        </div>';
+               } else if ($arrdatos[$i]['status'] == 1) {
+                    // ESTADO
+                    $arrdatos[$i]['status'] = '<div class=""> <span class="badge badge-success">Activo</span> </div> ';
+
+                    // ACCIONES
+                    $arrdatos[$i]['options'] = '<div class="">
+                                             <button onclick="fntEditUser(' . $arrdatos[$i]['id'] . ')" class="btn btn-primary2">
+                                                  <i class="fas fa-pencil-alt"></i>
+                                             </button>
+                                             <button disabled onclick="fntDeleteUser(' . $arrdatos[$i]['id'] . ')" class="btn btn-danger2">
                                                   <i class="fas fa-trash"></i>
                                              </button>
                                         </div>';
@@ -138,14 +151,14 @@ class  Usuarios extends Controllers
      public function deleteUser()
      {
           $id = intval($_POST['id']);
-          if ($id == 1) {
-               $arrResponse = array('status' => false, 'msg' => 'Usuario Administrador del sistema, no se puede deshabilitar');
+          if ($id == 11) {
+               $arrResponse = array('status' => false, 'msg' => 'Usuario Administrador del sistema, no se puede eliminar');
           } else {
-               $resquestDelete = $this->model->deleteUser($id);
+               $request = $this->model->deleteUser($id);
 
-               if ($resquestDelete == 'ok') {
+               if ($request == 'ok') {
                     $arrResponse = array('status' => true, 'msg' => 'Usuario eliminado');
-               } elseif ($resquestDelete == 'exist') {
+               } elseif ($request == 'exist') {
                     $arrResponse = array('status' => false, 'msg' => 'No es posible eliminar el Usuario.');
                } else {
                     $arrResponse = array('status' => false, 'msg' => 'No es posible eliminar los datos.');
