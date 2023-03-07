@@ -8,7 +8,7 @@ function base_url()
 
 function media()
 {
-     return base . media;
+     return base_url() . media;
 }
 
 function productosImg()

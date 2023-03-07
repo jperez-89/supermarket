@@ -1,9 +1,9 @@
 <?php
 // DEPENDIENDO DEL NOMBRE DEL PROYECTO CAMBIA LA URL
 const base = "http://localhost/supermarket/";
-const media = 'Assets/';
-const libs = "Libraries/";
-const Views = "Views/";
+const media = 'assets/';
+const libs = "libraries/";
+const Views = "views/";
 const productosImg = "./assets/images/productos/";
 const facturas = "./assets/facturas/";
 
