@@ -13,10 +13,10 @@
      <title><?php echo $data["page_title"] ?></title>
 
      <!-- DataTables CSS -->
-     <link rel="stylesheet" type="text/css" href="<?php echo media ?>css/dataTables.bootstrap5.min.css">
+     <link rel="stylesheet" type="text/css" href="<?php echo media() ?>css/dataTables.bootstrap5.min.css">
 
      <!-- Main CSS-->
-     <link rel="stylesheet" type="text/css" href="<?php echo media(); ?>css/main.css">
+     <link rel="stylesheet" type="text/css" href="<?php echo media() ?>css/main.css">
 
      <script type="text/javascript" src="<?php echo media() ?>js/plugins/sweetalert-2011.min.js"></script>
 </head>
@@ -24,7 +24,7 @@
 <body class="app sidebar-mini ">
      <!-- Navbar-->
      <header class="app-header">
-          <a class="app-header__logo" href="<?php echo base ?>">SuperMarket</a>
+          <a class="app-header__logo" href="<?php echo base_url() ?>">SuperMarket</a>
 
           <!-- Sidebar toggle button-->
           <a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
@@ -35,7 +35,7 @@
                <li class="dropdown">
                     <img data-toggle="dropdown" aria-label="Open Profile Menu" class=" settings" src="<?= media(); ?>images/avatar.png" alt="User Image">
                     <ul class="dropdown-menu settings-menu dropdown-menu-right">
-                         <li><a class="dropdown-item" href="<?= base ?>logout"><i class="fa fa-sign-out fa-lg"></i> Salir</a></li>
+                         <li><a class="dropdown-item" href="<?php base_url() ?>logout"><i class="fa fa-sign-out fa-lg"></i> Salir</a></li>
                     </ul>
                </li>
           </ul>
