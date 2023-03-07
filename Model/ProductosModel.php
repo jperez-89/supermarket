@@ -18,7 +18,7 @@ class ProductosModel extends Crud
           parent::__construct();
      }
 
-     public static function insertProducto(string $codigo, string $nombre, int $precio, int $cantidad, string $descripcion, string $medida, int $iva, string $imagen)
+     public static function insertProducto(string $codigo, string $nombre, float $precio, float $cantidad, string $descripcion, string $medida, int $iva, string $imagen)
      {
           $crud = new Crud();
           $return = 0;
@@ -76,7 +76,7 @@ class ProductosModel extends Crud
           return $request;
      }
 
-     public static function updateProducto(string $codigo, int $id, string $nombre, int $precio, int $cantidad, string $descripcion, string $medida, int $iva, string $img)
+     public static function updateProducto(string $codigo, int $id, string $nombre, float $precio, float $cantidad, string $descripcion, string $medida, int $iva, string $img)
      {
           $crud = new Crud();
           $return = 0;

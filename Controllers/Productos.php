@@ -28,8 +28,8 @@ class Productos extends Controllers
           $id = intval($_POST['idProducto']);
           $codigo = strClean($_POST['txtCodigo']);
           $nombre = strClean($_POST['txtNombre']);
-          $Precio = intval($_POST['txtPrecio']);
-          $Stock = intval($_POST['txtStock']);
+          $Precio = floatval($_POST['txtPrecio']);
+          $Stock = floatval($_POST['txtStock']);
           $Descripcion = strClean($_POST['txtDescripcion']);
           $Medida = strClean($_POST['selecMedida']);
           $iva = strClean($_POST['selecIVA']);
