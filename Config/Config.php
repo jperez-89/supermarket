@@ -1,11 +1,12 @@
 <?php
 // DEPENDIENDO DEL NOMBRE DEL PROYECTO CAMBIA LA URL
-const base = "http://localhost/supermarket/";
-const media = 'assets/';
-const libs = "libraries/";
-const Views = "views/";
-const productosImg = "./assets/images/productos/";
-const facturas = "./assets/facturas/";
+// const base = "http://localhost/supermarket/";
+const base = "http://supermarket.net/";
+const media = 'Assets/';
+const libs = "Libraries/";
+const Views = "Views/";
+const productosImg = "./Assets/images/productos/";
+const facturas = "./Assets/facturas/";
 
 const host = "localhost;";
 const user = "root";

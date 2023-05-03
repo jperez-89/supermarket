@@ -46,7 +46,7 @@ class  Login extends Controllers
                               } else {
                                    $arrResponse = array('status' => false, 'msg' => 'Usuario inactivo, contacta al administrador al email jrwc1989@gmail.com');
                               }
-                         } else{
+                         } else {
                               $arrResponse = array('status' => false, 'msg' => 'Contraseña incorrecta');
                          }
                     } else {
@@ -54,7 +54,7 @@ class  Login extends Controllers
                     }
                }
                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-               die();
           }
+          die();
      }
 }

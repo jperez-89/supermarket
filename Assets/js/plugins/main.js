@@ -31,17 +31,24 @@ function PlayAudio() {
 	audio.play();
 }
 
-function fnt_Fetch(url, method = '', Databody) {
+async function fnt_Fetch(url, method = '', Databody) {
 	var jsonResponse;
 
 	if (method == 'post') {
 		jsonResponse = fetch(url, {
 			method: method,
-			body: Databody
-		}).then(res => res.json())
+			body: Databody,
+			mode: "no-cors",
+			headers: { 'Content-Type': 'application/json' },
+		})
+			.then(res => res.json())
+			.catch((error) => {
+				alert('Server Error => ' + error)
+			});
 	} else {
 		jsonResponse = fetch(url).then(res => res.json())
 	}
+
 	return jsonResponse;
 }
 

@@ -30,14 +30,14 @@ document.addEventListener(
           const url = `${base_url}login/LoginUser`;
           frmDatos = new FormData(frmLogin);
 
-          const response = fnt_Fetch(url, 'post', frmDatos)
-          response.then(objData => {
-            if (objData.status) {
+          const res = fnt_Fetch(url, 'post', frmDatos);
+          res.then(data => {
+            if (data.status) {
               window.location = `${base_url}dashboard`;
             } else {
-              swal("Error", objData.msg, "error");
+              swal("Error", data.msg, "error");
             }
-          });
+          })
         }
       };
     }
