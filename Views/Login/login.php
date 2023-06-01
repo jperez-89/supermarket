@@ -11,15 +11,18 @@
      <title><?php echo $data["page_title"] ?></title>
      <!-- Main CSS-->
      <link rel="stylesheet" type="text/css" href="<?php echo media; ?>css/main.css">
+
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 </head>
 
 <body>
      <section class="material-half-bg">
-          <section class="login-content">
+          <section class="login-content animate__animated animate__bounce">
                <div class="logo">
                     <h1 style="font-family: sans-serif;"><?php echo $data["page_name"] ?></h1>
                </div>
                <div class="login-box">
+                    <!-- FORM RESET LOGIN -->
                     <form id="frmLogin" name="frmLogin" class="login-form" action="">
                          <div class="form-group">
                               <label for="txtUsername" class="control-label">USUARIO</label>
@@ -41,7 +44,7 @@
                          </div>
                     </form>
 
-                    <!-- FORM DE RESET PASSWORD -->
+                    <!-- FORM RESET PASSWORD -->
                     <form class="forget-form" action="#">
                          <h3 class="login-head"><i class="fa fa-lg fa-fw fa-lock"></i>Olvidó su contraseña?</h3>
                          <div class="form-group">

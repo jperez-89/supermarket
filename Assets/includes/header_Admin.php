@@ -19,6 +19,8 @@
      <link rel="stylesheet" type="text/css" href="<?php echo media() ?>css/main.css">
 
      <script type="text/javascript" src="<?php echo media() ?>js/plugins/sweetalert-2011.min.js"></script>
+
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 </head>
 
 <body class="app sidebar-mini ">

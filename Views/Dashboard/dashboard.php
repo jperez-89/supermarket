@@ -1,7 +1,7 @@
 <?= headerAdmin($data); ?>
 
 <!-- CONTENIDO PRICIPAL -->
-<main class="app-content">
+<main class="app-content animate__animated animate__lightSpeedInLeft ">
      <div class="app-title">
           <div>
                <h1><i class="fa fa-dashboard"></i> <?= $data['page_name'] ?></h1>
@@ -52,6 +52,51 @@
                     </div>
                </div>
           </div>
+
+          <div class="row">
+               <div class="col-md-6">
+                    <div class="tile">
+                         <h3 class="text-center pb-1 mt-1">Productos por Abastecer</h3>
+                         <div class="table-responsive">
+                              <table class="table table-centered table-sm" id="tblProductosMinimos" style="width: 100%;">
+                                   <thead>
+                                        <tr>
+                                             <th>Id</th>
+                                             <th>Nombre</th>
+                                             <th>Descripción</th>
+                                             <th>Unidad de Medida</th>
+                                             <th>Stock Actual</th>
+                                             <th>Stock Minimo</th>
+                                        </tr>
+                                   </thead>
+                                   <tbody>
+                                   </tbody>
+                              </table>
+                         </div>
+                    </div>
+               </div>
+
+               <div class="col-md-6">
+                    <div class="tile">
+                         <h3 class="text-center pb-1 mt-1">Tipos de Facturas</h3>
+                    </div>
+               </div>
+          </div>
+
+          <div class="row">
+               <div class="col-md-6">
+                    <div class="tile">
+                         <h3 class="text-center pb-1 mt-1">Forma de Pago por Mes</h3>
+                    </div>
+               </div>
+
+               <div class="col-md-6">
+                    <div class="tile">
+                         <h3 class="text-center pb-1 mt-1">Créditos Mensuales</h3>
+                    </div>
+               </div>
+          </div>
+
      </div>
 </main>
 

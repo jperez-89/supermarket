@@ -82,16 +82,16 @@ class ProductosModel extends Crud
           $return = 0;
 
           $request = self::SearchProductbByCode($codigo);
-          
+
           if (!empty($request)) {
                if ($img == "") {
                     // Actualiza la informacion
                     $u_Producto = "UPDATE producto SET codigo = ?, name = ?, price = ?, description = ?, measure = ?, iva = ? WHERE codigo = $codigo";
                     $arrData = array($codigo, $nombre, $precio, $descripcion, $medida, $iva);
-                    
-                    
+
+
                     if ($cantidad != '') {
-                         $u_Inventario = "UPDATE inventario SET cantidad = cantidad + ? WHERE idProducto = " .$request['id'];
+                         $u_Inventario = "UPDATE inventario SET cantidad = cantidad + ? WHERE idProducto = " . $request['id'];
                          $arrDataa = array($cantidad);
                     }
                } else {
@@ -100,7 +100,7 @@ class ProductosModel extends Crud
                     $arrData = array($codigo, $nombre, $precio, $descripcion, $medida, $iva, $img);
 
                     if ($cantidad != '') {
-                         $u_Inventario = "UPDATE inventario SET cantidad = cantidad + ? WHERE idProducto = " .$request['id'];
+                         $u_Inventario = "UPDATE inventario SET cantidad = cantidad + ? WHERE idProducto = " . $request['id'];
                          $arrDataa = array($cantidad);
                     }
                }
@@ -167,6 +167,20 @@ class ProductosModel extends Crud
           $sql = "SELECT * FROM impuesto";
           $request = $crud->get_AllRegister($sql);
 
+          return $request;
+     }
+
+     public static function SelectProductosMinimo()
+     {
+          $crud = new Crud();
+
+          $sql = "SELECT p.id, p.name, p.description, um.unidad, i.cantidad, p.minimo, p.state 
+          FROM producto p 
+          INNER JOIN unidad_medida um ON um.nomenclatura = p.measure
+          INNER JOIN inventario i ON i.idProducto = p.id
+          WHERE i.cantidad <= p.minimo";
+
+          $request = $crud->get_AllRegister($sql);
           return $request;
      }
 }

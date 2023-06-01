@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
   getCantClientes();
   getCantUsuarios();
   setFechaActual();
+
+  getProductosMinimos();
 });
 
 function setFechaActual() {
@@ -76,4 +78,50 @@ function getCantFacturas() {
       document.querySelector("#cantFacturas").innerHTML = objData[0].Cantidad;
     }
   };
+}
+
+function getProductosMinimos() {
+  tblClientes = $("#tblProductosMinimos").DataTable({
+    aProcessing: true,
+    aServerSide: true,
+    Search: false,
+    dom: "rtip",
+    "language": {
+      "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+    },
+    ajax: {
+      url: ` ${base_url}/productos/getProductosMinimo`,
+      dataSrc: "",
+    },
+    columns: [{
+      data: "id",
+    },
+    {
+      data: "name",
+    },
+    {
+      data: "description",
+    },
+    {
+      data: "unidad",
+    },
+    {
+      data: "cantidad",
+    },
+    {
+      data: "minimo",
+    },
+    ],
+    responsive: "true",
+    bDestroy: true,
+    iDisplayLenght: 5,
+    order: [
+      [0, "desc"]
+    ],
+    columnDefs: [{
+      targets: [0],
+      visible: false,
+      searchable: false
+    }],
+  });
 }

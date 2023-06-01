@@ -1,5 +1,6 @@
 <?php
 require 'vendor/autoload.php';
+
 use Picqer\Barcode\BarcodeGeneratorHTML;
 
 class Productos extends Controllers
@@ -10,7 +11,7 @@ class Productos extends Controllers
           if (!isset($_SESSION['login'])) {
                header('Location: ' . base_url() . 'login');
           }
-          
+
           parent::__construct();
      }
 
@@ -163,7 +164,7 @@ class Productos extends Controllers
           for ($i = 0; $i < count($arrdatos); $i++) {
 
                if ($arrdatos[$i]['state'] == 1) {
-                    $arrdatos[$i]['valor'] = $arrdatos[$i]['valor']."<span>%</span>";
+                    $arrdatos[$i]['valor'] = $arrdatos[$i]['valor'] . "<span>%</span>";
 
                     $arrdatos[$i]['code'] = '<div class="">' . $bar->getBarcode($arrdatos[$i]['codigo'], $bar::TYPE_EAN_13) . '</div>';
 
@@ -271,6 +272,14 @@ class Productos extends Controllers
      public function getCantProductos()
      {
           $arrdatos = $this->model->selectCantProductos();
+
+          echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
+          die();
+     }
+
+     function getProductosMinimo()
+     {
+          $arrdatos = ProductosModel::SelectProductosMinimo();
 
           echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
           die();

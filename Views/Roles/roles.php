@@ -1,7 +1,7 @@
 <?= headerAdmin($data); ?>
 
 <!-- CONTENIDO PRICIPAL -->
-<main class="app-content">
+<main class="app-content animate__animated animate__lightSpeedInLeft ">
      <div class="app-title">
           <div class="flex-center">
                <h1><i class="fas fa-user-tag"></i> <?= $data['page_name'] ?>
