@@ -6,6 +6,7 @@ const selecRegimen = document.getElementById("selecRegimen");
 const selecEstado = document.getElementById("selecEstado");
 const frmClientes = document.querySelector("#frmClientes");
 const Identificacion = document.querySelector("#txtIdentificacion");
+const btnIdentificacion = document.querySelector("#btnIdentificacion");
 
 document.addEventListener("DOMContentLoaded", function () {
   CargaProvincia();
@@ -69,37 +70,52 @@ document.addEventListener("DOMContentLoaded", function () {
 
 Identificacion.onkeypress = function (e) {
   if (e.keyCode == 13) {
-    if (Identificacion.value === "") {
-      swal('', 'Digite el número de cédula a buscar', "info");
-      return false;
-    } else if (Identificacion.value === "1") {
-      
-    }
-
-    if (Identificacion.value.length < 9) {
-      swal('', 'El numero de cédula debe contener 9 o 10 caracteres', "info");
-      return false
-    }
-
     e.preventDefault();
-    const url = `https://api.hacienda.go.cr/fe/ae?identificacion=${Identificacion.value}`;
-    const response = fnt_Fetch(url)
-    response.then(data => {
-      if (data.regimen.codigo != 0) {
-        document.querySelector("#txtNombre").value = data.nombre;
-        document.querySelector("#estadoHacienda").value = data.situacion.estado;
-        statusHacienda = data.situacion.estado;
-        selecRegimen.selectedIndex = data.regimen.codigo;
-      } else {
-        document.querySelector("#txtNombre").value = data.nombre;
-        document.querySelector("#estadoHacienda").value = data.situacion.estado;
-        statusHacienda = data.situacion.estado;
-        selecRegimen.selectedIndex = data.regimen.codigo;
-        
-        swal('', `Cliente ${data.situacion.estado} ante Hacienda`, "info");
-      }
-    });
+    BuscarCliente(Identificacion.value);
   }
+}
+
+btnIdentificacion.onclick = function (e) {
+  e.preventDefault();
+  BuscarCliente(Identificacion.value)
+}
+
+function BuscarCliente(Identificacion) {
+  if (Identificacion === "") {
+    swal('', 'Digite el número de Identificación', "info");
+    return false;
+  } else if (Identificacion === "1") {
+  }
+
+  if (Identificacion.length < 9) {
+    swal('', 'El numero de Identificación debe contener entre 9 o 10 caracteres', "info");
+    return false
+  }
+
+  const url = `https://api.hacienda.go.cr/fe/ae?identificacion=${Identificacion}`;
+  const response = fnt_Fetch(url)
+  response.then(data => {
+    console.log(data);
+    if (data.code == 400) {
+      document.getElementById("txtIdentificacion").focus();
+      swalMixin('error', `El número de identificación ${Identificacion} no es válido o no existe`, 'top-end', 4000)
+      return false;
+    }
+
+    if (data.regimen.codigo != 0) {
+      document.querySelector("#txtNombre").value = data.nombre;
+      document.querySelector("#estadoHacienda").value = data.situacion.estado;
+      statusHacienda = data.situacion.estado;
+      selecRegimen.selectedIndex = data.regimen.codigo;
+    } else {
+      document.querySelector("#txtNombre").value = data.nombre;
+      document.querySelector("#estadoHacienda").value = data.situacion.estado;
+      statusHacienda = data.situacion.estado;
+      selecRegimen.selectedIndex = data.regimen.codigo;
+
+      swal('', `Cliente ${data.situacion.estado} ante Hacienda`, "info");
+    }
+  });
 }
 
 frmClientes.onsubmit = function (e) {

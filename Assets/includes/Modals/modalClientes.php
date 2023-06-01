@@ -14,7 +14,10 @@
                                         <div class="col-md-6">
                                              <div class="form-group">
                                                   <label for="txtIdentificacion" class="control-label">Identificación</label>
-                                                  <input maxlength="10" class="form-control" id="txtIdentificacion" name="txtIdentificacion" type="text" placeholder="Digite y presione enter para buscar">
+                                                  <div class="input-group">
+                                                       <input type="text" class="form-control" id="txtIdentificacion" maxlength="10" placeholder="Número de indentificación">
+                                                       <button id="btnIdentificacion" class="btn btn-outline-secondary" type="button"><i class="fa fa-fw fa-lg fa-search"></i></button>
+                                                  </div>
                                              </div>
                                              <div class="form-group">
                                                   <label for="txtNombre" class="control-label">Nombre Completo</label>
