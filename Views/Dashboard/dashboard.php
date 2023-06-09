@@ -1,7 +1,7 @@
 <?= headerAdmin($data); ?>
 
 <!-- CONTENIDO PRICIPAL -->
-<main class="app-content animate__animated animate__lightSpeedInLeft ">
+<main class="app-content animate__animated animate__headShake">
      <div class="app-title">
           <div>
                <h1><i class="fa fa-dashboard"></i> <?= $data['page_name'] ?></h1>

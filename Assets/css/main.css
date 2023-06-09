@@ -3735,7 +3735,7 @@ input[type="button"].btn-block {
   float: left;
   min-width: 10rem;
   padding: 0 0;
-  margin: 0 0 0;
+  margin: 0.155rem 0 0;
   font-size: 0.875rem;
   color: #212529;
   text-align: left;
@@ -3934,7 +3934,7 @@ input[type="button"].btn-block {
   color: #16181b;
   opacity: 1;
   text-decoration: none;
-  background-color:var(--bg-color-info-light);
+  background-color: var(--bg-color-info-light);
 }
 
 .dropdown-item.active,
@@ -16507,12 +16507,12 @@ be a descendant of the grid when it is being dragged.
   padding: 12px 15px;
   font-size: 1.08em;
   border-left: 3px solid transparent;
-  -webkit-transition: border-left-color 0.3s ease,
+  /*-webkit-transition: border-left-color 0.3s ease,
     background-color 0.3s ease;
   -o-transition: border-left-color 0.3s ease,
     background-color 0.3s ease;
   transition: border-left-color 0.3s ease,
-    background-color 0.3s ease;
+    background-color 0.3s ease;*/
   color: var(--gray);
 }
 
@@ -16522,6 +16522,7 @@ be a descendant of the grid when it is being dragged.
   text-decoration: none;
   color: var(--white);
   background-color: var(--color-info-light);
+  border-radius: 30px;
 }
 
 .app-menu__icon {
@@ -18134,9 +18135,9 @@ be a descendant of the grid when it is being dragged.
 }
 
 .settings {
-  width: 40px;
-  padding: 3px;
-  margin-top: 6px;
+  width: 35px;
+  padding: 0px;
+  /* margin-top: 6px; */
   border-radius: 50% !important;
 }
 

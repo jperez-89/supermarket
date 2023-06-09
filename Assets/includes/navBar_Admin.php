@@ -1,14 +1,12 @@
 <!-- Sidebar menu-->
 <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
 <aside class="app-sidebar">
-     <div class="app-sidebar__user">
-          <img class="app-sidebar__user-avatar" src="<?= media(); ?>images/avatar.png" alt="User Image">
+     <!--<div class="app-sidebar__user">
+           <img class="app-sidebar__user-avatar" src="<?= media(); ?>images/avatar.png" alt="User Image">
           <div>
-               <!-- <p class="app-sidebar__user-name">
-               </p> -->
                <p id="RolUsuario" class="app-sidebar__user-designation"><?php echo $_SESSION['rol'] ?> </p>
           </div>
-     </div>
+          </div> -->
      <ul class="app-menu">
           <!-- DASHBOARD --------------------------------------- -->
           <li>
@@ -32,9 +30,17 @@
                          </a>
                     </li>
                     <li>
-                         <a class="treeview-item" href="<?= base_url() ?>facturacion/facturas"><i class="icon fa fa-circle-o"></i>Facturas</a>
+                         <a class="treeview-item" href="<?= base_url() ?>facturacion/facturas"><i class="icon fa fa-circle-o"></i>Ver Ventas</a>
                     </li>
                </ul>
+          </li>
+
+          <!-- CREDITOS --------------------------------------- -->
+          <li>
+               <a class="app-menu__item" href="<?= base_url() ?>creditos">
+                    <i class="app-menu__icon  fas fa-sack-dollar"></i>
+                    <span class="app-menu__label">Créditos</span>
+               </a>
           </li>
 
           <!-- CLIENTES --------------------------------------- -->

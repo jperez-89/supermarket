@@ -15,7 +15,7 @@
                                              <div class="form-group">
                                                   <label for="txtIdentificacion" class="control-label">Identificación</label>
                                                   <div class="input-group">
-                                                       <input type="text" class="form-control" id="txtIdentificacion" maxlength="10" placeholder="Número de indentificación">
+                                                       <input type="text" class="form-control" id="txtIdentificacion" name="txtIdentificacion" maxlength="10" placeholder="Número de indentificación">
                                                        <button id="btnIdentificacion" class="btn btn-outline-secondary" type="button"><i class="fa fa-fw fa-lg fa-search"></i></button>
                                                   </div>
                                              </div>

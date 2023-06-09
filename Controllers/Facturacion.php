@@ -8,7 +8,7 @@ class Facturacion extends Controllers
           if (!isset($_SESSION['login'])) {
                header('Location: ' . base_url() . 'login');
           }
-          
+
           // Ejecutar los metodos del Controllers
           parent::__construct();
      }
@@ -61,7 +61,10 @@ class Facturacion extends Controllers
                          $arrResponse = array('status' => true, 'data' => $arrdatos[0]);
                          break;
                }
+          } else {
+               $arrResponse = array('status' => false);
           }
+
           echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
           die();
      }
@@ -116,9 +119,9 @@ class Facturacion extends Controllers
      public function insertEncaFactura()
      {
           if (isset($_POST)) {
-               $tipoFactura = $_POST['tipoFactura'];
-               $tipoPago = $_POST['tipoPago'];
                $idCliente = $_POST['idCliente'];
+               $tipoFactura = $_POST['tipoDocumento'];
+               $tipoPago = $_POST['tipoPago'];
                $Subtotal = $_POST['Subtotal'];
                $iva = $_POST['iva'];
                $totalFactura = $_POST['totalFactura'];
@@ -146,12 +149,12 @@ class Facturacion extends Controllers
                if (!empty($data)) {
                     foreach ($data as $key => $value) {
                          $idVenta = $value['idVenta'];
-                         $codigo = $value['co'];
-                         $cantidad = $value['ca'];
-                         $preUnitario = $value['pUnit'];
-                         $subTotal = $value['sub'];
+                         $codigo = $value['codProducto'];
+                         $cantidad = $value['cantidadProducto'];
+                         $preUnitario = $value['precioUnit'];
+                         $subTotal = $value['subTotal'];
                          $iva = $value['iva'];
-                         $total = $value['tot'];
+                         $total = $value['total'];
 
                          $idProducto = FacturacionModel::selectProductoByCode($codigo);
 
@@ -172,9 +175,64 @@ class Facturacion extends Controllers
           die();
      }
 
+     public function insertFacturaCredito()
+     {
+          if (isset($_POST)) {
+               $idVenta = $_POST['idVenta'];
+
+               $arrdatos = FacturacionModel::setFacturaCredito($idVenta);
+
+               if ($arrdatos > 0) {
+                    $arrResponse = array('status' => true);
+               } else {
+                    $arrResponse = array('status' => false, 'msg' => 'No se logro guardar los datos');
+               }
+          } else {
+               $arrResponse = array('status' => false, 'msg' => 'Faltan datos');
+          }
+
+          echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+          die();
+     }
+
+     public function insertarComprobante()
+     {
+          if (isset($_POST)) {
+               $idVenta = intval($_POST['idVenta']);
+               $nComprobante = strClean($_POST['nComprobante']);
+
+               $arrdatos = FacturacionModel::setComprobante($idVenta, $nComprobante);
+
+               if ($arrdatos > 0) {
+                    $arrResponse = array('status' => true, 'msg' => 'Factura cancelada');
+               } else {
+                    $arrResponse = array('status' => false, 'msg' => 'No se logro guardar los datos');
+               }
+          } else {
+               $arrResponse = array('status' => false, 'msg' => 'Faltan datos');
+          }
+
+          echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+          die();
+     }
+
      public function getTipoDocumento()
      {
-          $arrdatos = $this->model->selectTipoDocumento();
+          $arrdatos = FacturacionModel::selectTipoDocumento();
+
+          if (empty($arrdatos)) {
+               $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados');
+          } else {
+               $arrResponse = array('status' => true, 'data' => $arrdatos);
+          }
+
+          echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+          die();
+     }
+
+     public function getTipoPago()
+     {
+          $arrdatos = FacturacionModel::selectTipoPago();
 
           if (empty($arrdatos)) {
                $arrResponse = array('status' => false, 'msg' => 'Datos no encontrados');
@@ -190,7 +248,7 @@ class Facturacion extends Controllers
      {
           if (isset($_POST)) {
                $idVenta = intval($_POST['idVenta']);
-               $tipoFactura = intval($_POST['tipoFactura']);
+               $tipoFactura = strClean($_POST['tipoFactura']);
 
                $Factura = FacturacionModel::selectFacturaById($idVenta);
 
@@ -276,6 +334,7 @@ class Facturacion extends Controllers
           die();
      }
 
+     // -------------------> Funciones Modulo Facturas <----------------------
      public function Facturas()
      {
           $data['page_title'] = "Supermarket - Facturas";
@@ -287,19 +346,24 @@ class Facturacion extends Controllers
 
      public function getFacturas()
      {
-          $arrdatos = FacturacionModel::SelectFacturas();
+          try {
+               $arrdatos = FacturacionModel::selectFacturas();
 
-          for ($i = 0; $i < count($arrdatos); $i++) {
-               if ($arrdatos[$i]['estado'] == 1) {
-                    // ESTADO
-                    $arrdatos[$i]['estado'] = '<div class=""> <span class="badge badge-success">Pagada</span> </div>';
+               for ($i = 0; $i < count($arrdatos); $i++) {
+                    if ($arrdatos[$i]['estado'] == 1) {
+                         // ESTADO
+                         $arrdatos[$i]['estado'] = '<div class=""> <span class="badge badge-success">Pagada</span> </div>';
+                    } else if ($arrdatos[$i]['estado'] == 0) {
+                         // ESTADO
+                         $arrdatos[$i]['estado'] = '<div class=""> <span class="badge badge-warning">Pendiente</span> </div>';
+                    }
 
                     // ACCIONES
                     $arrdatos[$i]['options'] = '<div class="">
-                                             <button onclick="fntVerVenta(' . $arrdatos[$i]['id'] . ')" class="btn btn-primary2" title:"Ver Factura">
+                                             <button data-target="#ModalDetalleFactura" data-toggle="modal" onclick = "fntVerDetalleFactura(' . $arrdatos[$i]['id'] . ')"  class="btn btn-primary2" title:"Ver Factura">
                                                   <i class="fas fa-eye"></i>
                                              </button>
-                                             <button onclick=verFactura("' . strClean($arrdatos[$i]['nfactura']) . '") class="btn btn-danger2" title:"Ver PDF">
+                                             <button onclick=verFacturaPDF("' . strClean($arrdatos[$i]['nfactura']) . '") class="btn btn-danger2" title:"Ver PDF">
                                                   <i class="far fa-file-pdf"></i>
                                              </button>
                                              <button onclick="fntReenviarFactura(' . $arrdatos[$i]['id'] . ')" class="btn btn-success2" title:"Reenviar Factura">
@@ -324,12 +388,25 @@ class Facturacion extends Controllers
                               $arrdatos[$i]['tipo_pago'] = 'Crédito';
                               break;
                     }
-               } else {
                }
-          }
 
-          echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
-          die();
+               echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
+               die();
+          } catch (\Throwable $th) {
+               throw $th;
+          }
+     }
+
+     public function getDetalleFactura($idFactura)
+     {
+          try {
+               $arrdatos = FacturacionModel::selectDetalleFactura($idFactura);
+
+               echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
+               die();
+          } catch (\Throwable $th) {
+               throw $th;
+          }
      }
 
      public function generarPDF()

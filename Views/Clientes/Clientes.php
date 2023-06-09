@@ -1,7 +1,7 @@
 <?= headerAdmin($data); ?>
 
 <!-- CONTENIDO PRICIPAL -->
-<main class="app-content animate__animated animate__lightSpeedInLeft ">
+<main class="app-content animate__animated animate__headShake ">
      <div class="app-title">
           <div class='flex-center'>
                <h1>

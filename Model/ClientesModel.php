@@ -58,7 +58,7 @@ class ClientesModel extends Crud
           INNER JOIN canton as can on can.Id = dis.idCanton 
           INNER JOIN provincia as pro on pro.Id = can.IdProvincia
           INNER JOIN regimen AS re ON re.id = cli.Regimen
-          WHERE cli.Id = $this->idCliente";
+          WHERE cli.Id = $this->idCliente OR cli.Identificacion = $this->idCliente";
           $resquest = $this->get_OneRegister($sql);
           return $resquest;
      }
@@ -88,9 +88,9 @@ class ClientesModel extends Crud
 
           if (empty($request)) {
                $query_insert = "INSERT INTO cliente (Identificacion, Nombre, Telefono, Email, idDistrito, Direccion, Actividad, Regimen, estadoHacienda, Status) VALUES(?,?,?,?,?,?,?,?,?,?)";
-               
+
                $arrData = array($this->identificacionCliente, $this->nombreCliente, $this->telefonoCliente, $this->emailCliente, $this->idDistrito, $this->direccionCliente, $this->actividadCliente, $this->regimenCliente, $this->estadoHacienda, 1);
-               
+
                $return = $this->Insert_Register($query_insert, $arrData);
           } else {
                $return = 0;

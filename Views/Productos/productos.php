@@ -1,7 +1,7 @@
 <?= headerAdmin($data); ?>
 
 <!-- CONTENIDO PRICIPAL -->
-<main class="app-content animate__animated animate__lightSpeedInLeft ">
+<main class="app-content animate__animated animate__headShake ">
      <div class="app-title">
           <div class="flex-center">
                <h1>
@@ -29,8 +29,8 @@
                                         <th>Medida</th>
                                         <th>Precio</th>
                                         <th>IVA</th>
-                                        <th>Cantidad</th>
-                                        <th>Mínimo</th>
+                                        <th>Existencia</th>
+                                        <th>Stock Mínimo</th>
                                         <th>Estado</th>
                                         <th>Acción</th>
                                    </tr>

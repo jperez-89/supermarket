@@ -29,11 +29,12 @@ class FacturacionModel extends Crud
                INNER JOIN provincia as pro on pro.Id = can.IdProvincia 
                WHERE cli.Nombre LIKE '$dato%' LIMIT 0, 2";
           } else if ($op == 'data') {
-               $sql = "SELECT cli.Id as id, cli.Identificacion, cli.Nombre, cli.Telefono, cli.Email, CONCAT(pro.NombreProvincia,', ', can.NombreCanton,', ', dis.nombreDistrito,', ', UPPER(cli.Direccion)) as Direccion 
+               $sql = "SELECT cli.Id as id, cli.Identificacion, cli.Nombre, cli.Telefono, cli.Email, CONCAT(pro.NombreProvincia,', ', can.NombreCanton,', ', dis.nombreDistrito,', ', UPPER(cli.Direccion)) as Direccion, IF(ISNULL(cre.montoCredito - (SELECT SUM(v.m_total) FROM venta v INNER JOIN cliente c ON c.id = v.idCliente WHERE v.idCliente = cre.idCliente AND estado = 0)), cre.montoCredito, cre.montoCredito - (SELECT SUM(v.m_total) FROM venta v INNER JOIN cliente c ON c.id = v.idCliente WHERE v.idCliente = cre.idCliente AND estado = 0))  AS creditoActual, cre.estado
                FROM cliente as cli 
                INNER JOIN distrito as dis on dis.Id = cli.idDistrito 
                INNER JOIN canton as can on can.Id = dis.idCanton 
                INNER JOIN provincia as pro on pro.Id = can.IdProvincia 
+               LEFT JOIN credito as cre on cre.idCliente = cli.Id
                WHERE cli.Id = $dato";
           }
 
@@ -78,11 +79,14 @@ class FacturacionModel extends Crud
           return $request;
      }
 
-     public static function setEncaFactura(int $tipoFactura, string $tipoPago, int $idCliente, float $subTotal, float $iva, float $totalFactura)
+     public static function setEncaFactura(string $tipoFactura, int $tipoPago, int $idCliente, float $subTotal, float $iva, float $totalFactura)
      {
           $crud = new Crud();
+
+          $idFactura = self::selectTipoDocumentoByCodigo($tipoFactura);
+
           $query_insert = "INSERT INTO venta (tipo_factura, tipo_pago, idCliente, m_subtotal, m_iva, m_total) VALUES(?,?,?,?,?,?)";
-          $arrData = array($tipoFactura, $tipoPago, $idCliente, $subTotal, $iva, $totalFactura);
+          $arrData = array($idFactura, $tipoPago, $idCliente, $subTotal, $iva, $totalFactura);
 
           $return = $crud->Insert_Register($query_insert, $arrData);
 
@@ -104,6 +108,30 @@ class FacturacionModel extends Crud
           } else {
                $request = 0;
           }
+
+          return $request;
+     }
+
+     public static function setComprobante(int $idVenta, string $nComprobante,)
+     {
+          $crud = new Crud();
+
+          $query_insert = "INSERT INTO comprobante_pago (idVenta, nComprobante, estado) VALUES(?,?,?)";
+          $arrData = array($idVenta, $nComprobante, 1);
+
+          $return = $crud->Insert_Register($query_insert, $arrData);
+
+          return $return;
+     }
+
+     public static function setFacturaCredito(int $idVenta)
+     {
+          $crud = new Crud();
+
+          $sql = "UPDATE venta SET estado = ? WHERE id = $idVenta";
+          $arrData = array(0);
+
+          $request = $crud->update_Register($sql, $arrData);
 
           return $request;
      }
@@ -196,10 +224,29 @@ class FacturacionModel extends Crud
           return $request;
      }
 
-     public function selectTipoDocumento()
+     public static function selectTipoDocumento()
      {
-          $sql = "SELECT id, nombre FROM tipo_documento";
-          $request = $this->get_AllRegister($sql);
+          $crud = new Crud();
+          $sql = "SELECT codigo, nombre FROM tipo_documento";
+          $request = $crud->get_AllRegister($sql);
+
+          return $request;
+     }
+
+     public static function selectTipoDocumentoByCodigo(string $codigo)
+     {
+          $crud = new Crud();
+          $sql = "SELECT id FROM tipo_documento WHERE codigo = $codigo";
+          $request = $crud->get_OneRegister($sql);
+
+          return $request['id'];
+     }
+
+     public static function selectTipoPago()
+     {
+          $crud = new Crud();
+          $sql = "SELECT id, nombre, estado FROM tipo_pago";
+          $request = $crud->get_AllRegister($sql);
 
           return $request;
      }
@@ -214,12 +261,29 @@ class FacturacionModel extends Crud
           return $request;
      }
 
-     public static function SelectFacturas()
+     // -------------------> Funciones Modulo Facturas <----------------------
+     public static function selectFacturas()
      {
           $crud = new Crud();
 
-          $sql = "SELECT v.id, v.fecha, v.nfactura, td.nombre AS tipo_factura, v.tipo_pago, v.m_total, v.estado FROM venta v
-          INNER JOIN tipo_documento td ON td.id = v.tipo_factura";
+          $sql = "SELECT v.id, v.fecha, v.nfactura, td.nombre AS tipo_factura, tp.nombre AS tipo_pago, v.m_total, v.estado, c.identificacion, c.nombre FROM venta v
+           INNER JOIN cliente c ON c.id = v.idCliente
+          INNER JOIN tipo_documento td ON td.id = v.tipo_factura
+          INNER JOIN tipo_pago tp ON tp.id = v.tipo_pago";
+          $request = $crud->get_AllRegister($sql);
+
+          return $request;
+     }
+
+     public static function selectDetalleFactura(int $idFactura)
+     {
+          $crud = new Crud();
+
+          $sql = "SELECT p.name, vd.cantidad, vd.preUnitario, vd.subtotal, vd.iva, vd.total
+          FROM venta_detalle vd
+          INNER JOIN venta v ON v.id = vd.idFactura
+          INNER JOIN producto p ON p.id = vd.idProducto
+          WHERE v.id = $idFactura";
           $request = $crud->get_AllRegister($sql);
 
           return $request;
@@ -229,31 +293,14 @@ class FacturacionModel extends Crud
      {
           $crud = new Crud();
 
-          $sql = "SELECT c.Identificacion, c.Nombre AS NombreCliente, c.Email, c.Telefono, v.id, v.fecha, v.nfactura, v.tipo_pago, v.estado, td.nombre AS TipoDocumento, v.m_subtotal, v.m_iva, v.m_total 
+          $sql = "SELECT c.Identificacion, c.Nombre AS NombreCliente, c.Email, c.Telefono, v.id, v.fecha, v.nfactura, UCASE(tp.nombre) AS tipo_pago, v.estado, td.nombre AS TipoDocumento, v.m_subtotal, v.m_iva, v.m_total 
           FROM venta v 
           INNER JOIN cliente c ON c.Id = v.idCliente
           INNER JOIN tipo_documento td ON td.id = v.tipo_factura
+          INNER JOIN tipo_pago tp ON tp.id = v.tipo_pago
           WHERE v.id = $idVenta OR v.nfactura = '$idVenta'";
 
           $request = $crud->get_OneRegister($sql);
-
-          switch ($request['tipo_pago']) {
-               case 'E':
-                    $tipo_pago = 'EFECTIVO';
-                    break;
-
-               case 'T':
-                    $tipo_pago = 'TARJETA';
-                    break;
-
-               case 'S':
-                    $tipo_pago = 'SINPE';
-                    break;
-
-               case 'C':
-                    $tipo_pago = 'CREDITO';
-                    break;
-          }
 
           if ($request['estado']) {
                $condicion = 'CANCELADO';
@@ -336,7 +383,7 @@ class FacturacionModel extends Crud
           $pdf->SetFont('Arial', '', 7);
           $pdf->Cell(1, 3, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", 0, 1, 'L');
           $pdf->Cell(22, 4, 'FORMA PAGO:', 0, 0, 'R');
-          $pdf->Cell(20, 4, mb_convert_encoding($tipo_pago, "UTF-8"), 0, 0, 'L');
+          $pdf->Cell(20, 4, mb_convert_encoding($request['tipo_pago'], "UTF-8"), 0, 0, 'L');
           $pdf->Cell(16, 4, 'CONDICION:', 0, 0, 'L');
           $pdf->Cell(5, 4, mb_convert_encoding($condicion, "UTF-8"), 0, 1, 'L');
           $pdf->Cell(22, 4, 'PAGA CON:', 0, 0, 'R');

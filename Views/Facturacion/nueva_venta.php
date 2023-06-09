@@ -1,7 +1,7 @@
 <?= headerAdmin($data); ?>
 
 <!-- CONTENIDO PRICIPAL -->
-<main class="app-content animate__animated animate__lightSpeedInLeft ">
+<main class="app-content animate__animated animate__headShake">
      <div class="app-title">
           <div>
                <h1>
@@ -96,116 +96,75 @@
           <div class="col-md-3">
                <div class="card tile">
                     <div class="text-center">
-                         <h1 class="text-center">TOTAL FACTURA</h1>
-                         <h1 id="totalFacturaLbl" class="text-center">0.00</h1>
+                         <h1 class="text-center text-uppercase">Total Factura </h1>
+                         <h1 id="totalFacturaLbl" class="text-center mt-0">0.00</h1>
                     </div>
-                    <input type="hidden" name="idCliente" id="idCliente" value="">
-                    <div class="form-floating">
-                         <input type="text" class="form-control" id="Identificacion" name="Identificacion" autocomplete="off" placeholder="No digite guiones ni espacios" maxlength="10" value="">
-                         <label for="Identificacion">Identificación</label>
-                         <ul class="list1" id="listaIdentificacion" style="display: none;"></ul>
-                    </div>
-                    <div class="form-floating">
-                         <input id="Nombre" type="text" class="form-control" name="Nombre" placeholder=" ">
-                         <label for="Nombre">Nombre</label>
-                         <ul class="list1" id="listaNombre" style="display: none;"></ul>
-                    </div>
-                    <div class="form-floating">
-                         <input disabled id="Email" type="text" class="form-control" name="Email" placeholder=" ">
-                         <label for="Email">Email</label>
-                    </div>
-                    <div class="mt-3">
-                         <div class="row">
-                              <div class="col-md-12">
-                                   <label for="tipoDocumento">TIPO DOCUMENTO</label>
-                                   <select class="custom-select" name="tipoDocumento" id="tipoDocumento">
-                                   </select>
+                    <form id="frmFacturacion" method="post">
+                         <input type="hidden" name="idCliente" id="idCliente" value="">
+                         <div class="form-floating mb-1">
+                              <input type="text" class="form-control" id="Identificacion" name="Identificacion" autocomplete="off" placeholder="No digite guiones ni espacios" maxlength="10" value="">
+                              <label for="Identificacion">Identificación</label>
+                              <ul class="list1" id="listaIdentificacion" style="display: none;"></ul>
+                         </div>
+                         <div class="form-floating mb-1">
+                              <input id="Nombre" type="text" class="form-control" name="Nombre" placeholder=" ">
+                              <label for="Nombre">Nombre</label>
+                              <ul class="list1" id="listaNombre" style="display: none;"></ul>
+                         </div>
+                         <div class="form-floating">
+                              <input disabled id="Email" type="text" class="form-control" name="Email" placeholder=" " autocomplete="off">
+                              <label for="Email">Email</label>
+                         </div>
+                         <div class="mt-3">
+                              <div class="row">
+                                   <div class="col-md-12">
+                                        <label for="tipoDocumento text-uppercase">Tipo Documento</label>
+                                        <select class="custom-select" name="tipoDocumento" id="tipoDocumento">
+                                        </select>
+                                   </div>
+                              </div>
+                              <div class="row mt-2">
+                                   <div class="col-md-12">
+                                        <label for="tipoPago text-uppercase">Tipo Pago</label>
+                                        <select id="tipoPago" name="tipoPago" class="custom-select form-control">
+                                        </select>
+                                   </div>
                               </div>
                          </div>
-                         <div class="row mt-2">
-                              <div class="col-md-12">
-                                   <label for="tipoPago">TIPO PAGO</label>
-                                   <select id="tipoPago" name="tipoPago" class="custom-select form-control">
-                                        <option value="E" selected>Efectivo</option>
-                                        <option value="T">Tarjeta</option>
-                                        <option value="S">Sinpe</option>
-                                        <option value="C">Crédito</option>
-                                   </select>
-                              </div>
-                         </div>
-                    </div>
 
-                    <div class="justify-content-between">
-                         <div class="row mt-4">
-                              <div class="col-md-4">
-                                   <div class="form-floating">
-                                        <input type="text" class="form-control" name="Subtotal" id="Subtotal" placeholder=" " disabled>
-                                        <label class="text-align-right" for="Subtotal">Subtotal</label>
+                         <div class="justify-content-between">
+                              <div class="row mt-4">
+                                   <div class="col-md-4">
+                                        <div class="form-floating">
+                                             <input type="text" class="form-control text-right" name="Subtotal1" id="Subtotal1" placeholder=" " disabled>
+                                             <label for="Subtotal1" class="text-align-right text-uppercase">SubTotal</label>
+                                             <input class="text-align-right" type="hidden" name="Subtotal" id="Subtotal" value="">
+                                        </div>
                                    </div>
-                              </div>
-                              <div class="col-md-4">
-                                   <div class="form-floating">
-                                        <input type="text" class="form-control" name="iva" id="iva" placeholder=" " disabled>
-                                        <label for="iva">IVA</label>
+                                   <div class="col-md-4">
+                                        <div class="form-floating">
+                                             <input type="text" class="form-control text-right" name="iva1" id="iva1" placeholder=" " disabled>
+                                             <label for="iva1" class="text-uppercase">iva</label>
+                                             <input class="text-align-right" type="hidden" name="iva" id="iva" value="">
+                                        </div>
                                    </div>
-                              </div>
-                              <div class="col-md-4">
-                                   <div class="form-floating ">
-                                        <input type="text" class="form-control" name="totalFactura" id="totalFactura" placeholder=" " disabled>
-                                        <label for="totalFactura" class="">Total</label>
+                                   <div class="col-md-4">
+                                        <div class="form-floating">
+                                             <input type="text" class="form-control text-right" name="totalFactura1" id="totalFactura1" placeholder=" " disabled>
+                                             <label for="totalFactura1" class="text-uppercase">Total</label>
+                                             <input type="hidden" name="totalFactura" id="totalFactura" value="">
+                                        </div>
                                    </div>
                               </div>
                          </div>
-                    </div>
-                    <div class="pt-3">
-                         <button style="height: calc(3rem + 2px);" class="btn btn-primary2 btn-block" id="btnFacturar">
-                              Facturar
-                         </button>
-                    </div>
+                         <div class="pt-3">
+                              <button style="height: calc(3rem + 2px);" class="btn btn-primary2 btn-block text-uppercase" id="btnFacturar">Facturar</button>
+                         </div>
+                    </form>
                </div>
           </div>
      </div>
 </main>
-
-
-<!-- DATOS CLIENTE -->
-<!-- <div class="row mb-2">
-                         <div class="col-md-4">
-                              <input type="hidden" name="idCliente" id="idCliente" value="">
-                              <div class="form-floating">
-                                   <input type="text" class="form-control" id="Identificacion" name="Identificacion" autocomplete="off" placeholder="No digite guiones ni espacios" maxlength="10" value="">
-                                   <label for="Identificacion">Identificación</label>
-                              </div>
-                              <ul class="list1" id="listaIdentificacion" style="display: none;"></ul>
-                         </div>
-                         <div class="col-md-8">
-                              <div class="form-floating">
-                                   <input type="text" class="form-control" id="Nombre" name="Nombre" autocomplete="off" placeholder="Nombre" value="">
-                                   <label for="Nombre">Nombre</label>
-                              </div>
-                              <ul class="list1" id="listaNombre" style="display: none;"></ul>
-                         </div>
-                    </div> -->
-<!-- <div class="row">
-                         <div class="col-md-3">
-                              <div class="form-floating">
-                                   <input type="text" class="form-control" name="Telefono" id="Telefono" placeholder=" " disabled>
-                                   <label for="Telefono">Teléfono</label>
-                              </div>
-                         </div>
-                         <div class="col-md-3">
-                              <div class="form-floating">
-                                   <input type="text" class="form-control" name="Email" id="Email" placeholder=" " disabled>
-                                   <label for="Email">Email</label>
-                              </div>
-                         </div>
-                         <div class="col-md-6">
-                              <div class="form-floating">
-                                   <textarea class="form-control" name="Direccion" id="Direccion" cols="20" rows="3" placeholder=" " disabled></textarea>
-                                   <label for="Direccion">Dirección</label>
-                              </div>
-                         </div>
-                    </div> -->
 
 <?=
 footerAdmin($data);

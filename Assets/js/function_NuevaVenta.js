@@ -1,3 +1,4 @@
+//#region Declaraciones
 const Identificacion = document.querySelector("#Identificacion");
 const Nombre = document.querySelector("#Nombre");
 const NombreProducto = document.querySelector("#nombreProducto");
@@ -5,47 +6,47 @@ const txtCodigo = document.querySelector("#txtCodigo");
 var listaIdentificacion = document.getElementById('listaIdentificacion');
 var listaNombre = document.getElementById('listaNombre');
 var listaProductos = document.getElementById('listaProductos');
+var select_TipoDocumento = document.querySelector('#tipoDocumento');
+var select_TipoPago = document.querySelector('#tipoPago');
 const btnAgregarProducto = document.querySelector("#btnAgregarProducto");
-var NuevaCantidad = 0, NuevoSubtotal = 0, existe = false, CantExistente = 0, cantidad = 0, precio = 0, iva = 0, subTotal = 0, total = 0, miva = 0, DatosTabla, idProducto, cfilas = 0, idFactura, tipoFactura = 3, codigo;
-
-window.onload = function () {
-     FechaActual();
-     getTipoDocumento()
-     $("#txtCodigo").focus();
-     MostrarCliente(2, 'data')
-};
+var NuevaCantidad = 0, NuevoSubtotal = 0, existe = false, CantExistente = 0, cantidad = 0, precio = 0, iva = 0, subTotal = 0, total = 0, miva = 0, DatosTabla, idProducto, cfilas = 0, idFactura, tipoFactura, tipoPago, codigo, infoTable, creditoActual = 0, estadoCredito;
 
 var tabla = $("#tblFactura").dataTable({
      retrieve: true,
      paging: false,
      searching: false,
-     // "language": {
-     //      "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
-     // },
+     dom: "",
      'language': {
-          // "lengthMenu": "Mostrar _MENU_ registros por página",
-          // "search": "Buscar:",
-          "sEmptyTable": "",
-          "sInfo": " ", // Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros
-          "infoEmpty": " ",
+          //      // "lengthMenu": "Mostrar _MENU_ registros por página",
+          //      // "search": "Buscar:",
+          // "sEmptyTable": "",
+          //      "sInfo": " ", // Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros
+          //      "infoEmpty": " ",
           "zeroRecords": " ",
-          "oPaginate": {
-               "sFirst": "Primero",
-               "sLast": "Ultimo",
-               "sNext": "Siguiente",
-               "sPrevious": "Anterior",
-          }
+          //      "oPaginate": {
+          //           "sFirst": "Primero",
+          //           "sLast": "Ultimo",
+          //           "sNext": "Siguiente",
+          //           "sPrevious": "Anterior",
+          //      }
      }
 });
+//#endregion
 
-//#region Buscar Cliente
+window.onload = function () {
+     // $("#txtCodigo").focus();
+     FechaActual();
+     getTipoDocumento()
+     getTipoPago()
+     MostrarCliente(2, 'data')
+};
+
+//#region -----------------> BUSCAR CLIENTE POR NOMBRE O IDENTIFICACION <-------------------------
 Identificacion.onkeyup = (e) => {
      if (e.key.length != 9) {
           if (e.key.length != 1 || 1 + e.key.search(/^[0-9]/)) {
 
                if (Identificacion.value.length >= 1) {
-                    Nombre.setAttribute("disabled", "true");
-
                     const url = `${base_url}facturacion/getCliente`;
                     const datos = new FormData();
                     datos.append('op', 'i');
@@ -54,6 +55,7 @@ Identificacion.onkeyup = (e) => {
                     const response = fnt_Fetch(url, 'post', datos);
                     response.then((info) => {
                          if (info.status) {
+                              Nombre.setAttribute("disabled", "true");
                               listaIdentificacion.innerHTML = info.data;
                               listaIdentificacion.style.display = 'block';
                          }
@@ -64,9 +66,7 @@ Identificacion.onkeyup = (e) => {
           Nombre.removeAttribute("disabled", "true");
           Identificacion.removeAttribute("disabled", "true");
           document.querySelector("#Nombre").value = "";
-          // document.querySelector("#Telefono").value = "";
           document.querySelector("#Email").value = "";
-          // document.querySelector("#Direccion").value = "";
           listaIdentificacion.style.display = 'none';
           listaNombre.style.display = 'none';
      }
@@ -77,8 +77,6 @@ Nombre.onkeyup = (e) => {
           if (e.key.length != 1 || 1 + e.key.search(/^[a-zA-Z]/)) {
 
                if (Nombre.value.length >= 2) {
-                    Identificacion.setAttribute("disabled", "true");
-
                     const url = `${base_url}facturacion/getCliente`;
                     const datos = new FormData();
                     datos.append('op', 'n');
@@ -87,6 +85,7 @@ Nombre.onkeyup = (e) => {
                     const response = fnt_Fetch(url, 'post', datos);
                     response.then((info) => {
                          if (info.status) {
+                              Identificacion.setAttribute("disabled", "true");
                               listaNombre.innerHTML = info.data;
                               listaNombre.style.display = 'block';
                          }
@@ -120,12 +119,11 @@ function MostrarCliente(dato, op) {
                document.querySelector("#idCliente").value = info.data.id;
                document.querySelector("#Identificacion").value = info.data.Identificacion;
                document.querySelector("#Nombre").value = info.data.Nombre;
-               // document.querySelector("#Telefono").value = info.data.Telefono;
                var telef = info.data.Telefono;
                document.querySelector("#Email").value = info.data.Email;
-               // document.querySelector("#Direccion").value = info.data.Direccion;
                var direc = info.data.Direccion;
-
+               creditoActual = info.data.creditoActual;
+               estadoCredito = info.data.estado;
           } else {
                swal('', info.msg, "info");
           }
@@ -133,8 +131,7 @@ function MostrarCliente(dato, op) {
 }
 //#endregion
 
-//#region Buscar Producto
-//Arma el select del cliente
+//#region -----------------> BUSCAR PRODUCTOS POR NOMBRE O CODIGO <-------------------------
 NombreProducto.onkeyup = (e) => {
      if (e.key.length != 9) {
           if (e.key.length != 1 || 1 + e.key.search(/^[a-zA-Z]/)) {
@@ -159,7 +156,6 @@ NombreProducto.onkeyup = (e) => {
      }
 }
 
-//Muestra los datos del producto en los inputs
 function MostrarProducto(dato, op) {
      const url = `${base_url}facturacion/getProducto`;
      const datos = new FormData();
@@ -182,101 +178,6 @@ function MostrarProducto(dato, op) {
                swal('', info.msg, 'info');
           }
      });
-}
-//#endregion
-
-//#region Agregar datos a la tabla
-btnAgregarProducto.onclick = function () {
-     codigo = document.querySelector("#codigo").value;
-     cantidad = document.querySelector("#Cantidad").value;
-     precio = document.querySelector("#Precio").value;
-     let stock = parseInt($('#Stock').val());
-
-     if (codigo == '') {
-          $("#nombreProducto").focus();
-          swal("", "Debe agregar un producto", "error");
-          return false;
-     } else if (cantidad == '') {
-          $("#Cantidad").focus();
-          swal("", "Agregar cantidad válida", "error");
-          return false;
-     } else if (stock < cantidad) {
-          swal('', `Solo hay ${stock} en existencia`, "info");
-          return false;
-     }
-
-     // ------------ PROCESO EN CASO DE QUE SEA EL PRIMER PRODUCTO ------------------------------
-     if (cfilas == 0) {
-
-          CalcularTotalLinea(Number(precio), Number(cantidad));
-          cfilas += 1;
-          AgregarLinea(tabla, cfilas, codigo, cantidad, NombreProducto.value, precio, subTotal, miva, total);
-     }
-     // ------------ PROCESO EN CASO DE QUE YA EXISTA EL PRODUCTO -------------------------------
-     else {
-          // infoTable = tabla.fnGetNodes();
-          // for (let i = 0; i < infoTable.length; i++) {
-          //      if (infoTable[i].cells[1].innerHTML == codigo) {
-          //           existe = true;
-          //           var CantExistente = infoTable[i].cells[2].childNodes[0].children.cantidadT.value;
-          //           nfila = i;
-          //           break;
-          //      }
-          // };
-
-          // BUSCAR SI EXISTE EL CODIGO
-          // for (var i = 0; i < cfilas; i++) {
-          //      // Vamos obteniendo los datos de la fila
-          //      DatosTabla = tabla.fnGetData(i);
-          //      //Validamos si el codigo a ingresar existe
-          //      if (DatosTabla[1] == codigo) {
-          //           existe = true;
-          //           var CantExistente = $("#cantidadT").val();  //DatosTabla[1];
-          //           nfila = i;
-          //           break;
-          //      }
-          // }
-          // ------------ SI EXISTE EL CODIGO SE ACTUALIZA LAS CANTIDADES Y TOTALES DE LINEA -------------------------------
-          if (buscarCodigo(tabla, codigo)) {
-               NuevaCantidad = Number(CantExistente) + Number(cantidad);
-               tabla.fnUpdate(`<div class="w-100"><input name="cantidadT" id="cantidadT" type="number" value="${NuevaCantidad}" min="1" class="form-control text-center" ></div>`, nfila, 2, 0, false);
-
-               NuevoIva = (precio * porceIva) * NuevaCantidad;
-               tabla.fnUpdate(Number.parseFloat(NuevoIva).toFixed(2), nfila, 6, 0, false);
-
-               NuevoSubtotal = (precio * NuevaCantidad);
-               tabla.fnUpdate(Number.parseFloat(NuevoSubtotal).toFixed(2), nfila, 5, 0, false);
-
-               NuevoTotal = NuevoSubtotal + NuevoIva;
-               tabla.fnUpdate(Number.parseFloat(NuevoTotal).toFixed(2), nfila, 7, 0, false);
-               /* Dato, nfila, ncolumna, 0, false */
-
-               // se cambia a falso por que en el if del for no se implemento el else, para que no se ejecute tantas veces por si no se valida el if
-               existe = false;
-          }
-          // ------------ SI NO EXISTE EL CODIGO DEL PRODUCTO, AGREGA LA INFORMACION A LA TABLA ----------------------
-          else {
-               CalcularTotalLinea(Number(precio), Number(cantidad));
-               cfilas += 1;
-               AgregarLinea(tabla, cfilas, codigo, cantidad, NombreProducto.value, precio, subTotal, miva, total);
-          }
-     }
-     $("#nombreProducto").focus();
-     LimpiarCampos();
-     CalcularTotales(tabla, cfilas);
-};
-
-function buscarCodigo(tabla, codigo) {
-     infoTable = tabla.fnGetNodes();
-     for (let i = 0; i < infoTable.length; i++) {
-          if (infoTable[i].cells[1].innerHTML == codigo) {
-               existe = true;
-               CantExistente = infoTable[i].cells[2].childNodes[0].children.cantidadT.value;
-               nfila = i;
-               break;
-          }
-     };
-     return existe;
 }
 
 $('#txtCodigo').change(function (e) {
@@ -335,6 +236,78 @@ $('#txtCodigo').change(function (e) {
           }
      });
 });
+//#endregion
+
+//#region -----------------> AGREGAR DATOS A LA TABLA <-------------------------
+btnAgregarProducto.onclick = function () {
+     codigo = document.querySelector("#codigo").value;
+     cantidad = document.querySelector("#Cantidad").value;
+     precio = document.querySelector("#Precio").value;
+     let stock = parseInt($('#Stock').val());
+
+     if (codigo == '') {
+          $("#nombreProducto").focus();
+          swal("", "Debe agregar un producto", "error");
+          return false;
+     } else if (cantidad == '') {
+          $("#Cantidad").focus();
+          swal("", "Agregar cantidad válida", "error");
+          return false;
+     } else if (stock < cantidad) {
+          swal('', `Solo hay ${stock} en existencia`, "info");
+          return false;
+     }
+
+     // ------------ PROCESO EN CASO DE QUE SEA EL PRIMER PRODUCTO ------------------------------
+     if (cfilas == 0) {
+          CalcularTotalLinea(Number(precio), Number(cantidad));
+          cfilas += 1;
+          AgregarLinea(tabla, cfilas, codigo, cantidad, NombreProducto.value, precio, subTotal, miva, total);
+     }
+     // ------------ PROCESO EN CASO DE QUE YA EXISTA EL PRODUCTO -------------------------------
+     else {
+          // ------------ SI EXISTE EL CODIGO SE ACTUALIZA LAS CANTIDADES Y TOTALES DE LINEA -------------------------------
+          if (buscarCodigo(tabla, codigo)) {
+               NuevaCantidad = Number(CantExistente) + Number(cantidad);
+               tabla.fnUpdate(`<div class="w-100"><input name="cantidadT" id="cantidadT" type="number" value="${NuevaCantidad}" min="1" class="form-control text-center" ></div>`, nfila, 2, 0, false);
+
+               NuevoIva = (precio * porceIva) * NuevaCantidad;
+               tabla.fnUpdate(Number.parseFloat(NuevoIva).toFixed(2), nfila, 6, 0, false);
+
+               NuevoSubtotal = (precio * NuevaCantidad);
+               tabla.fnUpdate(Number.parseFloat(NuevoSubtotal).toFixed(2), nfila, 5, 0, false);
+
+               NuevoTotal = NuevoSubtotal + NuevoIva;
+               tabla.fnUpdate(Number.parseFloat(NuevoTotal).toFixed(2), nfila, 7, 0, false);
+               /* Dato, nfila, ncolumna, 0, false */
+
+               // se cambia a falso por que en el if del for no se implemento el else, para que no se ejecute tantas veces por si no se valida el if
+               existe = false;
+          }
+          // ------------ SI NO EXISTE EL CODIGO DEL PRODUCTO, AGREGA LA INFORMACION A LA TABLA ----------------------
+          else {
+               CalcularTotalLinea(Number(precio), Number(cantidad));
+               cfilas += 1;
+               AgregarLinea(tabla, cfilas, codigo, cantidad, NombreProducto.value, precio, subTotal, miva, total);
+          }
+     }
+     $("#nombreProducto").focus();
+     LimpiarCampos();
+     CalcularTotales(tabla, cfilas);
+};
+
+function buscarCodigo(tabla, codigo) {
+     infoTable = tabla.fnGetNodes();
+     for (let i = 0; i < infoTable.length; i++) {
+          if (infoTable[i].cells[1].innerHTML == codigo) {
+               existe = true;
+               CantExistente = infoTable[i].cells[2].childNodes[0].children.cantidadT.value;
+               nfila = i;
+               break;
+          }
+     };
+     return existe;
+}
 
 function AgregarLinea(tabla, cfilas, codigo, cantidad, NombreProducto, precio, subTotal, miva, total) {
      tabla.fnAddData([
@@ -351,7 +324,7 @@ function AgregarLinea(tabla, cfilas, codigo, cantidad, NombreProducto, precio, s
 }
 //#endregion
 
-//#region Funciones de la tabla
+//#region -----------------> FUNCIONES DE LA TABLA <-------------------------
 $(document).on('change', '#cantidadT', function (e) {
      e.preventDefault();
      // obtener la fila a editar
@@ -380,8 +353,17 @@ $(document).on('change', '#cantidadT', function (e) {
                     tabla.fnUpdate(total.toFixed(2), nFila, 7, 0, false);
 
                     CalcularTotales(tabla, cfilas);
+
+                    if (select_TipoPago.value == 4) {
+                         validaCredito();
+                    }
                } else {
                     tabla.fnUpdate(`<div class="w-100"><input name="cantidadT" id="cantidadT" type="number" value="${parseInt(info.data.cantidad)}" min="1" class="form-control text-center"></div>`, nFila, 2, 0, false);
+
+                    if (select_TipoPago.value == 4) {
+                         validaCredito();
+                    }
+
                     swal('', `Solo hay ${parseInt(info.data.cantidad)} en existencia`, "info");
                }
           } else {
@@ -434,10 +416,11 @@ $(document).on('click', '#btnEliminarLinea', function (e) {
      cfilas -= 1;
 
      CalcularTotales(tabla, cfilas);
+     validaCredito();
 });
 //#endregion
 
-//#region Calculos
+//#region -----------------> CALCULOS <-------------------------
 function CalcularTotalLinea(precio, cantidad) {
      miva = (precio * porceIva) * cantidad;
      subTotal = precio * cantidad;
@@ -458,14 +441,16 @@ function CalcularTotales(tabla, cfilas) {
      }
 
      document.querySelector("#Subtotal").value = Number.parseFloat(SubTotal).toFixed(2);
+     document.querySelector("#Subtotal1").value = Number.parseFloat(SubTotal).toFixed(2);
      document.querySelector("#iva").value = Number.parseFloat(SubTotalIVA).toFixed(2);
+     document.querySelector("#iva1").value = Number.parseFloat(SubTotalIVA).toFixed(2);
      document.querySelector("#totalFactura").value = Number.parseFloat(TotalFactura).toFixed(2);
-     // document.querySelector("#totalFacturaLbl").innerHTML = Number.parseFloat(TotalFactura).toFixed(2);
+     document.querySelector("#totalFactura1").value = Number.parseFloat(TotalFactura).toFixed(2);
      document.querySelector("#totalFacturaLbl").innerHTML = Math.round(TotalFactura).toFixed(2);
 }
 //#endregion
 
-//#region Otras funciones
+//#region -----------------> OTRAS FUNCIONES <-------------------------
 function getTipoDocumento() {
      const url = `${base_url}facturacion/getTipoDocumento`
      const response = fnt_Fetch(url);
@@ -474,12 +459,32 @@ function getTipoDocumento() {
                arrTipoDoc = res.data;
 
                for (let i = 0; i < arrTipoDoc.length; i++) {
-                    tipoDocumento.options[i] = new Option(
+                    select_TipoDocumento.options[i] = new Option(
+                         arrTipoDoc[i]["nombre"],
+                         arrTipoDoc[i]["codigo"]
+                    );
+               }
+               select_TipoDocumento.options[2].defaultSelected = true;
+          } else {
+               swal('', res.msg, "error");
+          }
+     });
+}
+
+function getTipoPago() {
+     const url = `${base_url}facturacion/getTipoPago`
+     const response = fnt_Fetch(url);
+     response.then((res) => {
+          if (res.status) {
+               arrTipoDoc = res.data;
+
+               for (let i = 0; i < arrTipoDoc.length; i++) {
+                    select_TipoPago.options[i] = new Option(
                          arrTipoDoc[i]["nombre"],
                          arrTipoDoc[i]["id"]
                     );
                }
-               tipoDocumento.options[2].defaultSelected = true;
+               select_TipoPago.options[0].defaultSelected = true;
           } else {
                swal('', res.msg, "error");
           }
@@ -494,46 +499,35 @@ function LimpiarCampos() {
      document.querySelector("#Stock").value = '';
 }
 
-var chkEstadoEfectivo = false, chkEstadoTarjeta = false, chkEstadoCredito = false;
-$(document).on('click', '#chkEfectivo', function (e) {
-     if (!chkEstadoEfectivo) {
-          document.querySelector("#chkTarjeta").setAttribute('disabled', '');
-          document.querySelector("#chkCredito").setAttribute('disabled', '');
-          chkEstadoEfectivo = true;
-     } else {
-          document.querySelector("#chkTarjeta").removeAttribute('disabled');
-          document.querySelector("#chkCredito").removeAttribute('disabled');
-          chkEstadoEfectivo = false;
-     }
-})
+$('#tipoPago').on('change', (e) => {
+     tipoPago = e.target.value;
 
-$(document).on('click', '#chkTarjeta', function (e) {
-     if (!chkEstadoTarjeta) {
-          document.querySelector("#chkEfectivo").setAttribute('disabled', '');
-          document.querySelector("#chkCredito").setAttribute('disabled', '');
-          chkEstadoTarjeta = true;
+     if (tipoPago == 4) {
+          validaCredito();
      } else {
-          document.querySelector("#chkEfectivo").removeAttribute('disabled');
-          document.querySelector("#chkCredito").removeAttribute('disabled');
-          chkEstadoTarjeta = false;
-     }
-})
-
-$(document).on('click', '#chkCredito', function (e) {
-     if (!chkEstadoCredito) {
-          document.querySelector("#chkEfectivo").setAttribute('disabled', '');
-          document.querySelector("#chkTarjeta").setAttribute('disabled', '');
-          chkEstadoCredito = true;
-     } else {
-          document.querySelector("#chkEfectivo").removeAttribute('disabled');
-          document.querySelector("#chkTarjeta").removeAttribute('disabled');
-          chkEstadoCredito = false;
+          document.querySelector('#btnFacturar').removeAttribute('disabled');
      }
 });
 
-$('#tipoDocumento').on('change', (e) => {
-     tipoFactura = e.target.value;
-});
+function validaCredito() {
+     if (Number(creditoActual) == "" || estadoCredito == 0) {
+          swal('', `El cliente no tiene crédito disponible`, "warning");
+          document.querySelector('#btnFacturar').setAttribute('disabled', '');
+
+          return false;
+     }
+
+     if (Number(creditoActual) < Number(totalFactura.value)) {
+          swal('', `El cliente sobre pasa el limite de crédito. Saldo actual ${creditoActual} colones`, "warning");
+          document.querySelector('#btnFacturar').setAttribute('disabled', '');
+
+          return true;
+     } else {
+          document.querySelector('#btnFacturar').removeAttribute('disabled');
+
+          return false;
+     }
+}
 
 $("#Nombre").on({
      keydown: (e) => {
@@ -573,100 +567,164 @@ function getUrl() {
 }
 //#endregion
 
-//#region Facturacion
+//#region -----------------> FACTURACION <-------------------------
 $('#btnFacturar').click(function (e) {
      e.preventDefault();
-     detaFactura = Array();
-     encaFactura = Array();
-
      infoTable = tabla.fnGetNodes();
      if (infoTable.length > 0) {
-          const idCliente = document.querySelector("#idCliente").value;
-          const tipoFactura = document.querySelector("#tipoDocumento").value;
-          const tipoPago = document.querySelector("#tipoPago").value;
-          const Subtotall = document.querySelector("#Subtotal").value;
-          const ivaa = document.querySelector("#iva").value;
-          const totalFactura = document.querySelector("#totalFactura").value;
+          switch (select_TipoPago.selectedIndex) {
+               case 0:
+                    // Efectivo
+                    PagoRecibido();
+                    break;
+               case 1:
+                    // Tarjeta
+                    PagoTarjeta();
+                    break;
+               case 2:
+                    // Sinpe
+                    PagoTarjeta();
+                    break;
+               case 3:
+                    // Credito
+                    if (!validaCredito()) {
+                         PagoRecibido();
+                    }
+                    break;
 
-          frmDatos = new FormData();
-          frmDatos.append('tipoFactura', tipoFactura);
-          frmDatos.append('tipoPago', tipoPago);
-          frmDatos.append('idCliente', idCliente);
-          frmDatos.append('Subtotal', Subtotall);
-          frmDatos.append('iva', ivaa);
-          frmDatos.append('totalFactura', totalFactura);
-
-          const url = `${base_url}facturacion/insertEncaFactura`
-          const response = fnt_Fetch(url, 'post', frmDatos);
-          response.then((res) => {
-               if (res.status) {
-                    idVenta = res.id;
-
-                    for (let i = 0; i < infoTable.length; i++) {
-                         co = infoTable[i].cells[1].innerHTML;
-                         ca = infoTable[i].cells[2].childNodes[0].children.cantidadT.value;
-                         pUnit = infoTable[i].cells[4].innerHTML;
-                         sub = infoTable[i].cells[5].innerHTML;
-                         iva = infoTable[i].cells[6].innerHTML;
-                         tot = infoTable[i].cells[7].innerHTML;
-
-                         detaFactura.push({ idVenta, co, ca, pUnit, sub, iva, tot });
-                    };
-
-                    const url = `${base_url}facturacion/insertDetaFactura`
-                    $.post(url, { datos: detaFactura }, (info) => {
-                         const response = JSON.parse(info)
-                         if (response.status) {
-                              Pago(totalFactura, idVenta, tipoFactura);
-                         } else {
-                              swal("", response.msg, "error");
-                         }
-                    });
-               } else {
-                    swal('', res.msg, "error");
-               }
-          });
+               default:
+                    break;
+          }
      } else {
           swal('', 'No hay datos para procesar', "info");
      }
 });
 
-function Pago(montoCancelar, idVenta, tipoFactura) {
+function PagoTarjeta() {
+     const totalFactura = document.querySelector("#totalFactura").value;
+
      Swal.fire({
-          title: 'Monto a cancelar ' + montoCancelar,
-          text: 'Paga con:',
-          input: 'text',
-          inputAttributes: {
-               autocapitalize: 'off'
-          },
-          showCancelButton: true,
+          title: 'Total: ' + totalFactura,
+          html:
+               `<div class="form-group text-left">
+                    <label for="pagaCon" class="control-label">Paga con:</label>
+                    <input id="pagaCon" type="text" class="form-control" name="pagaCon" placeholder="Monto recibido">
+               </div>
+               <div class="form-group text-left">
+                    <label for="nComprobante" class="control-label">Número de Comprobante</label>
+                    <input id="nComprobante" type="text" class="form-control" name="nComprobante" placeholder= "Número de comprobante" autocomplete="off">
+               </div>`,
           confirmButtonText: 'Facturar',
-          showLoaderOnConfirm: true,
           confirmButtonColor: '#35b8e0',
+          showCancelButton: true,
           cancelButtonColor: '#6c757d',
-          preConfirm: (pagaCon) => {
-               if (pagaCon != "") {
-                    return JSON.stringify({ pagaCon: pagaCon, montoCancelar: montoCancelar, idVenta: idVenta, tipoFactura: tipoFactura })
+          focusConfirm: false,
+          preConfirm: () => {
+               const pago = document.getElementById('pagaCon').value;
+               const comprobante = document.getElementById('nComprobante').value
+
+               if (pago != "" || comprobante != "") {
+                    return JSON.stringify({ pagaCon: pago, nComprobante: comprobante });
                } else {
-                    swal("", "Digitar monto a pagar", 'info')
+                    swal("", "Digitar dinero recibido y número de comprobante", 'info')
                }
-          },
-          allowOutsideClick: false,
+          }
      }).then((result) => {
           if (result.isConfirmed) {
-               var res = JSON.parse(result.value)
+               var data = JSON.parse(result.value)
+               guardarDatos(data.pagaCon, 0, data.nComprobante);
+          } else if (result.isDismissed) {
+               swal("", "No se a realizado el pago", 'warning')
+          }
+     });
+}
 
-               let Vuelto = Math.round(res.pagaCon - res.montoCancelar);
+function PagoRecibido() {
+     const totalFactura = document.querySelector("#totalFactura").value;
 
-               const re = swalConfirmed(`Vuelto ${Vuelto}`, "success")
-               re.then((result) => {
-                    if (result.isConfirmed) {
-                         GenerarFactura(res.idVenta, res.tipoFactura, res.pagaCon, Vuelto);
+     if (select_TipoPago.value == 4) {
+          guardarDatos(totalFactura, 0, 0);
+     } else {
+          Swal.fire({
+               title: 'Total: ' + totalFactura,
+               text: 'Paga con:',
+               input: 'text',
+               inputAttributes: {
+                    autocapitalize: 'off'
+               },
+               showCancelButton: true,
+               confirmButtonText: 'Facturar',
+               showLoaderOnConfirm: true,
+               confirmButtonColor: '#35b8e0',
+               cancelButtonColor: '#6c757d',
+               preConfirm: (pagaCon) => {
+                    if (pagaCon != "") {
+                         return JSON.stringify({ pagaCon: pagaCon, montoCancelar: totalFactura })
                     } else {
-                         alert('Confirmar el vuelto para generar factutra');
+                         swal("", "Digitar dinero recibido", 'info')
+                    }
+               },
+               allowOutsideClick: false,
+          }).then((result) => {
+               if (result.isConfirmed) {
+                    var data = JSON.parse(result.value)
+                    let vuelto = Math.round(data.pagaCon - data.montoCancelar);
+
+                    const response = swalConfirmed(`Vuelto ${vuelto}`, "success")
+                    response.then((result) => {
+                         if (result.isConfirmed) {
+                              guardarDatos(data.pagaCon, vuelto, 0);
+                         } else {
+                              alert('Confirmar el vuelto para generar factutra');
+                         }
+                    });
+               } else if (result.isDismissed) {
+                    swal("", "No se a realizado el pago", 'warning')
+               }
+          });
+     }
+}
+
+function guardarDatos(pagaCon, vuelto, nComprobante) {
+     const frmFacturacion = document.querySelector("#frmFacturacion");
+     const frmDatos = new FormData(frmFacturacion);
+     const url = `${base_url}facturacion/insertEncaFactura`
+     const response = fnt_Fetch(url, 'post', frmDatos);
+     response.then((res) => {
+          if (res.status) {
+               const detaFactura = Array();
+               const idVenta = res.id;
+
+               for (let i = 0; i < infoTable.length; i++) {
+                    let codProducto = infoTable[i].cells[1].innerHTML;
+                    let cantidadProducto = infoTable[i].cells[2].childNodes[0].children.cantidadT.value;
+                    let precioUnit = infoTable[i].cells[4].innerHTML;
+                    let subTotal = infoTable[i].cells[5].innerHTML;
+                    let iva = infoTable[i].cells[6].innerHTML;
+                    let total = infoTable[i].cells[7].innerHTML;
+
+                    detaFactura.push({ idVenta, codProducto, cantidadProducto, precioUnit, subTotal, iva, total });
+               };
+
+               const url = `${base_url}facturacion/insertDetaFactura`
+               $.post(url, { datos: detaFactura }, (info) => {
+                    const response = JSON.parse(info)
+                    if (response.status) {
+                         GenerarFactura(idVenta, select_TipoDocumento.value, pagaCon, vuelto);
+
+                         if (nComprobante != 0) {
+                              insertar_nComprobante(idVenta, nComprobante);
+                         }
+
+                         if (select_TipoPago.value == 4) {
+                              insertar_FacturaCredito(idVenta);
+                         }
+                    } else {
+                         swal("", response.msg, "error");
                     }
                });
-          } else if (result.isDismissed) {
+          } else {
+               swal('', res.msg, "error");
           }
      });
 }
@@ -690,5 +748,27 @@ const GenerarFactura = async (idVenta, tipoFactura, pagaCon, Vuelto) => {
           }
      })
 }
-//#endregion
 
+function insertar_nComprobante(idVenta, nComprobante) {
+     const frmDatos = new FormData();
+     frmDatos.append('idVenta', idVenta);
+     frmDatos.append('nComprobante', nComprobante);
+
+     const url = `${base_url}facturacion/insertarComprobante`
+     const response = fnt_Fetch(url, 'post', frmDatos);
+     response.then((res) => {
+          console.log(res);
+     });
+}
+
+function insertar_FacturaCredito(idVenta) {
+     const frmDatos = new FormData();
+     frmDatos.append('idVenta', idVenta);
+
+     const url = `${base_url}facturacion/insertFacturaCredito`
+     const response = fnt_Fetch(url, 'post', frmDatos);
+     response.then((res) => {
+          console.log(res);
+     });
+}
+//#endregion

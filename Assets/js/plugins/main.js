@@ -96,8 +96,70 @@ function generarPDF(idVenta, pagaCon, Vuelto) {
 	window.open(url, 'blank');
 }
 
-function verFactura(idVenta) {
+function verFacturaPDF(idVenta) {
 	url = `${base_url}assets/facturas/factura-${idVenta}.pdf`;
 	window.open(url, '_blank');
 }
 
+function BuscarCliente(Identificacion) {
+	if (Identificacion === "") {
+		swal('', 'Digite el número de Identificación', "info");
+		return false;
+	} else if (Identificacion === "1") {
+	}
+
+	if (Identificacion.length < 9) {
+		swal('', 'El numero de Identificación debe contener entre 9 o 10 caracteres', "info");
+		return false
+	}
+
+	const url = `https://api.hacienda.go.cr/fe/ae?identificacion=${Identificacion}`;
+	const response = fnt_Fetch(url)
+	response.then(data => {
+		if (data.code == 400) {
+			document.getElementById("txtIdentificacion").focus();
+			document.querySelector("#txtNombre").value = '';
+			document.querySelector("#estadoHacienda").value = '';
+			statusHacienda = '';
+			selecRegimen.selectedIndex = 0;
+			swalMixin('error', `El número de identificación ${Identificacion} no es válido o no existe`, 'top-end', 4000)
+			return false;
+		}
+
+		if (data.regimen.codigo != 0) {
+			document.querySelector("#txtNombre").value = data.nombre;
+			document.querySelector("#estadoHacienda").value = data.situacion.estado;
+			statusHacienda = data.situacion.estado;
+			selecRegimen.selectedIndex = data.regimen.codigo;
+		} else {
+			document.querySelector("#txtNombre").value = data.nombre;
+			document.querySelector("#estadoHacienda").value = data.situacion.estado;
+			statusHacienda = data.situacion.estado;
+			selecRegimen.selectedIndex = data.regimen.codigo;
+
+			swal('', `Cliente ${data.situacion.estado} ante Hacienda`, "info");
+		}
+	});
+}
+
+function isString(idInput) {
+	$("#" + idInput).on({
+		keydown: (e) => {
+			return (e.key.length != 1 || 1 + e.key.search(/[a-zA-Z]/)) ? true : false;
+		},
+		paste: function (e) {
+			return false;
+		}
+	});
+}
+
+function isNumber(idInput) {
+	$(`#${idInput}`).on({
+		keydown: (e) => {
+			return (e.key.length != 1 || 1 + e.key.search(/^[0-9]/)) ? true : false;
+		},
+		paste: function (e) {
+			return true;
+		}
+	});
+}

@@ -18,9 +18,12 @@
      <!-- Main CSS-->
      <link rel="stylesheet" type="text/css" href="<?php echo media() ?>css/main.css">
 
+     <!-- SweetAlert CSS-->
      <script type="text/javascript" src="<?php echo media() ?>js/plugins/sweetalert-2011.min.js"></script>
 
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+     <!-- Animate CSS-->
+     <link rel="stylesheet" type="text/css" href="<?php echo media() ?>css/animate-4.1.1.min.css">
+     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" /> -->
 </head>
 
 <body class="app sidebar-mini ">
@@ -33,13 +36,16 @@
 
           <!-- Navbar Right Menu-->
           <ul class="app-nav">
-               <h3 id="nombre" style="color: white; font-family: 'Poppins',sans-serif;"> <?php echo $_SESSION['name'] ?> </h3>
-               <li class="dropdown">
-                    <img data-toggle="dropdown" aria-label="Open Profile Menu" class=" settings" src="<?= media(); ?>images/avatar.png" alt="User Image">
-                    <ul class="dropdown-menu settings-menu dropdown-menu-right">
-                         <li><a class="dropdown-item" href="<?php base_url() ?>logout"><i class="fa fa-sign-out fa-lg"></i> Salir</a></li>
-                    </ul>
-               </li>
+               <div class="dropdown">
+                    <a id="userDrop" href="#" role="button" data-toggle="dropdown" class="nav-link" aria-haspopup="true" aria-expanded="false">
+                         <span id="nombre" class="font-weight-bold text-white"> <?php echo $_SESSION['name'] ?> </span>
+                         <img class=" settings" src="<?= media(); ?>images/avatar.png" alt="User Image">
+                    </a>
+
+                    <div aria-labelledby="userDrop" class="dropdown-menu dropdown-menu-right shadow">
+                         <a class="dropdown-item" href="<?php base_url() ?>logout"><i class="fa fa-sign-out fa-lg"></i> Salir</a>
+                    </div>
+               </div>
           </ul>
      </header>
 
