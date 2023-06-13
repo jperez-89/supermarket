@@ -320,7 +320,7 @@ class FacturacionModel extends Crud
           $pdf = new FPDF('P', 'mm', array(80, 200));
           $pdf->AddPage();
           $pdf->SetMargins(1, 0, 0);
-          $pdf->SetTitle("SuperMarket - POS");
+          $pdf->SetTitle("Factura " . $request['nfactura']);
           $pdf->SetFont('Arial', 'B', 9);
           $pdf->Cell(60, 5, 'SUPERMARKET - POS', 0, 1, 'C');
 

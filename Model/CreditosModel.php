@@ -77,7 +77,7 @@ class CreditosModel extends Crud
     {
         $crud = new Crud();
 
-        $sql = "SELECT v.id, v.fecha, v.nfactura, td.nombre AS tipo_factura, tp.nombre AS tipo_pago, v.m_total, v.estado, c.identificacion, c.nombre FROM venta v
+        $sql = "SELECT v.id, v.fecha, v.nfactura, td.id idTipoFactura, td.nombre AS tipo_factura, tp.nombre AS tipo_pago, v.m_total, v.estado, c.identificacion, c.nombre FROM venta v
            INNER JOIN cliente c ON c.id = v.idCliente
           INNER JOIN tipo_documento td ON td.id = v.tipo_factura
           INNER JOIN tipo_pago tp ON tp.id = v.tipo_pago

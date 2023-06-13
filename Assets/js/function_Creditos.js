@@ -278,14 +278,15 @@ $(document).on('click', '#pagarFactura', function (e) {
 
             if (tipoPago == 1) {
                 if (pagaCon != "") {
-                    return JSON.stringify({ idVenta: idVenta, tipoPago: tipoPago, pagaCon: pagaCon, nComprobante: 0 });
+                    return JSON.stringify({ idVenta: idVenta, tipoPago: tipoPago, pagaCon: pagaCon, nComprobante: 0, total: data['m_total'] });
+
                 } else {
                     swal("", "Digitar dinero recibido", 'info')
                     return false;
                 }
             } else {
                 if (pagaCon != "" || nComprobante != "") {
-                    return JSON.stringify({ idVenta: idVenta, tipoPago: tipoPago, pagaCon: pagaCon, nComprobante: nComprobante });
+                    return JSON.stringify({ idVenta: idVenta, tipoPago: tipoPago, pagaCon: pagaCon, nComprobante: nComprobante, total: data['m_total'] });
                 } else {
                     swal("", "Digitar dinero recibido y número de comprobante", 'info')
                     return false;
@@ -295,7 +296,16 @@ $(document).on('click', '#pagarFactura', function (e) {
     }).then((result) => {
         if (result.isConfirmed) {
             var data = JSON.parse(result.value)
-            guardarDatos(data.idVenta, data.tipoPago, data.pagaCon, data.nComprobante);
+            let vuelto = Math.round(parseInt(data.pagaCon) - parseInt(data.total))
+
+            const response = swalConfirmed(`Vuelto ${vuelto}`, "success")
+            response.then((result) => {
+                if (result.isConfirmed) {
+                    guardarDatos(data.idVenta, data.tipoPago, data.pagaCon, data.nComprobante, vuelto);
+                } else {
+                    alert('Confirmar el vuelto para generar factutra');
+                }
+            });
         } else if (result.isDismissed) {
             swal("", "No se a realizado el pago", 'warning')
         }
@@ -371,16 +381,17 @@ $(document).on('click', '#EnableCredito', function (e) {
     });
 });
 
-function guardarDatos(idVenta, tipoPago, pagaCon, nComprobante) {
+function guardarDatos(idVenta, tipoPago, pagaCon, nComprobante, vuelto) {
     const frmDatos = new FormData();
     const url = `${base_url}creditos/updateFactura`
+    frmDatos.append('idVenta', idVenta);
+    frmDatos.append('tipoPago', tipoPago);
 
     if (tipoPago == 1) {
-        frmDatos.append('idVenta', idVenta);
-        frmDatos.append('tipoPago', tipoPago);
         const response = fnt_Fetch(url, 'post', frmDatos);
         response.then((res) => {
             if (res.status) {
+                GenerarFactura(idVenta, pagaCon, vuelto);
                 tblCreditos._fnAjaxUpdate();
                 swal('', res.msg, "success");
             } else {
@@ -388,8 +399,6 @@ function guardarDatos(idVenta, tipoPago, pagaCon, nComprobante) {
             }
         });
     } else {
-        frmDatos.append('idVenta', idVenta);
-        frmDatos.append('tipoPago', tipoPago);
         const response = fnt_Fetch(url, 'post', frmDatos);
         response.then((res) => {
             if (res.status) {
@@ -399,6 +408,7 @@ function guardarDatos(idVenta, tipoPago, pagaCon, nComprobante) {
                 const response = fnt_Fetch(url, 'post', frmDatos);
                 response.then((res) => {
                     if (res.status) {
+                        GenerarFactura(idVenta, pagaCon, vuelto);
                         tblCreditos._fnAjaxUpdate();
                         swal('', res.msg, "success");
                     } else {
@@ -410,6 +420,10 @@ function guardarDatos(idVenta, tipoPago, pagaCon, nComprobante) {
             }
         });
     };
+}
+
+const GenerarFactura = async (idVenta, pagaCon, Vuelto) => {
+    generarPDF(idVenta, pagaCon, Vuelto);
 }
 
 isNumber('txtIdentificacion');
