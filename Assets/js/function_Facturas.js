@@ -94,6 +94,6 @@ function fntVerDetalleFactura(idFactura) {
      });
 }
 
-function fntReenviarFactura(id) {
-     alert('id factura ' + id);
+function fntReenviarFactura(idFactura, emailCliente) {
+     enviarFacturaPDF(emailCliente, idFactura);
 }

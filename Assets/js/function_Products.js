@@ -111,7 +111,7 @@ frmProducto.onsubmit = function (e) {
       // CerrarCamara()
 
       $("#modalProducto").modal("hide");
-      swal("", objData.msg, "success");
+      swalMixin("success", objData.msg, 'bottom-end', 3000)
     } else {
       swal("", objData.msg, "error");
     }
@@ -132,7 +132,7 @@ function fntEditProduct(codigo) {
       document.querySelector("#txtCodigo").value = objData.data.codigo;
       document.querySelector("#txtNombre").value = objData.data.name;
       document.querySelector("#txtPrecio").value = objData.data.price;
-      // document.querySelector("#txtStock").value = objData.data.cantidad;
+      document.querySelector("#txtMinimo").value = objData.data.minimo;
       document.getElementById("txtStock").placeholder = 'Cantidad a sumar';
       document.querySelector("#txtDescripcion").value = objData.data.description;
       document.querySelector("#selecMedida").value = objData.data.measure;
@@ -176,7 +176,7 @@ function fntDeleteProduct(codigo) {
 
             if (objData.status) {
               tableProductos.ajax.reload()
-              swal("", objData.msg, "success");
+              swalMixin("success", objData.msg, 'bottom-end', 2500)
             } else {
               swal("", objData.msg, "error");
             }
@@ -213,7 +213,7 @@ function fntEnableProduct(codigo) {
 
             if (objData.status) {
               tableProductos.ajax.reload()
-              swal("", objData.msg, "success");
+              swalMixin("success", objData.msg, 'bottom-end', 2500)
             } else {
               swal("", objData.msg, "error");
             }
@@ -269,7 +269,7 @@ function CargaImpuesto() {
 }
 
 $(".cerrarModal").click(function () {
-  CerrarCamara();
+  // CerrarCamara();
   frmProducto.reset();
   $("#modalProducto").modal('hide')
 });

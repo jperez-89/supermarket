@@ -277,9 +277,16 @@ class Productos extends Controllers
           die();
      }
 
-     function getProductosMinimo()
+     // -------------------> Funciones Modulo Dashboard <----------------------
+     public function getProductosMinimo()
      {
           $arrdatos = ProductosModel::SelectProductosMinimo();
+
+          // for ($i = 0; $i < count($arrdatos); $i++) {
+          //      if ($arrdatos[$i]['cantidad'] <= $arrdatos[$i]['minimo']) {
+          //           $arrdatos[$i]['cantidad'] = '<span class="badge badge-danger">' . $arrdatos[$i]['cantidad'] . '</span>';
+          //      }
+          // }
 
           echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
           die();

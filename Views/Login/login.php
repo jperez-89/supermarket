@@ -12,7 +12,8 @@
      <!-- Main CSS-->
      <link rel="stylesheet" type="text/css" href="<?php echo media; ?>css/main.css">
 
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+     <!-- Animate CSS-->
+     <link rel="stylesheet" type="text/css" href="<?php echo media() ?>css/animate-4.1.1.min.css">
 </head>
 
 <body>
@@ -75,7 +76,7 @@
 
      <script type="text/javascript" src="<?php echo media(); ?>js/plugins/select2.min.js"></script>
      <script type="text/javascript" src="<?php echo media(); ?>js/plugins/sweetalert.min.js"></script>
-     <script type="text/javascript" src="<?php echo media(); ?>js/plugins/fontawesome.js"></script>
+     <script type="text/javascript" src="<?php echo media(); ?>js/plugins/fontawesome-kit_3be261b745.js"></script>
      <script type="text/javascript" src="<?php echo media(); ?>js/plugins/main.js"></script>
      <script type="text/javascript" src="<?php echo media() . $data['page_functions'] ?>"></script>
      <script>

@@ -212,4 +212,21 @@ class Creditos extends Controllers
             throw $th;
         }
     }
+
+    // -------------------> Funciones Modulo Dashboard <----------------------
+    public function getCreditoPendientePago()
+    {
+        $arrdatos = CreditosModel::selectCreditoPendientePago();
+
+        for ($i = 0; $i < count($arrdatos); $i++) {
+            if ($arrdatos[$i]['estado']) {
+                $arrdatos[$i]['estado'] = '<div class="flex-center"> <span class="badge badge-success">Activo</span> </div>';
+            } else {
+                $arrdatos[$i]['estado'] = '<div class="flex-center"> <span class="badge badge-danger">Cerrado</span> </div>';
+            }
+        }
+
+        echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
+        die();
+    }
 }

@@ -38,7 +38,7 @@ window.onload = function () {
      FechaActual();
      getTipoDocumento()
      getTipoPago()
-     MostrarCliente(2, 'data')
+     MostrarCliente(4, 'data')
 };
 
 //#region -----------------> BUSCAR CLIENTE POR NOMBRE O IDENTIFICACION <-------------------------
@@ -607,7 +607,7 @@ function PagoTarjeta() {
           title: 'Total: ' + totalFactura,
           html:
                `<div class="form-group text-left">
-                    <label for="pagaCon" class="control-label">Paga con:</label>
+                    <label for="pagaCon" class="control-label">Monto:</label>
                     <input id="pagaCon" type="text" class="form-control" name="pagaCon" placeholder="Monto recibido">
                </div>
                <div class="form-group text-left">
@@ -620,19 +620,28 @@ function PagoTarjeta() {
           cancelButtonColor: '#6c757d',
           focusConfirm: false,
           preConfirm: () => {
-               const pago = document.getElementById('pagaCon').value;
-               const comprobante = document.getElementById('nComprobante').value
+               const pagaCon = document.getElementById('pagaCon');
+               const nComprobante = document.getElementById('nComprobante');
 
-               if (pago != "" || comprobante != "") {
-                    return JSON.stringify({ pagaCon: pago, nComprobante: comprobante });
+               if (pagaCon.value != "" && nComprobante.value != "") {
+                    if (parseFloat(pagaCon.value) >= parseFloat(totalFactura)) {
+                         return JSON.stringify({ pagaCon: pagaCon.value, nComprobante: nComprobante });
+                    } else {
+                         pagaCon.focus();
+                         swal("Atención", "Revisar monto digitado", 'warning')
+                         return false;
+                    }
                } else {
-                    swal("", "Digitar dinero recibido y número de comprobante", 'info')
+                    pagaCon.focus();
+                    swal("", "Digitar dinero recibido y número de comprobante", 'error')
+                    return false;
                }
-          }
+          },
+          allowOutsideClick: false
      }).then((result) => {
           if (result.isConfirmed) {
                var data = JSON.parse(result.value)
-               guardarDatos(data.pagaCon, 0, data.nComprobante);
+               guardarDatos(data.pagaCon, 0.00, data.nComprobante);
           } else if (result.isDismissed) {
                swal("", "No se a realizado el pago", 'warning')
           }
@@ -643,7 +652,7 @@ function PagoRecibido() {
      const totalFactura = document.querySelector("#totalFactura").value;
 
      if (select_TipoPago.value == 4) {
-          guardarDatos(totalFactura, 0, 0);
+          guardarDatos(totalFactura, 0.00, 0);
      } else {
           Swal.fire({
                title: 'Total: ' + totalFactura,
@@ -659,9 +668,15 @@ function PagoRecibido() {
                cancelButtonColor: '#6c757d',
                preConfirm: (pagaCon) => {
                     if (pagaCon != "") {
-                         return JSON.stringify({ pagaCon: pagaCon, montoCancelar: totalFactura })
+                         if (parseFloat(pagaCon) >= parseFloat(totalFactura)) {
+                              return JSON.stringify({ pagaCon: pagaCon, montoCancelar: totalFactura })
+                         } else {
+                              swal("Atención", "Revisar monto digitado", 'warning')
+                              return false;
+                         }
                     } else {
                          swal("", "Digitar dinero recibido", 'info')
+                         return false;
                     }
                },
                allowOutsideClick: false,
@@ -669,15 +684,7 @@ function PagoRecibido() {
                if (result.isConfirmed) {
                     var data = JSON.parse(result.value)
                     let vuelto = Math.round(data.pagaCon - data.montoCancelar);
-
-                    const response = swalConfirmed(`Vuelto ${vuelto}`, "success")
-                    response.then((result) => {
-                         if (result.isConfirmed) {
-                              guardarDatos(data.pagaCon, vuelto, 0);
-                         } else {
-                              alert('Confirmar el vuelto para generar factutra');
-                         }
-                    });
+                    guardarDatos(data.pagaCon, vuelto, 0);
                } else if (result.isDismissed) {
                     swal("", "No se a realizado el pago", 'warning')
                }
@@ -688,6 +695,7 @@ function PagoRecibido() {
 function guardarDatos(pagaCon, vuelto, nComprobante) {
      const frmFacturacion = document.querySelector("#frmFacturacion");
      const frmDatos = new FormData(frmFacturacion);
+     pfrm(frmDatos); return false;
      const url = `${base_url}facturacion/insertEncaFactura`
      const response = fnt_Fetch(url, 'post', frmDatos);
      response.then((res) => {
@@ -738,11 +746,18 @@ const GenerarFactura = async (idVenta, tipoFactura, pagaCon, Vuelto) => {
      const response = fnt_Fetch(url, 'post', datos);
      response.then((response) => {
           if (response.status) {
-               swalMixin('success', 'Documento ' + response.nfactura, 'bottom-end', 1600);
-               setTimeout(`location.href='${base_url}facturacion/nueva_venta'`, 1600);
-
-               /* Funcion esta en archivo main.js */
-               generarPDF(idVenta, pagaCon, Vuelto);
+               const enviarFactura = swalEnviarFactura(`Vuelto: ${Vuelto}`, `¿Enviarle el documento #${response.nfactura} al correo del cliente?`, "question")
+               enviarFactura.then((result) => {
+                    if (result.isConfirmed) {
+                         generarPDF(idVenta, pagaCon, Vuelto);
+                         setTimeout(() => {
+                              enviarFacturaPDF(response.emailCliente, response.nfactura);
+                         }, 100);
+                    } else {
+                         generarPDF(idVenta, pagaCon, Vuelto);
+                         location.reload();
+                    }
+               });
           } else {
                swal('', response.msg, 'error');
           }
@@ -757,7 +772,7 @@ function insertar_nComprobante(idVenta, nComprobante) {
      const url = `${base_url}facturacion/insertarComprobante`
      const response = fnt_Fetch(url, 'post', frmDatos);
      response.then((res) => {
-          console.log(res);
+          console.log(`Comprobante insertado. Mensaje: ${res.msg}`);
      });
 }
 

@@ -6,5 +6,4 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    '' => array($vendorDir . '/dsiddharth2/php-zxing/src'),
 );

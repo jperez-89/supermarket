@@ -303,7 +303,7 @@ $(document).on('click', '#pagarFactura', function (e) {
                 if (result.isConfirmed) {
                     guardarDatos(data.idVenta, data.tipoPago, data.pagaCon, data.nComprobante, vuelto);
                 } else {
-                    alert('Confirmar el vuelto para generar factutra');
+                    swal("", "Confirmar el vuelto para generar factutra", 'error')
                 }
             });
         } else if (result.isDismissed) {

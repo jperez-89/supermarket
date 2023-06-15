@@ -152,7 +152,7 @@ class FacturacionModel extends Crud
      {
           $crud = new Crud();
 
-          $sql = "SELECT v.id, td.codigo FROM venta v INNER JOIN tipo_documento td ON td.id = v.tipo_factura WHERE v.id = $idFactura";
+          $sql = "SELECT v.id, td.codigo, c.Email FROM venta v INNER JOIN tipo_documento td ON td.id = v.tipo_factura INNER JOIN cliente c ON c.Id = v.idCliente WHERE v.id = $idFactura";
           $request = $crud->get_OneRegister($sql);
 
           return $request;
@@ -266,8 +266,8 @@ class FacturacionModel extends Crud
      {
           $crud = new Crud();
 
-          $sql = "SELECT v.id, v.fecha, v.nfactura, td.nombre AS tipo_factura, tp.nombre AS tipo_pago, v.m_total, v.estado, c.identificacion, c.nombre FROM venta v
-           INNER JOIN cliente c ON c.id = v.idCliente
+          $sql = "SELECT v.id, v.fecha, v.nfactura, td.nombre AS tipo_factura, tp.nombre AS tipo_pago, v.m_total, v.estado, c.identificacion, c.nombre, c.Email FROM venta v
+          INNER JOIN cliente c ON c.id = v.idCliente
           INNER JOIN tipo_documento td ON td.id = v.tipo_factura
           INNER JOIN tipo_pago tp ON tp.id = v.tipo_pago";
           $request = $crud->get_AllRegister($sql);
@@ -279,11 +279,7 @@ class FacturacionModel extends Crud
      {
           $crud = new Crud();
 
-          $sql = "SELECT p.name, vd.cantidad, vd.preUnitario, vd.subtotal, vd.iva, vd.total
-          FROM venta_detalle vd
-          INNER JOIN venta v ON v.id = vd.idFactura
-          INNER JOIN producto p ON p.id = vd.idProducto
-          WHERE v.id = $idFactura";
+          $sql = "SELECT p.name, vd.cantidad, vd.preUnitario, vd.subtotal, vd.iva, vd.total FROM venta_detalle vd INNER JOIN venta v ON v.id = vd.idFactura INNER JOIN producto p ON p.id = vd.idProducto WHERE v.id = $idFactura";
           $request = $crud->get_AllRegister($sql);
 
           return $request;
@@ -291,122 +287,154 @@ class FacturacionModel extends Crud
 
      public static function generarPDF($idVenta, $pagaCon, $Vuelto)
      {
+          $pdf = new FPDF('P', 'mm', array(80, 200));
+
+          if ($pagaCon != 0) {
+               $crud = new Crud();
+
+               $sql = "SELECT c.Identificacion, c.Nombre AS NombreCliente, c.Email, c.Telefono, v.id, v.fecha, v.nfactura, UCASE(tp.nombre) AS tipo_pago, v.estado, td.nombre AS TipoDocumento, v.m_subtotal, v.m_iva, v.m_total FROM venta v INNER JOIN cliente c ON c.Id = v.idCliente INNER JOIN tipo_documento td ON td.id = v.tipo_factura INNER JOIN tipo_pago tp ON tp.id = v.tipo_pago WHERE v.id = $idVenta OR v.nfactura = '$idVenta'";
+
+               $request = $crud->get_OneRegister($sql);
+
+               $condicion = ($request['estado']) ? 'CANCELADO' : 'PENDIENTE';
+
+               $sql = "SELECT p.name, vd.cantidad, vd.preUnitario, vd.subtotal, i.codigo, i.valor FROM venta_detalle vd INNER JOIN producto p ON p.id = vd.idProducto INNER JOIN venta v ON v.id = vd.idFactura INNER JOIN impuesto i ON i.id = p.iva WHERE v.id = " . $request['id'];
+
+               $dFactura = $crud->get_AllRegister($sql);
+
+               $pdf->AddPage();
+               $pdf->SetMargins(1, 0, 0);
+               $pdf->SetTitle("Factura " . $request['nfactura']);
+               $pdf->SetFont('Arial', 'B', 9);
+               $pdf->Cell(60, 5, 'SUPERMARKET - POS', 0, 1, 'C');
+
+               $pdf->SetFont('Arial', '', 7);
+               $pdf->Cell(30, 3, "IDENTIFICACION:", 0, 0, 'R');
+               $pdf->Cell(15, 3, '603820149', 0, 0, 'L');
+               $pdf->Cell(6, 3, 'TEL:', 0, 0, 'L');
+               $pdf->Cell(15, 3, '+506 83182537', 0, 1, 'L');
+               $pdf->Cell(30, 3, "EMAIL:", 0, 0, 'R');
+               $pdf->Cell(20, 3, 'JRWC1989@GMAIL.COM', 0, 1, 'L');
+               $pdf->Cell(75, 3, 'PITAHAYA, PUNTARENAS, DIAGONAL A LA IGLESIA CATOLICA', 0, 1, 'C');
+               $pdf->Ln();
+
+               $pdf->Cell(24, 4, mb_convert_encoding($request['TipoDocumento'] . ' v4.3', 'UTF-8'), 0, 1, 'L');
+               $pdf->Cell(8, 4, "Clave", 0, 0, 'L');
+               $pdf->Cell(24, 4, '506-DMA-603820149' . $request['nfactura'] . '-SCE-CS', 0, 1, 'L');
+               $pdf->Cell(15, 4, "Consecutivo", 0, 0, 'L');
+               $pdf->Cell(24, 4, $request['nfactura'], 0, 1, 'L');
+               $pdf->Cell(8, 4, "Fecha", 0, 0, 'L');
+               $pdf->Cell(2, 4, $request['fecha'], 0, 1, 'L');
+
+               $pdf->SetFont('Arial', 'B', 7);
+               $pdf->Cell(1, 3, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", 0, 1, 'L');
+               $pdf->Cell(40, 5, "Cliente", 0, 0, 'L');
+               $pdf->Cell(16, 5, "Teléfono", 0, 0, 'L');
+               $pdf->Cell(25, 5, "Correo", 0, 1, 'L');
+               $pdf->SetFont('Arial', '', 7);
+               $pdf->Cell(40, 3, mb_convert_encoding($request['NombreCliente'], "UTF-8"), 0, 0, 'L');
+               $pdf->Cell(13, 3, mb_convert_encoding($request['Telefono'], "UTF-8"), 0, 0, 'L');
+               $pdf->Cell(23, 3, mb_convert_encoding($request['Email'], "UTF-8"), 0, 1, 'L');
+
+               $pdf->SetFont('Arial', 'B', 7);
+               $pdf->Cell(1, 5, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", 0, 1, 'L');
+               $pdf->Cell(8, 3, 'Cant.', 0, 0, 'L');
+               $pdf->Cell(42, 3, 'Detalle', 0, 0, 'C');
+               $pdf->Cell(15, 3, 'Precio', 0, 0, 'L');
+               $pdf->Cell(15, 3, 'Total', 0, 1, 'L');
+               $pdf->SetFont('Arial', '', 7);
+               for ($i = 0; $i < count($dFactura); $i++) {
+                    $pdf->Cell(8, 5, number_format($dFactura[$i]['cantidad'], 2, '.', ','), 0, 0, 'L');
+                    $pdf->Cell(42, 5, mb_convert_encoding($dFactura[$i]['name'], 'UTF-8', 'ISO-8859-1'), 0, 0, 'L');
+                    $pdf->Cell(11, 5, number_format($dFactura[$i]['preUnitario'], 2, '.', ','), 0, 0, 'R');
+                    $pdf->Cell(16, 5, number_format($dFactura[$i]['subtotal'], 2, '.', ',') . $dFactura[$i]['codigo'], 0, 1, 'R');
+               }
+               $pdf->Cell(1, 5, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", 0, 0, 'L');
+
+               $pdf->Ln();
+               $pdf->SetFont('Arial', '', 8);
+               $pdf->Cell(55, 4, 'Subtotal:', 0, 0, 'R');
+               $pdf->Cell(22, 4, number_format($request['m_subtotal'], 2, '.', ','), 0, 1, 'R');
+
+               $pdf->Cell(55, 4, 'IVA:', 0, 0, 'R');
+               $pdf->Cell(22, 4, number_format($request['m_iva'], 2, '.', ','), 0, 1, 'R');
+
+               $pdf->SetFont('Arial', 'B', 10);
+               $pdf->Cell(55, 4, 'Total CRC:', 0, 0, 'R');
+               $pdf->Cell(22, 4, number_format($request['m_total'], 2, '.', ','), 0, 1, 'R');
+               $pdf->Ln();
+
+               $pdf->SetFont('Arial', '', 7);
+               $pdf->Cell(1, 3, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", 0, 1, 'L');
+               $pdf->Cell(22, 4, 'FORMA PAGO:', 0, 0, 'R');
+               $pdf->Cell(20, 4, mb_convert_encoding($request['tipo_pago'], "UTF-8"), 0, 0, 'L');
+               $pdf->Cell(16, 4, 'CONDICION:', 0, 0, 'L');
+               $pdf->Cell(5, 4, mb_convert_encoding($condicion, "UTF-8"), 0, 1, 'L');
+               $pdf->Cell(22, 4, 'PAGA CON:', 0, 0, 'R');
+               $pdf->Cell(20, 4, mb_convert_encoding($pagaCon, "UTF-8"), 0, 0, 'L');
+               $pdf->Cell(16, 4, 'VUELTO:', 0, 0, 'L');
+               $pdf->Cell(5, 4, mb_convert_encoding($Vuelto, "UTF-8"), 0, 1, 'L');
+               $pdf->Cell(1, 3, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", 0, 1, 'L');
+
+               $sql = "SELECT * FROM impuesto";
+               $impuesto = $crud->get_AllRegister($sql);
+
+               for ($i = 0; $i < count($impuesto); $i++) {
+                    $pdf->Cell(15, 4, $impuesto[$i]['codigo'] . ': ' . $impuesto[$i]['valor'] . '%', 0, 0, 'C');
+               }
+               $pdf->Ln();
+               $pdf->Cell(1, 3, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", 0, 1, 'L');
+
+               $pdf->SetFont('Arial', '', 8);
+               $pdf->Cell(80, 5, mb_convert_encoding('*** GRACIAS POR SU VISITA ***', "UTF-8"), 0, 1, 'C');
+               $pdf->Cell(80, 5, mb_convert_encoding('*** RESOLUCION DGT-R-033-2019 ***', "UTF-8"), 0, 1, 'C');
+
+               if ($pdf->Output('assets/facturas/', 'factura-' . $request["nfactura"] . '.pdf', 'F')) {
+                    $pdf->Output('assets/facturas/', 'factura-' . $request["nfactura"] . '.pdf', 'I');
+               }
+          } else {
+               $crud = new Crud();
+
+               $sql = "SELECT v.nfactura FROM venta v WHERE v.id = $idVenta OR v.nfactura = '$idVenta'";
+
+               $request = $crud->get_OneRegister($sql);
+
+               $pdf->Output('assets/facturas/', 'factura-' . $request["nfactura"] . '.pdf', 'S');
+          }
+     }
+
+     public static function enviarFacturaPDF($idVenta)
+     {
+          $pdf = new FPDF('P', 'mm', array(80, 200));
           $crud = new Crud();
 
-          $sql = "SELECT c.Identificacion, c.Nombre AS NombreCliente, c.Email, c.Telefono, v.id, v.fecha, v.nfactura, UCASE(tp.nombre) AS tipo_pago, v.estado, td.nombre AS TipoDocumento, v.m_subtotal, v.m_iva, v.m_total 
-          FROM venta v 
-          INNER JOIN cliente c ON c.Id = v.idCliente
-          INNER JOIN tipo_documento td ON td.id = v.tipo_factura
-          INNER JOIN tipo_pago tp ON tp.id = v.tipo_pago
-          WHERE v.id = $idVenta OR v.nfactura = '$idVenta'";
-
+          $sql = "SELECT v.nfactura FROM venta v WHERE v.id = $idVenta OR v.nfactura = '$idVenta'";
           $request = $crud->get_OneRegister($sql);
 
-          if ($request['estado']) {
-               $condicion = 'CANCELADO';
-          } else {
-               $condicion = 'PENDIENTE';
-          }
+          // $result = file_get_contents('assets/facturas/factura-' . $request["nfactura"] . '.pdf');
+          $result = $pdf->Output('assets/facturas/', 'factura-' . $request["nfactura"] . '.pdf', 'S');
 
-          $sql = "SELECT p.name, vd.cantidad, vd.preUnitario, vd.subtotal, i.codigo, i.valor
-          FROM venta_detalle vd
-          INNER JOIN producto p ON p.id = vd.idProducto
-          INNER JOIN venta v ON v.id = vd.idFactura
-          INNER JOIN impuesto i ON i.id = p.iva
-          WHERE v.id = " . $request['id'];
+          return $result;
+     }
 
-          $dFactura = $crud->get_AllRegister($sql);
+     // -------------------> Funciones Modulo Facturas <----------------------
+     public static function selectFacturasEmitidas()
+     {
+          $crud = new Crud();
 
-          $pdf = new FPDF('P', 'mm', array(80, 200));
-          $pdf->AddPage();
-          $pdf->SetMargins(1, 0, 0);
-          $pdf->SetTitle("Factura " . $request['nfactura']);
-          $pdf->SetFont('Arial', 'B', 9);
-          $pdf->Cell(60, 5, 'SUPERMARKET - POS', 0, 1, 'C');
+          $sql = "SELECT COUNT(v.id) AS totalFacturas, tp.nombre FROM `venta` v INNER JOIN tipo_documento tp ON tp.id = v.tipo_factura GROUP BY v.tipo_factura ORDER BY totalFacturas";
+          $request = $crud->get_AllRegister($sql);
 
-          $pdf->SetFont('Arial', '', 7);
-          $pdf->Cell(30, 3, "IDENTIFICACION:", 0, 0, 'R');
-          $pdf->Cell(15, 3, '603820149', 0, 0, 'L');
-          $pdf->Cell(6, 3, 'TEL:', 0, 0, 'L');
-          $pdf->Cell(15, 3, '+506 83182537', 0, 1, 'L');
-          $pdf->Cell(30, 3, "EMAIL:", 0, 0, 'R');
-          $pdf->Cell(20, 3, 'JRWC1989@GMAIL.COM', 0, 1, 'L');
-          $pdf->Cell(75, 3, 'PITAHAYA, PUNTARENAS, DIAGONAL A LA IGLESIA CATOLICA', 0, 1, 'C');
-          $pdf->Ln();
+          return $request;
+     }
 
-          $pdf->Cell(24, 4, mb_convert_encoding($request['TipoDocumento'] . ' v4.3', 'UTF-8'), 0, 1, 'L');
-          $pdf->Cell(8, 4, "Clave", 0, 0, 'L');
-          $pdf->Cell(24, 4, '506-DMA-603820149' . $request['nfactura'] . '-SCE-CS', 0, 1, 'L');
-          $pdf->Cell(15, 4, "Consecutivo", 0, 0, 'L');
-          $pdf->Cell(24, 4, $request['nfactura'], 0, 1, 'L');
-          $pdf->Cell(8, 4, "Fecha", 0, 0, 'L');
-          $pdf->Cell(2, 4, $request['fecha'], 0, 1, 'L');
+     public static function selectFormaPago()
+     {
+          $crud = new Crud();
 
-          $pdf->SetFont('Arial', 'B', 7);
-          $pdf->Cell(1, 3, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", 0, 1, 'L');
-          $pdf->Cell(40, 5, "Cliente", 0, 0, 'L');
-          $pdf->Cell(16, 5, "Teléfono", 0, 0, 'L');
-          $pdf->Cell(25, 5, "Correo", 0, 1, 'L');
-          $pdf->SetFont('Arial', '', 7);
-          $pdf->Cell(40, 3, mb_convert_encoding($request['NombreCliente'], "UTF-8"), 0, 0, 'L');
-          $pdf->Cell(13, 3, mb_convert_encoding($request['Telefono'], "UTF-8"), 0, 0, 'L');
-          $pdf->Cell(23, 3, mb_convert_encoding($request['Email'], "UTF-8"), 0, 1, 'L');
+          $sql = "SELECT COUNT(v.id) AS totalFP, tp.nombre FROM `venta` v INNER JOIN tipo_pago tp ON tp.id = v.tipo_pago GROUP BY v.tipo_pago";
+          $request = $crud->get_AllRegister($sql);
 
-          $pdf->SetFont('Arial', 'B', 7);
-          $pdf->Cell(1, 5, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", 0, 1, 'L');
-          $pdf->Cell(8, 3, 'Cant.', 0, 0, 'L');
-          $pdf->Cell(42, 3, 'Detalle', 0, 0, 'C');
-          $pdf->Cell(15, 3, 'Precio', 0, 0, 'L');
-          $pdf->Cell(15, 3, 'Total', 0, 1, 'L');
-          $pdf->SetFont('Arial', '', 7);
-          for ($i = 0; $i < count($dFactura); $i++) {
-               $pdf->Cell(8, 5, number_format($dFactura[$i]['cantidad'], 2, '.', ','), 0, 0, 'L');
-               $pdf->Cell(42, 5, mb_convert_encoding($dFactura[$i]['name'], 'UTF-8', 'ISO-8859-1'), 0, 0, 'L');
-               $pdf->Cell(11, 5, number_format($dFactura[$i]['preUnitario'], 2, '.', ','), 0, 0, 'R');
-               $pdf->Cell(16, 5, number_format($dFactura[$i]['subtotal'], 2, '.', ',') . $dFactura[$i]['codigo'], 0, 1, 'R');
-          }
-          $pdf->Cell(1, 5, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", 0, 0, 'L');
-
-          $pdf->Ln();
-          $pdf->SetFont('Arial', '', 8);
-          $pdf->Cell(55, 4, 'Subtotal:', 0, 0, 'R');
-          $pdf->Cell(22, 4, number_format($request['m_subtotal'], 2, '.', ','), 0, 1, 'R');
-
-          $pdf->Cell(55, 4, 'IVA:', 0, 0, 'R');
-          $pdf->Cell(22, 4, number_format($request['m_iva'], 2, '.', ','), 0, 1, 'R');
-
-          $pdf->SetFont('Arial', 'B', 10);
-          $pdf->Cell(55, 4, 'Total CRC:', 0, 0, 'R');
-          $pdf->Cell(22, 4, number_format($request['m_total'], 2, '.', ','), 0, 1, 'R');
-          $pdf->Ln();
-
-          $pdf->SetFont('Arial', '', 7);
-          $pdf->Cell(1, 3, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", 0, 1, 'L');
-          $pdf->Cell(22, 4, 'FORMA PAGO:', 0, 0, 'R');
-          $pdf->Cell(20, 4, mb_convert_encoding($request['tipo_pago'], "UTF-8"), 0, 0, 'L');
-          $pdf->Cell(16, 4, 'CONDICION:', 0, 0, 'L');
-          $pdf->Cell(5, 4, mb_convert_encoding($condicion, "UTF-8"), 0, 1, 'L');
-          $pdf->Cell(22, 4, 'PAGA CON:', 0, 0, 'R');
-          $pdf->Cell(20, 4, mb_convert_encoding($pagaCon, "UTF-8"), 0, 0, 'L');
-          $pdf->Cell(16, 4, 'VUELTO:', 0, 0, 'L');
-          $pdf->Cell(5, 4, mb_convert_encoding($Vuelto, "UTF-8"), 0, 1, 'L');
-          $pdf->Cell(1, 3, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", 0, 1, 'L');
-
-          $sql = "SELECT * FROM impuesto";
-          $impuesto = $crud->get_AllRegister($sql);
-
-          for ($i = 0; $i < count($impuesto); $i++) {
-               $pdf->Cell(15, 4, $impuesto[$i]['codigo'] . ': ' . $impuesto[$i]['valor'] . '%', 0, 0, 'C');
-          }
-          $pdf->Ln();
-          $pdf->Cell(1, 3, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", 0, 1, 'L');
-
-          $pdf->SetFont('Arial', '', 8);
-          $pdf->Cell(80, 5, mb_convert_encoding('*** GRACIAS POR SU VISITA ***', "UTF-8"), 0, 1, 'C');
-          $pdf->Cell(80, 5, mb_convert_encoding('*** RESOLUCION DGT-R-033-2019 ***', "UTF-8"), 0, 1, 'C');
-
-          if ($pdf->Output('assets/facturas/', 'factura-' . $request["nfactura"] . '.pdf', 'F')) {
-               $pdf->Output('assets/facturas/', 'factura-' . $request["nfactura"] . '.pdf', 'I');
-          }
+          return $request;
      }
 }

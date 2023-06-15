@@ -10,6 +10,7 @@ class ComposerStaticInit09c364028ea739cdc0b51f5c9fdacdd1
         'P' => 
         array (
             'Picqer\\Barcode\\' => 15,
+            'PHPMailer\\PHPMailer\\' => 20,
         ),
     );
 
@@ -18,10 +19,10 @@ class ComposerStaticInit09c364028ea739cdc0b51f5c9fdacdd1
         array (
             0 => __DIR__ . '/..' . '/picqer/php-barcode-generator/src',
         ),
-    );
-
-    public static $fallbackDirsPsr0 = array (
-        0 => __DIR__ . '/..' . '/dsiddharth2/php-zxing/src',
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
+        ),
     );
 
     public static $classMap = array (
@@ -33,7 +34,6 @@ class ComposerStaticInit09c364028ea739cdc0b51f5c9fdacdd1
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit09c364028ea739cdc0b51f5c9fdacdd1::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit09c364028ea739cdc0b51f5c9fdacdd1::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr0 = ComposerStaticInit09c364028ea739cdc0b51f5c9fdacdd1::$fallbackDirsPsr0;
             $loader->classMap = ComposerStaticInit09c364028ea739cdc0b51f5c9fdacdd1::$classMap;
 
         }, null, ClassLoader::class);

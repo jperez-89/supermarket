@@ -314,9 +314,10 @@ class Facturacion extends Controllers
 
                     if ($request > 0) {
                          $response = FacturacionModel::updateNumeroFactura($Factura['id'], $nDocumento);
+                         $emailCliente = $Factura['Email'];
 
                          if ($response > 0) {
-                              $arrResponse = array('status' => true, 'msg' => 'Datos Guardados', 'nfactura' => $nDocumento);
+                              $arrResponse = array('status' => true, 'msg' => 'Datos Guardados', 'nfactura' => $nDocumento, 'emailCliente' => $emailCliente);
                          } else {
                               $arrResponse = array('status' => false, 'msg' => 'No se genero # de factura');
                          }
@@ -366,10 +367,14 @@ class Facturacion extends Controllers
                                              <button onclick=verFacturaPDF("' . strClean($arrdatos[$i]['nfactura']) . '") class="btn btn-danger2" title:"Ver PDF">
                                                   <i class="far fa-file-pdf"></i>
                                              </button>
-                                             <button onclick="fntReenviarFactura(' . $arrdatos[$i]['id'] . ')" class="btn btn-success2" title:"Reenviar Factura">
+                                             <button onclick=fntReenviarFactura("' . strClean($arrdatos[$i]['nfactura']) . '","' . strClean($arrdatos[$i]['Email']) . '") class="btn btn-success2" title:"Reenviar Factura">
                                                   <i class="fas fa-mail-bulk"></i>
                                              </button>
                                         </div>';
+
+                    // <button onclick=fntReenviarFactura("' . strClean($arrdatos[$i]['nfactura']) . '") class="btn btn-success2" title:"Reenviar Factura">
+                    //      <i class="fas fa-mail-bulk"></i>
+                    // </button>
 
                     switch ($arrdatos[$i]['tipo_pago']) {
                          case 'E':
@@ -416,6 +421,47 @@ class Facturacion extends Controllers
           $Vuelto = $_GET['v'];
 
           $request = FacturacionModel::generarPDF($idVenta, $pagaCon, $Vuelto);
+          die();
+     }
+
+     public function enviarFactura()
+     {
+          if (isset($_POST)) {
+               require_once("Libraries/Core/correo.php");
+               $emailCliente = $_POST['emailCliente'];
+               $nFactura = $_POST['nFactura'];
+
+               $dirFactura = 'assets/facturas/factura-' . $nFactura . '.pdf';
+
+               $envio = correo2($emailCliente, 'Envio de Factura ' . $nFactura, '<h1>Estimado/a usuario</h1> <br>En el siguiente correo te adjuntamos la factura correspondiente a tu compra. ¡Te deseamos mchas bendiciones!<br><br> Vuelve pronto!', $dirFactura);
+
+               if ($envio) {
+                    $arrdatos = array('status' => true, 'msg' => 'Factura enviada');
+               } else {
+                    $arrdatos = array('status' => false, 'msg' => 'Error al enviar la factura');
+               }
+          } else {
+               $arrdatos = array('status' => false, 'msg' => 'Faltan datos');
+          }
+
+          echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
+          die();
+     }
+
+     // -------------------> Funciones Modulo Dashboard <----------------------
+     public function getFacturasEmitidas()
+     {
+          $arrdatos = FacturacionModel::selectFacturasEmitidas();
+
+          echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
+          die();
+     }
+
+     public function getFormaPago()
+     {
+          $arrdatos = FacturacionModel::selectFormaPago();
+
+          echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
           die();
      }
 }
