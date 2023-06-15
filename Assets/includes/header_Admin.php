@@ -23,7 +23,9 @@
 
      <!-- Animate CSS-->
      <link rel="stylesheet" type="text/css" href="<?php echo media() ?>css/animate-4.1.1.min.css">
-     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" /> -->
+
+     <!-- Font Awesome CSS-->
+     <link rel="stylesheet" type="text/css" href="<?php echo media() ?>css/fontawesome-6.4.0-all.css">
 </head>
 
 <body class="app sidebar-mini ">
