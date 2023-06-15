@@ -8,6 +8,7 @@
 :root {
   --barColor: #313a46;
   --backgroudColor: #fafbfe;
+  --bg-color: rgba(21, 190, 241, 0.082) !important;
   --blue: #007bffb9;
   --blue2: #104274;
   --blue-dark: #112d49;
@@ -36,8 +37,10 @@
   --bg-color-danger-light: rgba(255, 91, 91, .18);
   --color-success-light: #10c469 !important;
   --bg-color-success-light: rgba(16, 196, 105, .18);
-  --color-info-light: #35b8e0 !important;
+  /* --color-info-light: #35b8e0 !important; */
+  --color-info-light: #05b0e4 !important;
   --bg-color-info-light: rgba(53, 184, 224, .18);
+  --bg-color-info: rgba(72, 194, 231, 0.233);
   --color-warning-light: #f9c851 !important;
   --bg-color-warning-light: rgba(249, 200, 81, .18);
   --breakpoint-xs: 0;
@@ -58,7 +61,6 @@
 }
 
 html {
-  font-family: var(--font-family-sans-serif);
   line-height: 1.15;
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -84,7 +86,7 @@ body {
   font-weight: 400;
   line-height: 1.5;
   text-align: left;
-  background-color: var(--backgroudColor);
+  background-color: var(--bg-color);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -16127,7 +16129,7 @@ be a descendant of the grid when it is being dragged.
   min-height: calc(100vh - 50px);
   margin-top: 50px;
   padding: 15px;
-  background-color: var(--backgroudColor);
+  /* background-color: var(--backgroudColor); */
   -webkit-transition: margin-left 0.3s ease;
   -o-transition: margin-left 0.3s ease;
   transition: margin-left 0.3s ease;
@@ -16233,7 +16235,7 @@ be a descendant of the grid when it is being dragged.
 
 .app-sidebar__toggle {
   padding: 0 15px;
-  font-family: fontAwesome;
+  /* font-family: fontAwesome; */
   color: var(--white);
   line-height: 2.4;
   -webkit-transition: background-color 0.3s ease;
@@ -16572,7 +16574,7 @@ be a descendant of the grid when it is being dragged.
   align-items: center;
   padding: 5px 5px 5px 20px;
   font-size: 1em;
-  color: var(--secondary);
+  color: var(--color-info-light);
 }
 
 .treeview-item.active,
@@ -16580,6 +16582,8 @@ be a descendant of the grid when it is being dragged.
 .treeview-item:focus {
   text-decoration: none;
   color: var(--color-info-light);
+  background-color: var(--bg-color-info);
+  border-radius: 30px;
 }
 
 .treeview-item .icon {

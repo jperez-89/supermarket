@@ -26,11 +26,11 @@
                <ul class="treeview-menu">
                     <li>
                          <a class="treeview-item" href="<?= base_url() ?>facturacion/nueva_venta" rel="noopener">
-                              <i class="icon fa fa-circle-o"></i>Nueva Venta
+                              <i class="icon fa fa-circle-chevron-right"></i>Nueva Venta
                          </a>
                     </li>
                     <li>
-                         <a class="treeview-item" href="<?= base_url() ?>facturacion/facturas"><i class="icon fa fa-circle-o"></i>Ver Ventas</a>
+                         <a class="treeview-item" href="<?= base_url() ?>facturacion/facturas"><i class="icon fa fa-circle-chevron-right"></i>Ver Ventas</a>
                     </li>
                </ul>
           </li>
@@ -68,11 +68,11 @@
                </a>
                <ul class="treeview-menu">
                     <li>
-                         <a class="treeview-item" href="<?= base_url() ?>usuarios"><i class="icon fa fa-circle-o"></i>Usuarios</a>
+                         <a class="treeview-item" href="<?= base_url() ?>usuarios"><i class="icon fa fa-circle-chevron-right"></i>Usuarios</a>
                     </li>
                     <li>
                          <a class="treeview-item" href="<?= base_url() ?>roles" target="" rel="noopener">
-                              <i class="icon fa fa-circle-o"></i>Roles de usuario
+                              <i class="icon fa fa-circle-chevron-right"></i>Roles de usuario
                          </a>
                     </li>
                </ul>
