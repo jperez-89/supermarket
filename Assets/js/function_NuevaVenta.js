@@ -695,7 +695,6 @@ function PagoRecibido() {
 function guardarDatos(pagaCon, vuelto, nComprobante) {
      const frmFacturacion = document.querySelector("#frmFacturacion");
      const frmDatos = new FormData(frmFacturacion);
-     pfrm(frmDatos); return false;
      const url = `${base_url}facturacion/insertEncaFactura`
      const response = fnt_Fetch(url, 'post', frmDatos);
      response.then((res) => {
