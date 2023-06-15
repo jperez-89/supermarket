@@ -1,5 +1,6 @@
 @charset "UTF-8";
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap'); */
+@import url('/Assets/css/Fonts-Poppins.css');
 
 /*!
  * Bootstrap v4.3.1 (https://getbootstrap.com/)
@@ -5797,8 +5798,8 @@ color: #009688;
 
 .badge {
   display: inline-block;
-  padding: 0.25em 0.4em;
-  font-size: 75%;
+  padding: 0.25rem 0.4rem;
+  font-size: 13px;
   font-weight: 700;
   line-height: 1;
   text-align: center;
@@ -17185,7 +17186,8 @@ be a descendant of the grid when it is being dragged.
   left: 0;
   width: 100%;
   height: 380px;
-  background: url(https://media.geeksforgeeks.org/wp-content/uploads/20200326181026/wave3.png);
+  /* background: url(https: //media.geeksforgeeks.org/wp-content/uploads/20200326181026/wave3.png); */
+  background: url('/assets/images/wave3.png');
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -18250,7 +18252,7 @@ primary:focus {
 }
 
 .colored-toast.swal2-icon-success {
-  background-color: var(--color-info-light) !important;
+  background-color: var(--color-success-light) !important;
 }
 
 .colored-toast.swal2-icon-error {
