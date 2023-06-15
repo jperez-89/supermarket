@@ -91,6 +91,20 @@ async function swalConfirmed(text, icon) {
 	return res;
 }
 
+async function swalEnviarFactura(title, text, icon) {
+	var res = await Swal.fire({
+		title: title,
+		text: text,
+		icon: icon,
+		confirmButtonText: "Sí",
+		confirmButtonColor: '#35b8e0',
+		showCancelButton: true,
+		cancelButtonText: 'No',
+		allowOutsideClick: false
+	})
+	return res;
+}
+
 function generarPDF(idVenta, pagaCon, Vuelto) {
 	url = `${base_url}facturacion/generarPDF/&iv=${idVenta}&pc=${pagaCon}&v=${Vuelto}`;
 	window.open(url, 'blank');
@@ -99,6 +113,27 @@ function generarPDF(idVenta, pagaCon, Vuelto) {
 function verFacturaPDF(idVenta) {
 	url = `${base_url}assets/facturas/factura-${idVenta}.pdf`;
 	window.open(url, '_blank');
+}
+
+function enviarFacturaPDF(emailCliente, nFactura) {
+	url = `${base_url}facturacion/enviarFactura`;
+	const frm = new FormData();
+	frm.append('emailCliente', emailCliente);
+	frm.append('nFactura', nFactura);
+
+	const response = fnt_Fetch(url, 'post', frm);
+	response.then((res) => {
+		if (res.status) {
+			const msg = swalConfirmed(res.msg, "success");
+			msg.then((res) => {
+				if (res) {
+					location.reload();
+				}
+			})
+		} else {
+			swal('', res.msg, "error");
+		}
+	});
 }
 
 function BuscarCliente(Identificacion) {
