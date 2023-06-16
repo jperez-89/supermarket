@@ -20,28 +20,30 @@
      <section class="material-half-bg">
           <section class="login-content animate__animated animate__bounce">
                <div class="logo">
-                    <h1 style="font-family: sans-serif;"><?php echo $data["page_name"] ?></h1>
+                    <h1><?php echo $data["page_name"] ?></h1>
                </div>
                <div class="login-box">
                     <!-- FORM RESET LOGIN -->
                     <form id="frmLogin" name="frmLogin" class="login-form" action="">
                          <div class="form-group">
-                              <label for="txtUsername" class="control-label">USUARIO</label>
-                              <input class="form-control" id="txtUsername" name="txtUsername" type="text" placeholder="Usuario" autocomplete="off">
+                              <label for="txtUsername" class="control-label">Usuario</label>
+                              <input class="form-control" id="txtUsername" name="txtUsername" type="text" placeholder="Identificación" autocomplete="off">
                          </div>
                          <div class="form-group">
-                              <label for="txtPassword" class="control-label">CONTRASEÑA</label>
+                              <label for="txtPassword" class="control-label">Contraseña</label>
                               <input class="form-control" id="txtPassword" name="txtPassword" type="password" placeholder="Contraseña" autocomplete="off">
-                              <i class="fa fa-eye" style="position: relative;top: -26px;right: 10px;float: right;font-size: 16px;" onclick="if($('#txtPassword').attr('type')=='text'){$('#txtPassword').attr('type','password');$(this).attr('class','fa fa-eye');}else{$('#txtPassword').attr('type','text');$(this).attr('class','fa fa-eye-slash');}"></i>
+                              <i class="fa fa-eye text-muted" style="position: relative;top: -25px;right: 10px;float: right;font-size: 16px;" onclick="if($('#txtPassword').attr('type')=='text'){$('#txtPassword').attr('type','password');$(this).attr('class','fa fa-eye text-muted');}else{$('#txtPassword').attr('type','text');$(this).attr('class','fa fa-eye-slash text-muted');}"></i>
                          </div>
-                         <div class="form-group">
-                              <div class="utility">
-                                   <p class="semibold-text mb-2"><a href="#" data-toggle="flip">Olvidó su contraseña?</a></p>
-                              </div>
-                         </div>
+
                          <div id="alertLogin" class="text-center"></div>
                          <div class="form-group btn-container">
                               <button type="submit" class="btn btn-primary2 btn-block"><i class="fa fa-sign-in fa-lg fa-fw"></i>Iniciar sesión</button>
+                         </div>
+
+                         <div class="utility">
+                              <a href="#" data-toggle="flip">
+                                   <p>Olvidó su contraseña?</p>
+                              </a>
                          </div>
                     </form>
 
@@ -49,14 +51,16 @@
                     <form class="forget-form" action="#">
                          <h3 class="login-head"><i class="fa fa-lg fa-fw fa-lock"></i>Olvidó su contraseña?</h3>
                          <div class="form-group">
-                              <label for="txtEmailReset" class="control-label">EMAIL</label>
+                              <label for="txtEmailReset" class="control-label">Correo Electrónico</label>
                               <input id="txtEmailReset" name="txtEmailReset" class="form-control" type="email" placeholder="Correo electrónico">
                          </div>
                          <div class="form-group btn-container">
-                              <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-unlock fa-lg fa-fw"></i>RESETEAR</button>
+                              <button type="submit" class="btn btn-primary2 btn-block"><i class="fa fa-mail-forward fa-lg fa-fw"></i>Enviar email</button>
                          </div>
                          <div class="form-group mt-3">
-                              <p class="semibold-text mb-0"><a href="#" data-toggle="flip"><i class="fa fa-angle-left fa-fw"></i> INICIAR SESIÓN</a></p>
+                              <a href="#" data-toggle="flip">
+                                   <p><i class="fa fa-angle-left fa-fw"></i> Iniciar Sesion</p>
+                              </a>
                          </div>
                     </form>
                </div>

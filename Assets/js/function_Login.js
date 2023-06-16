@@ -18,12 +18,12 @@ document.addEventListener(
 
         if (usuario == "") {
           txtUsername.focus();
-          swal("Por favor", "Ingrese su usuario", "error");
+          swal("", "Digite su usuario", "info");
           return false;
 
         } else if (password == "") {
           txtPassword.focus();
-          swal("Por favor", "Ingrese su contraseña", "error");
+          swal("", "Digite su contraseña", "info");
           return false;
 
         } else {
@@ -35,7 +35,7 @@ document.addEventListener(
             if (data.status) {
               window.location = `${base_url}dashboard`;
             } else {
-              swal("Error", data.msg, "error");
+              swal("", data.msg, "error");
             }
           })
         }

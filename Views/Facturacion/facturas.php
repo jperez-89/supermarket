@@ -3,11 +3,7 @@
 <!-- CONTENIDO PRICIPAL -->
 <main class="app-content animate__animated animate__headShake">
      <div class="app-title">
-          <div>
-               <h1>
-                    <i class="fas fa-file-invoice-dollar"></i> <?= $data['page_name'] ?>
-               </h1>
-          </div>
+          <h1><?= $data['page_name'] ?></h1>
           <ul class="app-breadcrumb breadcrumb">
                <li class="breadcrumb-item"><a href="<?= base_url(); ?>dashboard"><i class="fa fa-home fa-lg"></i></a></li>
                <li class="breadcrumb-item"><a href="<?= base_url(); ?>facturacion/facturas"> Facturas</a></li>

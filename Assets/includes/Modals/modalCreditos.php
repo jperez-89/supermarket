@@ -13,9 +13,9 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
+                                        <input type="hidden" name="idCliente" id="idCliente" value="0">
                                         <label for="txtIdentificacion" class="control-label">Identificación</label>
                                         <div class="input-group">
-                                            <input type="hidden" name="idCliente" id="idCliente" value="0">
                                             <input type="text" class="form-control" id="txtIdentificacion" name="txtIdentificacion" maxlength="10" placeholder="Número de indentificación">
                                         </div>
                                         <ul class="list1 w-100" id="listaIdentificacion" style="display: none;"></ul>

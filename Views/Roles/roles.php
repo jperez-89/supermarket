@@ -4,10 +4,7 @@
 <main class="app-content animate__animated animate__headShake ">
      <div class="app-title">
           <div class="flex-center">
-               <h1><i class="fas fa-user-tag"></i> <?= $data['page_name'] ?>
-               </h1>
-               <button class="btn btn-primary2 ml-2" type="button" onclick="OpenModal()"><i class="fas fa-plus-circle" data-toggle="modal" data-target="#modalRoles"> </i> Nuevo Rol</button>
-
+               <h1><?= $data['page_name'] ?></h1>
           </div>
           <ul class="app-breadcrumb breadcrumb">
                <li class="breadcrumb-item"><a href="<?= base_url(); ?>dashboard"><i class="fa fa-home fa-lg"></i></a></li>
@@ -17,6 +14,7 @@
      <div class="row">
           <div class="col-md-12">
                <div class="tile">
+                    <button onclick="OpenModal();" type="button" class="btn text-muted" data-toggle="modal" data-target="#modalRoles"><i class="fas fa-plus-circle"></i> Nuevo Rol</button>
                     <div class="table-responsive">
                          <table class="table table-centered table-sm" id="tblRoles" style="width: 100%;">
                               <thead>

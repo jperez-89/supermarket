@@ -31,7 +31,9 @@
 <body class="app sidebar-mini ">
      <!-- Navbar-->
      <header class="app-header">
-          <a class="app-header__logo" href="<?php echo base_url() ?>">SuperMarket</a>
+          <div class="app-header__logo">
+               <a href="<?php echo base_url() ?>">SuperMarket</a>
+          </div>
 
           <!-- Sidebar toggle button-->
           <a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
@@ -41,7 +43,7 @@
                <div class="dropdown">
                     <a id="userDrop" href="#" role="button" data-toggle="dropdown" class="nav-link" aria-haspopup="true" aria-expanded="false">
                          <span id="nombre" class="font-weight-bold text-white"> <?php echo $_SESSION['name'] ?> </span>
-                         <img class=" settings" src="<?= media(); ?>images/avatar.png" alt="User Image">
+                         <img class="settings" src="<?= media(); ?>images/avatar1.png" alt="User Image">
                     </a>
 
                     <div aria-labelledby="userDrop" class="dropdown-menu dropdown-menu-right shadow">

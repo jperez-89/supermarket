@@ -3,11 +3,7 @@
 <!-- CONTENIDO PRICIPAL -->
 <main class="app-content animate__animated animate__headShake">
      <div class="app-title">
-          <div>
-               <h1>
-                    <i class="fas fa-shopping-cart"></i> <?= $data['page_name'] ?>
-               </h1>
-          </div>
+          <h1><?= $data['page_name'] ?></h1>
           <ul class="app-breadcrumb breadcrumb">
                <li class="breadcrumb-item"><a href="<?= base_url(); ?>dashboard"><i class="fa fa-home fa-lg"></i></a></li>
                <li class="breadcrumb-item"><a href="#"><i class=""></i>Ventas</a></li>
@@ -95,7 +91,7 @@
 
           <div class="col-md-3">
                <div class="card tile">
-                    <div class="text-center">
+                    <div class="text-center total">
                          <h1 class="text-center text-uppercase">Total Factura </h1>
                          <h1 id="totalFacturaLbl" class="text-center mt-0">0.00</h1>
                     </div>

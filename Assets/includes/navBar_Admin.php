@@ -26,11 +26,11 @@
                <ul class="treeview-menu">
                     <li>
                          <a class="treeview-item" href="<?= base_url() ?>facturacion/nueva_venta" rel="noopener">
-                              <i class="icon fa fa-circle-chevron-right"></i>Nueva Venta
+                              <i class="icon fa fa-circle-chevron-right"></i>Nueva venta
                          </a>
                     </li>
                     <li>
-                         <a class="treeview-item" href="<?= base_url() ?>facturacion/facturas"><i class="icon fa fa-circle-chevron-right"></i>Ver Ventas</a>
+                         <a class="treeview-item" href="<?= base_url() ?>facturacion/facturas"><i class="icon fa fa-circle-chevron-right"></i>Ver ventas</a>
                     </li>
                </ul>
           </li>
@@ -52,11 +52,22 @@
           </li>
 
           <!-- PRODUCTOS --------------------------------------- -->
-          <li>
-               <a class="app-menu__item" href="<?= base_url() ?>productos">
+          <li class="treeview">
+               <a class="app-menu__item" href="#" data-toggle="treeview">
                     <i class="app-menu__icon fas fa-gifts"></i>
                     <span class="app-menu__label">Productos</span>
+                    <i class="treeview-indicator fa fa-angle-right"></i>
                </a>
+               <ul class="treeview-menu">
+                    <li>
+                         <a class="treeview-item" href="<?= base_url() ?>productos" rel="noopener">
+                              <i class="icon fa fa-circle-chevron-right"></i>Agregar Producto
+                         </a>
+                    </li>
+                    <li>
+                         <a class="treeview-item" href="<?= base_url() ?>productos/unidad_medida"><i class="icon fa fa-circle-chevron-right"></i>Unidad de medida</a>
+                    </li>
+               </ul>
           </li>
 
           <!-- USUARIOS --------------------------------------- -->

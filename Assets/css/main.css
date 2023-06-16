@@ -1,6 +1,7 @@
 @charset "UTF-8";
 /* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap'); */
-@import url('/Assets/css/Fonts-Poppins.css');
+@import 'https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap';
+/* @import url('/Assets/css/Fonts-Poppins.css'); */
 
 /*!
  * Bootstrap v4.3.1 (https://getbootstrap.com/)
@@ -8,7 +9,9 @@
 :root {
   --barColor: #313a46;
   --backgroudColor: #fafbfe;
-  --bg-color: rgba(21, 190, 241, 0.082) !important;
+  /* --bg-color: rgba(21, 190, 241, 0.082) !important; */
+  --bg-color-body: #ebf3ff !important;
+  --bg-color-sidebar: #081A51 !important;
   --blue: #007bffb9;
   --blue2: #104274;
   --blue-dark: #112d49;
@@ -33,6 +36,7 @@
   --danger: #dc3545;
   --light: #f8f9fa;
   --dark: #343a40;
+  --color-titulos: #25396f !important;
   --color-danger-light: #ff5b5b !important;
   --bg-color-danger-light: rgba(255, 91, 91, .18);
   --color-success-light: #10c469 !important;
@@ -50,8 +54,6 @@
   --breakpoint-xl: 1200px;
   --font-family-sans-serif: "Poppins", sans-serif;
 }
-
-
 
 *,
 *::before,
@@ -80,13 +82,14 @@ section {
 }
 
 body {
-  font-family: var(--font-family-sans-serif);
+  font-family: Nunito;
+  /* font-family: var(--font-family-sans-serif); */
   margin: 0;
   font-size: 0.9rem;
   font-weight: 400;
   line-height: 1.5;
   text-align: left;
-  background-color: var(--bg-color);
+  background-color: var(--bg-color-body);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -176,7 +179,7 @@ sup {
 }
 
 a {
-  color: var(--color-info-light);
+  color: var(--bg-color-sidebar);
   /* color: var(--gray); */
   text-decoration: none;
   background-color: transparent;
@@ -5672,7 +5675,7 @@ input[type="button"].btn-block {
   padding: 0.75rem 1rem;
   margin-bottom: 1rem;
   list-style: none;
-  background-color: #e9ecef;
+  /* background-color: #e9ecef; */
   border-radius: 0.25rem;
   /* color: var(--cyan); */
 }
@@ -16120,6 +16123,7 @@ be a descendant of the grid when it is being dragged.
     left: 0;
   }
 
+
   .app.sidenav-toggled .app-sidebar__overlay {
     visibility: visible;
   }
@@ -16185,9 +16189,8 @@ be a descendant of the grid when it is being dragged.
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  color: var(--color-info-light);
-  background-color: var(--color-info-light);
-  /* background-color: var(--info); */
+  /* color: var(--white); */
+  background-color: var(--bg-color-sidebar);
   z-index: 1030;
   padding-right: 10px;
 }
@@ -16210,11 +16213,14 @@ be a descendant of the grid when it is being dragged.
   flex: 1 0 auto;
   color: #fff;
   text-align: center;
-  font-family: var(--font-family-sans-serif);
   padding: 0 15px;
   font-size: 26px;
-  font-weight: 400;
+  font-weight: 700;
   line-height: 50px;
+}
+
+.app-header__logo a {
+  color: var(--bg-color-body);
 }
 
 @media (min-width: 768px) {
@@ -16227,15 +16233,15 @@ be a descendant of the grid when it is being dragged.
   }
 }
 
-.app-header__logo:focus,
-.app-header__logo:hover {
+.app-header__logo a:focus,
+.app-header__logo a:hover {
   text-decoration: none;
-  color: #fff;
+  color: var(--bg-color-body);
 }
 
 .app-sidebar__toggle {
   padding: 0 15px;
-  /* font-family: fontAwesome; */
+  font-family: fontAwesome;
   color: var(--white);
   line-height: 2.4;
   -webkit-transition: background-color 0.3s ease;
@@ -16251,6 +16257,12 @@ be a descendant of the grid when it is being dragged.
   }
 }
 
+@media (min-width: 768px) {
+  .app-sidebar__toggle {
+    display: none;
+  }
+}
+
 .app-sidebar__toggle:before {
   content: "\f0c9";
   font-size: 21px;
@@ -16259,7 +16271,6 @@ be a descendant of the grid when it is being dragged.
 .app-sidebar__toggle:focus,
 .app-sidebar__toggle:hover {
   color: var(--white);
-  background-color: var(--color-info-light);
   text-decoration: none;
 }
 
@@ -16429,7 +16440,8 @@ be a descendant of the grid when it is being dragged.
   margin-top: 58px;
   margin-bottom: 10px;
   background-color: var(--white);
-  border-radius: 30px;
+  /* background-color: var(--bg-color-sidebar); */
+  border-radius: 0.900rem;
 
   -webkit-box-shadow: 0px 8px 17px rgba(0, 0, 0, 0.2);
   box-shadow: 0px 8px 17px rgba(0, 0, 0, 0.2);
@@ -16507,15 +16519,9 @@ be a descendant of the grid when it is being dragged.
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  padding: 12px 15px;
+  padding: 14px 10px;
   font-size: 1.08em;
-  border-left: 3px solid transparent;
-  /*-webkit-transition: border-left-color 0.3s ease,
-    background-color 0.3s ease;
-  -o-transition: border-left-color 0.3s ease,
-    background-color 0.3s ease;
-  transition: border-left-color 0.3s ease,
-    background-color 0.3s ease;*/
+  font-weight: 600;
   color: var(--gray);
 }
 
@@ -16524,8 +16530,9 @@ be a descendant of the grid when it is being dragged.
 .app-menu__item:focus {
   text-decoration: none;
   color: var(--white);
-  background-color: var(--color-info-light);
-  border-radius: 30px;
+  /* background-color: var(--color-info-light); */
+  background-color: var(--bg-color-sidebar);
+  border-radius: 0.900rem;
 }
 
 .app-menu__icon {
@@ -16533,6 +16540,8 @@ be a descendant of the grid when it is being dragged.
   -ms-flex: 0 0 auto;
   flex: 0 0 auto;
   width: 25px;
+  margin-right: 10px;
+  margin-left: 0;
 }
 
 .app-menu__label {
@@ -16544,6 +16553,8 @@ be a descendant of the grid when it is being dragged.
 
 .treeview.is-expanded [data-toggle='treeview'] {
   color: var(--white);
+  background-color: var(--bg-color-sidebar);
+  border-radius: 0.900rem;
 }
 
 .treeview.is-expanded .treeview-menu {
@@ -16574,7 +16585,7 @@ be a descendant of the grid when it is being dragged.
   align-items: center;
   padding: 5px 5px 5px 20px;
   font-size: 1em;
-  color: var(--color-info-light);
+  color: var(--bg-color-sidebar);
 }
 
 .treeview-item.active,
@@ -16582,7 +16593,7 @@ be a descendant of the grid when it is being dragged.
 .treeview-item:focus {
   text-decoration: none;
   color: var(--color-info-light);
-  background-color: var(--bg-color-info);
+  background-color: var(--bg-color-body);
   border-radius: 30px;
 }
 
@@ -16752,6 +16763,7 @@ be a descendant of the grid when it is being dragged.
   -ms-flex-direction: row;
   flex-direction: row;
   padding: 10px;
+  margin-bottom: 1rem;
 }
 
 .app-body {
@@ -16780,8 +16792,9 @@ be a descendant of the grid when it is being dragged.
 
 .app-title h1 {
   margin: 0;
-  font-size: 24px;
-  font-weight: 400;
+  font-size: 28px;
+  font-weight: 700;
+  color: #25396f;
 }
 
 .app-title p {
@@ -16798,7 +16811,7 @@ be a descendant of the grid when it is being dragged.
 .app-breadcrumb {
   margin-bottom: 0;
   text-align: right;
-  font-weight: 500;
+  font-weight: 700;
   font-size: 13px;
   text-transform: capitalize;
   padding: 0;
@@ -17174,7 +17187,8 @@ be a descendant of the grid when it is being dragged.
 
 .material-half-bg {
   position: relative;
-  background-color: var(--color-info-light);
+  /* background-color: var(--color-info-light); */
+  background-color: var(--bg-color-sidebar);
   height: 100vh;
 }
 
@@ -17321,31 +17335,41 @@ be a descendant of the grid when it is being dragged.
 }
 
 .widget-small {
+  padding: 10px;
+  width: 100%;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   border-radius: 4px;
   color: #FFF;
   margin-bottom: 30px;
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  background-color: var(--backgroudColor);
+  /* -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1); */
+  /* box-shadow: 0 0px 0 rgba(0, 0, 0, 0.1); */
+  /* box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.12); */
 }
 
 .widget-small .icon {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  min-width: 85px;
+  min-width: 30px;
+  padding: 20px;
+  align-items: center;
+  border-radius: 4px 0 0 4px;
+  font-size: 2.5rem;
+  font-weight: 600;
   -webkit-box-align: center;
   -ms-flex-align: center;
-  align-items: center;
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
-  padding: 20px;
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 4px 0 0 4px;
-  font-size: 2.5rem;
+  color: var(--color-titulos);
+}
+
+.widget-small .icon:focus,
+.widget-small .icon:hover {
+  color: var(--bg-color-sidebar);
 }
 
 .widget-small .info {
@@ -17355,39 +17379,46 @@ be a descendant of the grid when it is being dragged.
   padding: 0 20px;
   -ms-flex-item-align: center;
   align-self: center;
+  width: 100%;
+  color: var(--color-info-light);
 }
 
-.widget-small .info h4 {
+.widget-small h4 {
   color: var(--secondary);
   text-transform: uppercase;
   margin: 0;
   margin-bottom: 5px;
-  font-weight: 400;
+  /* font-weight: 600; */
   font-size: 1.1rem;
 }
 
-.widget-small.info p {
-  margin: 0;
-  font-size: 16px;
+.widget-small p {
   color: var(--color-info-light);
+  /* margin: 0; */
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: 1.1rem;
 }
 
-.widget-small.primary p {
+/* .widget-small.primary p {
   margin: 0;
   font-size: 16px;
   color: var(--color-success-light);
+  font-weight: 600;
 }
 
 .widget-small.warning p {
   margin: 0;
   font-size: 16px;
   color: #ffc107;
+  font-weight: 600;
 }
 
 .widget-small.danger p {
   margin: 0;
   font-size: 16px;
   color: var(--color-danger-light);
+  font-weight: 600;
 }
 
 .widget-small.primary {
@@ -17402,16 +17433,16 @@ be a descendant of the grid when it is being dragged.
 .widget-small.primary.coloured-icon .icon {
   background-color: var(--color-success-light);
   color: #fff;
-}
+} */
 
-.widget-small.info {
+/* .widget-small.info {
   background-color: var(--color-info-light);
-}
+} */
 
-.widget-small.info.coloured-icon {
+/* .widget-small.info.coloured-icon {
   background-color: #fff;
   color: #2a2a2a;
-}
+} */
 
 .widget-small.info.coloured-icon .icon {
   background-color: var(--color-info-light);
@@ -17701,25 +17732,25 @@ be a descendant of the grid when it is being dragged.
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
-  min-height: 80vh;
+  min-height: 70vh;
 }
 
 .login-content .logo {
   margin-bottom: 40px;
-  font-family: "Niconne";
   color: #fff;
 }
 
+
 .login-content .logo h1 {
   font-size: 52px;
-  font-weight: 400;
+  font-weight: 600;
 }
 
 .login-content .login-box {
   position: relative;
   min-width: 350px;
   min-height: 320px;
-  background-color: #fff;
+  background-color: var(--white);
   -webkit-box-shadow: 0px 29px 147.5px 102.5px rgba(0, 0, 0, 0.05), 0px 29px 95px 0px rgba(0, 0, 0, 0.16);
   box-shadow: 0px 29px 147.5px 102.5px rgba(0, 0, 0, 0.05), 0px 29px 95px 0px rgba(0, 0, 0, 0.16);
   -webkit-perspective: 800px;
@@ -17727,7 +17758,7 @@ be a descendant of the grid when it is being dragged.
   -webkit-transition: all 0.5s ease-in-out;
   -o-transition: all 0.5s ease-in-out;
   transition: all 0.5s ease-in-out;
-  border-radius: 2rem;
+  border-radius: 0.500rem;
 }
 
 .login-content .login-box .login-head {
@@ -17747,10 +17778,10 @@ be a descendant of the grid when it is being dragged.
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  padding: 1px;
+  padding-top: 1.9rem;
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
-  justify-content: space-between;
+  justify-content: center;
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
@@ -18082,10 +18113,11 @@ be a descendant of the grid when it is being dragged.
   height: 100%;
   padding: 1rem .75rem;
   pointer-events: none;
+  font-weight: 600;
   border: 1px solid transparent;
   transform-origin: 0 0;
   transition: opacity .1s ease-in-out, transform .1s ease-in-out;
-  font-family: var(--font-family-sans-serif);
+  /* font-family: var(--font-family-sans-serif); */
 }
 
 @media (prefers-reduced-motion:reduce) {
@@ -18143,7 +18175,7 @@ be a descendant of the grid when it is being dragged.
 .settings {
   width: 35px;
   padding: 0px;
-  /* margin-top: 6px; */
+  margin-left: 10px;
   border-radius: 50% !important;
 }
 
@@ -18285,4 +18317,13 @@ primary:focus {
 
 .colored-toast .swal2-html-container {
   color: white;
+}
+
+.total {
+  color: var(--color-titulos);
+}
+
+.total h1 {
+  font-weight: 900;
+  font-size: 2rem;
 }

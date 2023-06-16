@@ -4,10 +4,7 @@
 <main class="app-content animate__animated animate__headShake ">
      <div class="app-title">
           <div class='flex-center'>
-               <h1>
-                    <i class="fas fa-users"></i> <?= $data['page_name'] ?>
-               </h1>
-               <button onclick="OpenModal();" type="button" class="btn btn-primary2 ml-2" data-toggle="modal" data-target="#modalCliente"><i class="fas fa-plus-circle"></i> Nuevo Cliente</button>
+               <h1></i> <?= $data['page_name'] ?></h1>
           </div>
           <ul class="app-breadcrumb breadcrumb">
                <li class="breadcrumb-item">
@@ -21,6 +18,7 @@
      <div class="row">
           <div class="col-md-12">
                <div class="tile">
+                    <button onclick="OpenModal();" type="button" class="btn text-muted" data-toggle="modal" data-target="#modalCliente"><i class="fas fa-plus-circle"></i> Nuevo Cliente</button>
                     <div class="table-responsive-sm">
                          <table class="table table-centered table-sm" id="tblClientes" style="width: 100%;">
                               <thead>
