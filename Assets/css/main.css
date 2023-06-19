@@ -17342,11 +17342,14 @@ be a descendant of the grid when it is being dragged.
   display: flex;
   border-radius: 4px;
   color: #FFF;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
   background-color: var(--backgroudColor);
-  /* -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1); */
-  /* box-shadow: 0 0px 0 rgba(0, 0, 0, 0.1); */
-  /* box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.12); */
+  border-bottom: 3px solid var(--color-titulos);
+  transition: all ease-in .320s;
+}
+
+.widget-small:hover {
+  transform: translateY(-8px);
 }
 
 .widget-small .icon {
