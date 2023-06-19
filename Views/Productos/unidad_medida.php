@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="tile">
-                <button onclick="OpenModal();" type="button" class="btn text-muted" data-toggle="modal" data-target="#modalUnidadMedida"><i class="fas fa-plus-circle"></i> Nueva unidad de medida</button>
+                <button type="button" onclick="OpenModal();" class="btn text-muted" data-toggle="modal" data-target="#modalUnidadMedida"><i class="fas fa-plus-circle"></i> Nueva unidad de medida</button>
                 <div class="table-responsive">
                     <table class="table table-centered table-sm w-100" id="tblUnidadMedida">
                         <thead>

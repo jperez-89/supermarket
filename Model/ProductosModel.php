@@ -186,4 +186,80 @@ class ProductosModel extends Crud
           $request = $crud->get_AllRegister($sql);
           return $request;
      }
+
+     public static function insertUnidadMedida(string $unidad, string $nomenclatura, float $equivalencia)
+     {
+          $crud = new Crud();
+
+          $request = self::SearchUnidadByName($unidad);
+
+          if (empty($request)) {
+               $query_insert = "INSERT INTO unidad_medida (unidad, nomenclatura, equivalencia, estado) VALUES (?,?,?,?)";
+               $arrData = array($unidad, $nomenclatura, $equivalencia, 1);
+
+               $request = $crud->Insert_Register($query_insert, $arrData);
+          } else {
+               $request = false;
+          }
+          return $request;
+     }
+
+     public static function updateUnidadMedida(int $idUnidad, string $unidad, string $nomenclatura, float $equivalencia)
+     {
+          $crud = new Crud();
+
+          $request = self::SearchUnidadById($idUnidad);
+
+          if (!empty($request)) {
+               $query_insert = "UPDATE unidad_medida SET unidad = ?, nomenclatura = ?, equivalencia = ? WHERE id = $idUnidad";
+               $arrData = array($unidad, $nomenclatura, $equivalencia);
+
+               $request = $crud->update_Register($query_insert, $arrData);
+          } else {
+               $request = false;
+          }
+          return $request;
+     }
+
+     public static function SearchUnidadByName($unidad)
+     {
+          $crud = new Crud();
+
+          $sql = "SELECT unidad, nomenclatura, equivalencia, estado FROM unidad_medida WHERE unidad COLLATE utf8mb4_spanish_ci = '$unidad'";
+          $request = $crud->get_OneRegister($sql);
+
+          return $request;
+     }
+
+     public static function SearchUnidadById($idUnidad)
+     {
+          $crud = new Crud();
+
+          $sql = "SELECT unidad, nomenclatura, equivalencia, estado FROM unidad_medida WHERE id = $idUnidad";
+          $request = $crud->get_OneRegister($sql);
+
+          return $request;
+     }
+
+     public static function deleteUnidadMedida(int $idUnidad)
+     {
+          $crud = new Crud();
+
+          $sql = "UPDATE unidad_medida SET estado = ? WHERE id = $idUnidad";
+          $arrData = array(0);
+          $request = $crud->update_Register($sql, $arrData);
+
+          return $request;
+     }
+
+     public static function enableUnidadMedida(int $idUnidad)
+     {
+          $crud = new Crud();
+
+          $sql = "UPDATE unidad_medida SET estado = ? WHERE id = $idUnidad";
+          $arrData = array(1);
+          $request = $crud->update_Register($sql, $arrData);
+
+          return $request;
+     }
 }

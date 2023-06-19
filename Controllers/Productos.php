@@ -298,26 +298,101 @@ class Productos extends Controllers
                     $arrdatos[$i]['estado'] = '<span class="badge badge-success">Activo</span>';
 
                     $arrdatos[$i]['options'] = '<div class="flex-center">
-                                             <button onClick="fntEditProduct(' . $arrdatos[$i]['id'] . ')" class="btn btn-primary2">
+                                             <button class="btn btn-primary2 editUnidadMedida">
                                                   <i class="fas fa-pencil-alt"></i>
                                              </button>
-                                             <button onClick="fntDeleteProduct(' . $arrdatos[$i]['id'] . ')" class="btn btn-danger2">
+                                             <button class="btn btn-danger2 deleteUnidadMedida">
                                                   <i class="fas fa-trash"></i>
                                              </button> </div>';
                } else {
                     $arrdatos[$i]['estado'] = ' <span class="badge badge-danger">Inactivo</span>';
 
                     $arrdatos[$i]['options'] = '<div class="flex-center">
-                                             <button onClick="fntEnableProduct(' . $arrdatos[$i]['id'] . ')" class="btn btn-success2">
+                                             <button class="btn btn-success2 enableUnidadMedida">
                                                   <i class="fas fa-sync-alt"></i>
                                              </button>
-                                             <button disabled onClick="fntDeleteProduct(' . $arrdatos[$i]['id'] . ')" class="btn btn-danger2">
+                                             <button disabled class="btn btn-danger2 deleteUnidadMedida">
                                                   <i class="fas fa-trash"></i>
                                              </button> </div>';
                }
           }
 
           echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
+          die();
+     }
+
+     public function setUnidadMedida()
+     {
+          try {
+               $idUnidad = intval($_POST['idUnidadMedida']);
+               $nombreUnidad = strClean($_POST['nombreUnidad']);
+               $nomenclatura = strClean($_POST['nomenclatura']);
+               $equivalencia = floatval($_POST['equivalencia']);
+
+               if ($idUnidad == 0) {
+                    $request = ProductosModel::insertUnidadMedida($nombreUnidad, $nomenclatura, $equivalencia);
+                    $option = 1;
+               } else {
+                    $request = ProductosModel::updateUnidadMedida($idUnidad, $nombreUnidad, $nomenclatura, $equivalencia);
+                    $option = 2;
+               }
+
+               if ($request > 0) {
+                    if ($option == 1) {
+                         $arrResponse = array('status' => true, 'msg' => 'Datos guardados.');
+                    } else {
+                         $arrResponse = array('status' => true, 'msg' => 'Datos actualizados.');
+                    }
+               } else if ($request == 0) {
+                    $arrResponse = array('status' => false, 'msg' => 'Ya existe esa unidad de medida.');
+               } else {
+                    $arrResponse = array('status' => false, 'msg' => 'No es posible almacenar los datos.');
+               }
+          } catch (Throwable $th) {
+               $arrResponse = array('status' => false, 'msg' => 'Error => ' . $th);
+          }
+
+          echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+          die();
+     }
+
+     public function deleteUnidadMedida()
+     {
+          if ($_POST) {
+               try {
+                    $idUnidad = intval($_POST['idUnidad']);
+                    $requestDelete = ProductosModel::deleteUnidadMedida($idUnidad);
+
+                    if ($requestDelete) {
+                         $arrResponse = array('status' => true, 'msg' => 'Unidad de medida deshabilitada');
+                    } else {
+                         $arrResponse = array('status' => false, 'msg' => 'No es posible deshabilitar la unidad de medida');
+                    }
+               } catch (\Throwable $th) {
+                    $arrResponse = array('status' => false, 'msg' => 'Error al deshabilitar la unidad de medida => ' . $th);
+               }
+               echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+          }
+          die();
+     }
+
+     public function enableUnidadMedida()
+     {
+          if ($_POST) {
+               try {
+                    $idUnidad = intval($_POST['idUnidad']);
+                    $requestDelete = ProductosModel::enableUnidadMedida($idUnidad);
+
+                    if ($requestDelete) {
+                         $arrResponse = array('status' => true, 'msg' => 'Unidad de medida habilitada');
+                    } else {
+                         $arrResponse = array('status' => false, 'msg' => 'No es posible habilitar la unidad de medida');
+                    }
+               } catch (\Throwable $th) {
+                    $arrResponse = array('status' => false, 'msg' => 'Error al habilitar la unidad de medida => ', 'error' => $th);
+               }
+               echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+          }
           die();
      }
 
