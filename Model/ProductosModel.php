@@ -153,10 +153,13 @@ class ProductosModel extends Crud
           return $request;
      }
 
-     public function selectUnidadMedida()
+     public static function selectUnidadMedida()
      {
-          $sql = "SELECT unidad, nomenclatura FROM unidad_medida";
-          $request = $this->get_AllRegister($sql);
+          $crud = new Crud();
+
+          $sql = "SELECT id, unidad, nomenclatura, equivalencia, estado FROM unidad_medida";
+          $request = $crud->get_AllRegister($sql);
+
           return $request;
      }
 

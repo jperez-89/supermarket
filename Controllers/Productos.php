@@ -277,6 +277,50 @@ class Productos extends Controllers
           die();
      }
 
+     // -------------------> Funciones Modulo Unidad de Medida <----------------------
+     public function Unidad_Medida()
+     {
+          $data['page_title'] = "Supermarket - Unidad de Medida";
+          $data['page_name'] = "Unidad de medida";
+          $data['page_functions'] = 'js/function_UnidadMedida.js';
+
+          // Hacemos el enlace a la vista
+          $this->views->getViews($this, 'unidad_medida', $data);
+     }
+
+     public function getUnidadesMedida()
+     {
+          $arrdatos = ProductosModel::selectUnidadMedida();
+
+          for ($i = 0; $i < count($arrdatos); $i++) {
+
+               if ($arrdatos[$i]['estado'] == 1) {
+                    $arrdatos[$i]['estado'] = '<span class="badge badge-success">Activo</span>';
+
+                    $arrdatos[$i]['options'] = '<div class="flex-center">
+                                             <button onClick="fntEditProduct(' . $arrdatos[$i]['id'] . ')" class="btn btn-primary2">
+                                                  <i class="fas fa-pencil-alt"></i>
+                                             </button>
+                                             <button onClick="fntDeleteProduct(' . $arrdatos[$i]['id'] . ')" class="btn btn-danger2">
+                                                  <i class="fas fa-trash"></i>
+                                             </button> </div>';
+               } else {
+                    $arrdatos[$i]['estado'] = ' <span class="badge badge-danger">Inactivo</span>';
+
+                    $arrdatos[$i]['options'] = '<div class="flex-center">
+                                             <button onClick="fntEnableProduct(' . $arrdatos[$i]['id'] . ')" class="btn btn-success2">
+                                                  <i class="fas fa-sync-alt"></i>
+                                             </button>
+                                             <button disabled onClick="fntDeleteProduct(' . $arrdatos[$i]['id'] . ')" class="btn btn-danger2">
+                                                  <i class="fas fa-trash"></i>
+                                             </button> </div>';
+               }
+          }
+
+          echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
+          die();
+     }
+
      // -------------------> Funciones Modulo Dashboard <----------------------
      public function getProductosMinimo()
      {

@@ -16,10 +16,10 @@
             <div class="tile">
                 <button onclick="OpenModal();" type="button" class="btn text-muted" data-toggle="modal" data-target="#modalUnidadMedida"><i class="fas fa-plus-circle"></i> Nueva unidad de medida</button>
                 <div class="table-responsive">
-                    <table class="table table-centered table-sm" id="tblUnidadMedida" style="width: 100%;">
+                    <table class="table table-centered table-sm w-100" id="tblUnidadMedida">
                         <thead>
                             <tr>
-                                <th>Id</th>
+                                <th>id</th>
                                 <th>Nombre</th>
                                 <th>Abreviatura</th>
                                 <th>Equivalencia</th>

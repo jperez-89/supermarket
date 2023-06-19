@@ -16,7 +16,7 @@
                <div class="tile">
                     <button onclick="OpenModal();" type="button" class="btn text-muted" data-toggle="modal" data-target="#modalProducto"><i class="fas fa-plus-circle"></i> Nuevo Producto</button>
                     <div class="table-responsive">
-                         <table class="table table-centered table-sm" id="tblProductos" style="width: 100%;">
+                         <table class="table table-centered table-sm w-100" id="tblProductos">
                               <thead>
                                    <tr>
                                         <th>Id</th>
