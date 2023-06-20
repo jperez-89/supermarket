@@ -42,10 +42,10 @@
                          </div>
                          <div class="col-md-2">
                               <div id="add">
-                                   <button id="btnAgregarProducto" class="btn btn-primary2 btn-block" name="btnAgregarProducto" style="height: calc(3rem + 2px);">Agregar</button>
+                                   <button id="btnAgregarProducto" class="btn btn-primaryFac btn-block" name="btnAgregarProducto" style="height: calc(3rem + 2px);">Agregar</button>
                               </div>
                               <div id="update" style="display: none;">
-                                   <button id="btnActualizarProducto" class="btn btn-primary2 btn-block" name="btnActualizarProducto" style="height: calc(3rem + 2px);">Actualizar</button>
+                                   <button id="btnActualizarProducto" class="btn btn-primaryFac btn-block" name="btnActualizarProducto" style="height: calc(3rem + 2px);">Actualizar</button>
                               </div>
                          </div>
                     </div>
@@ -154,7 +154,7 @@
                               </div>
                          </div>
                          <div class="pt-3">
-                              <button style="height: calc(3rem + 2px);" class="btn btn-primary2 btn-block text-uppercase" id="btnFacturar">Facturar</button>
+                              <button style="height: calc(3rem + 2px);" class="btn btn-primaryFac btn-block text-uppercase" id="btnFacturar">Facturar</button>
                          </div>
                     </form>
                </div>

@@ -258,10 +258,10 @@ button {
   border-radius: 0;
 }
 
-button:focus {
+/* button:focus {
   outline: 1px dotted;
   outline: 5px auto -webkit-focus-ring-color;
-}
+} */
 
 input,
 button,
@@ -269,7 +269,7 @@ select,
 optgroup,
 textarea {
   margin: 0;
-  font-family: inherit;
+  /* font-family: inherit; */
   font-size: inherit;
   line-height: inherit;
 }
@@ -2317,7 +2317,7 @@ pre code {
 .form-control:focus {
   color: #495057;
   background-color: #FFF;
-  border-color: var(--color-info-light);
+  border-color: var(--bg-color-sidebar);
   outline: 0;
   -webkit-box-shadow: none;
   box-shadow: none;
@@ -2909,16 +2909,15 @@ textarea.form-control.is-invalid {
   transition: box-shadow 0.3s cubic-bezier(0.35, 0, 0.25, 1), transform 0.2s cubic-bezier(0.35, 0, 0.25, 1), background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, -webkit-box-shadow 0.3s cubic-bezier(0.35, 0, 0.25, 1), -webkit-transform 0.2s cubic-bezier(0.35, 0, 0.25, 1);
 }
 
-@media (prefers-reduced-motion: reduce) {
+/* @media (prefers-reduced-motion: reduce) {
   .btn {
     -webkit-transition: none;
     -o-transition: none;
     transition: none;
   }
-}
+} */
 
 .btn:hover {
-  color: #212529;
   text-decoration: none;
 }
 
@@ -2945,16 +2944,25 @@ fieldset:disabled a.btn {
   border-color: var(--bg-color-info-light);
 }
 
+
 .btn-primary2:hover {
+  /* color: var(--color-titulos);
+  background-color: var(--white);
+  border-color: var(--color-titulos); */
+
   color: var(--color-info-light);
   background-color: #fff;
   border-color: var(--color-info-light);
 }
 
-.btn-primary {
-  color: var(--info);
-  background-color: #fff;
-  border-color: var(--info);
+.btn-primaryFac {
+  color: var(--white);
+  background-color: var(--bg-color-sidebar);
+  border-color: var(--color-titulos);
+}
+
+.btn-primaryFac:hover {
+  color: var(--white);
 }
 
 .btn-primary:hover {
@@ -16731,8 +16739,8 @@ be a descendant of the grid when it is being dragged.
 .btn:not([disabled]):not(.disabled):not(.btn-link):hover,
 .btn:not([disabled]):not(.disabled):not(.btn-link):focus {
   text-decoration: none;
-  -webkit-transform: translate3d(0, -1px, 0);
-  transform: translate3d(0, -1px, 0);
+  /* -webkit-transform: translate3d(0, -1px, 0);
+  transform: translate3d(0, -1px, 0); */
   -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
 }
