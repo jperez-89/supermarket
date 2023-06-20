@@ -47,7 +47,7 @@
                     </a>
 
                     <div aria-labelledby="userDrop" class="dropdown-menu dropdown-menu-right shadow">
-                         <a class="dropdown-item" href="<?php base_url() ?>logout"><i class="fa fa-sign-out fa-lg"></i> Salir</a>
+                         <a class="dropdown-item logout" href="#"><i class="fa fa-sign-out fa-lg"></i> Salir</a>
                     </div>
                </div>
           </ul>

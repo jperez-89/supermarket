@@ -37,7 +37,7 @@
 
                          <div id="alertLogin" class="text-center"></div>
                          <div class="form-group btn-container">
-                              <button type="submit" class="btn btn-primary2 btn-block"><i class="fa fa-sign-in fa-lg fa-fw"></i>Iniciar sesión</button>
+                              <button type="submit" class="btn btn-primaryFac btn-block"><i class="fa fa-sign-in fa-lg fa-fw"></i>Iniciar sesión</button>
                          </div>
 
                          <div class="utility">
@@ -55,7 +55,7 @@
                               <input id="txtEmailReset" name="txtEmailReset" class="form-control" type="email" placeholder="Correo electrónico">
                          </div>
                          <div class="form-group btn-container">
-                              <button type="submit" class="btn btn-primary2 btn-block"><i class="fa fa-mail-forward fa-lg fa-fw"></i>Enviar email</button>
+                              <button type="submit" class="btn btn-primaryFac btn-block"><i class="fa fa-mail-forward fa-lg fa-fw"></i>Enviar email</button>
                          </div>
                          <div class="form-group mt-3">
                               <a href="#" data-toggle="flip">

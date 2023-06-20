@@ -198,3 +198,13 @@ function isNumber(idInput) {
 		}
 	});
 }
+
+$('.logout').click(function (e) {
+	e.preventDefault();
+
+	let a = document.createElement("a");
+	document.body.appendChild(a);
+	a.style = "display: none";
+	a.href = `${base_url}logout`;
+	a.click();
+});
