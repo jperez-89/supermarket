@@ -18244,7 +18244,7 @@ img.pequenafrm {
 }
 
 .headerRegister {
-  background: var(--color-info-light);
+  background: var(--bg-color-sidebar);
   color: #fff;
 }
 
