@@ -29,11 +29,10 @@
                                         <button class="btn btn-secondary cerrarModal" aria-label="Close" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i><span>Cancelar</span></button>
                                         <button id="btnGuardar" class="btn btn-primaryFac" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i><span id="btnText">Guardar</span></button>
                                    </div>
+                              </form>
                          </div>
-                         </form>
                     </div>
                </div>
           </div>
      </div>
-</div>
 </div>
