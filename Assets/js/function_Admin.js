@@ -9,7 +9,9 @@ document.addEventListener("DOMContentLoaded", function () {
   ProductosMinimos();
   CreditoPendientePago()
 
+  FormaPago()
   FacturasEmitidas()
+  VentaUltimos3Meses()
 });
 
 function FechaActual() {
@@ -207,14 +209,13 @@ function FacturasEmitidas() {
         totalFacturas += data[i].totalFacturas;
       }
 
-      chartFacturasEmitidas(nombreTipoDocumento, cantidadTipoDocumento, totalFacturas)
+      chartFacturasEmitidas(nombreTipoDocumento, cantidadTipoDocumento)
     }
   };
 }
 
-function chartFacturasEmitidas(nombreTipoDocumento, cantidadTipoDocumento, totalFacturas) {
+function chartFacturasEmitidas(nombreTipoDocumento, cantidadTipoDocumento) {
   const ctx = document.getElementById('myChart');
-  const ChartFPagoMes = document.getElementById('ChartFPagoMes');
 
   const data = {
     labels: nombreTipoDocumento,
@@ -223,21 +224,13 @@ function chartFacturasEmitidas(nombreTipoDocumento, cantidadTipoDocumento, total
       data: cantidadTipoDocumento,
       backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
-        // 'rgba(255, 159, 64, 0.2)',
-        // 'rgba(255, 205, 86, 0.2)',
         'rgba(75, 192, 192, 0.2)',
-        // 'rgba(54, 162, 235, 0.2)',
         'rgba(153, 102, 255, 0.2)',
-        // 'rgba(201, 203, 207, 0.2)'
       ],
       borderColor: [
         'rgb(255, 99, 132)',
-        // 'rgb(255, 159, 64)',
-        // 'rgb(255, 205, 86)',
         'rgb(75, 192, 192)',
-        // 'rgb(54, 162, 235)',
         'rgb(153, 102, 255)',
-        // 'rgb(201, 203, 207)'
       ],
       borderWidth: 1
     }]
@@ -255,43 +248,7 @@ function chartFacturasEmitidas(nombreTipoDocumento, cantidadTipoDocumento, total
     },
   };
 
-  // const data = {
-  //   labels: nombreTipoDocumento,
-  //   // labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-  //   datasets: [{
-  //     label: 'Documentos',
-  //     data: cantidadTipoDocumento,
-  //     // data: [65, 59, 80, 81, 26, 55, 40],
-  //     fill: false,
-  //     borderColor: 'rgb(75, 192, 192)',
-  //   }]
-  // };
-
-  // const config = {
-  //   type: 'line',
-  //   data: data,
-  //   options: {
-  //     animations: {
-  //       tension: {
-  //         duration: 1000,
-  //         easing: 'linear',
-  //         from: 1,
-  //         to: 0,
-  //         loop: true
-  //       }
-  //     },
-  //     scales: {
-  //       y: { // defining min and max so hiding the dataset does not change scale range
-  //         min: 0,
-  //         max: totalFacturas
-  //       }
-  //     }
-  //   }
-  // };
-
-
   new Chart(ctx, config);
-  new Chart(ChartFPagoMes, config);
 }
 
 function FormaPago() {
@@ -313,7 +270,88 @@ function FormaPago() {
         totalFacturas += data[i].totalFP;
       }
 
-      chartFacturasEmitidas(nombreFormaPago, cantidadFormaPago, totalFacturas)
+      const ChartFPagoMes = document.getElementById('ChartFPagoMes');
+
+      const dataChartFPagoMes = {
+        labels: nombreFormaPago,
+        datasets: [{
+          label: '',
+          data: cantidadFormaPago,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.8)',
+            'rgba(255, 205, 86, 0.8)',
+            'rgba(75, 192, 192, 0.8)',
+            'rgba(153, 102, 255, 0.8)',
+          ],
+          hoverOffset: 6,
+        }]
+      };
+
+      const config = {
+        type: 'doughnut',
+        data: dataChartFPagoMes,
+      };
+
+
+      new Chart(ChartFPagoMes, config);
+    }
+  };
+}
+
+function VentaUltimos3Meses() {
+  var request = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+  var url = `${base_url}facturacion/getVentaUltimos3Meses`;
+  request.open("GET", url);
+  request.send();
+
+  request.onreadystatechange = function () {
+    if (request.readyState == 4 && request.status == 200) {
+      var dataChartVenta3Meses = JSON.parse(request.responseText);
+      const mes = new Array();
+      const montoVenta = new Array();
+      let totalFacturas = 0;
+
+      for (let i = 0; i < dataChartVenta3Meses.length; i++) {
+        mes.push(dataChartVenta3Meses[i].Mes)
+        montoVenta.push(dataChartVenta3Meses[i].Total)
+        totalFacturas += Number(dataChartVenta3Meses[i].Total);
+      }
+
+      const ChartVenta3Meses = document.getElementById('ChartVenta3Meses');
+
+      const data = {
+        labels: mes,
+        datasets: [{
+          label: '',
+          data: montoVenta,
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+        }]
+      };
+
+      const config = {
+        type: 'line',
+        data: data,
+        options: {
+          animations: {
+            tension: {
+              duration: 1000,
+              easing: 'linear',
+              from: 1,
+              to: 0,
+              loop: true
+            }
+          },
+          scales: {
+            y: {
+              min: 0,
+              max: totalFacturas
+            }
+          }
+        }
+      };
+
+      new Chart(ChartVenta3Meses, config);
     }
   };
 }

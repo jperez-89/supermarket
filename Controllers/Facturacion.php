@@ -464,4 +464,12 @@ class Facturacion extends Controllers
           echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
           die();
      }
+
+     public function getVentaUltimos3Meses()
+     {
+          $arrdatos = FacturacionModel::selectVentaUltimos3Meses();
+
+          echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
+          die();
+     }
 }

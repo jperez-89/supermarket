@@ -417,7 +417,7 @@ class FacturacionModel extends Crud
           return $result;
      }
 
-     // -------------------> Funciones Modulo Facturas <----------------------
+     // -------------------> Funciones Modulo Dashboard <----------------------
      public static function selectFacturasEmitidas()
      {
           $crud = new Crud();
@@ -433,6 +433,16 @@ class FacturacionModel extends Crud
           $crud = new Crud();
 
           $sql = "SELECT COUNT(v.id) AS totalFP, tp.nombre FROM `venta` v INNER JOIN tipo_pago tp ON tp.id = v.tipo_pago GROUP BY v.tipo_pago";
+          $request = $crud->get_AllRegister($sql);
+
+          return $request;
+     }
+
+     public static function selectVentaUltimos3Meses()
+     {
+          $crud = new Crud();
+
+          $sql = "SELECT MONTH(fecha) AS idMes, MONTHNAME(v.fecha) AS Mes, SUM(v.m_total) AS Total FROM venta v WHERE YEAR(v.fecha) = YEAR(v.fecha) GROUP BY Mes ORDER BY idMes DESC;";
           $request = $crud->get_AllRegister($sql);
 
           return $request;

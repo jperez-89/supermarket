@@ -101,55 +101,69 @@
 
           <div class="row">
                <div class="col-md-6">
-                    <div class="tile w-100 h-100">
-                         <a href="#">
-                              <h3 class="text-center text-black-50 text-uppercase pb-1 mt-1">Forma de Pago por Mes</h3>
-                         </a>
+                    <div class="row">
+                         <div class="col-md-6">
+                              <div class="tile w-100 h-100">
+                                   <a href="#">
+                                        <h3 class="text-center text-black-50 text-uppercase pb-1 mt-1">Forma de Pago por Mes</h3>
+                                   </a>
 
-                         <div class="row">
-                              <div class="col-md-6">
-                                   <label for="fchInicioFPagoMes">Fecha Inicio</label>
-                                   <input class="form-control date" type="date" name="fchInicioFPagoMes" id="fchInicioFPagoMes">
-                              </div>
-                              <div class="col-md-6">
-                                   <label for="fchFinFPagoMes">Fecha Fin</label>
-                                   <input class="form-control" type="date" name="fchFinFPagoMes" id="fchFinFPagoMes">
+                                   <div class="row">
+                                        <div class="col-md-6">
+                                             <label for="fchInicioFPagoMes">Fecha Inicio</label>
+                                             <input class="form-control date" type="date" name="fchInicioFPagoMes" id="fchInicioFPagoMes">
+                                        </div>
+                                        <div class="col-md-6">
+                                             <label for="fchFinFPagoMes">Fecha Fin</label>
+                                             <input class="form-control" type="date" name="fchFinFPagoMes" id="fchFinFPagoMes">
+                                        </div>
+                                   </div>
+                                   <div class="row pt-3">
+                                        <div class="col-md-12 col-sm-12">
+                                             <canvas class="w-100 h-100" id="ChartFPagoMes"></canvas>
+                                        </div>
+                                   </div>
                               </div>
                          </div>
-                         <div class="row pt-3">
-                              <div class="col-md-12 col-sm-12">
-                                   <canvas class="w-100" id="ChartFPagoMes"></canvas>
+                         <div class="col-md-6">
+                              <div class="tile w-100 h-100">
+                                   <a href="<?= base_url() ?>facturacion/facturas">
+                                        <h3 class="text-center text-black-50 text-uppercase pb-1 mt-1">Reporte de Facturas Emitidas</h3>
+                                   </a>
+                                   <h3 class="text-center pb-1 mt-1"></h3>
+
+                                   <div class="row">
+                                        <div class="col-md-6">
+                                             <label for="fchInicio">Fecha Inicio</label>
+                                             <input class="form-control date" type="date" name="fchInicio" id="fchInicio">
+                                        </div>
+                                        <div class="col-md-6">
+                                             <label for="fchFin">Fecha Fin</label>
+                                             <input class="form-control" type="date" name="fchFin" id="fchFin">
+                                        </div>
+                                   </div>
+                                   <div class="row pt-3">
+                                        <div class="col-md-12 col-sm-12">
+                                             <canvas class="w-100 h-100" id="myChart"></canvas>
+                                        </div>
+                                   </div>
                               </div>
                          </div>
                     </div>
                </div>
-
                <div class="col-md-6">
                     <div class="tile w-100 h-100">
-                         <a href="<?= base_url() ?>facturacion/facturas">
-                              <h3 class="text-center text-black-50 text-uppercase pb-1 mt-1">Reporte de Facturas Emitidas</h3>
+                         <a href="#">
+                              <h3 class="text-center text-black-50 text-uppercase pb-1 mt-1">Ventas de los ultimos 3 meses</h3>
                          </a>
-                         <h3 class="text-center pb-1 mt-1"></h3>
-
-                         <div class="row">
-                              <div class="col-md-6">
-                                   <label for="fchInicio">Fecha Inicio</label>
-                                   <input class="form-control date" type="date" name="fchInicio" id="fchInicio">
-                              </div>
-                              <div class="col-md-6">
-                                   <label for="fchFin">Fecha Fin</label>
-                                   <input class="form-control" type="date" name="fchFin" id="fchFin">
-                              </div>
-                         </div>
                          <div class="row pt-3">
                               <div class="col-md-12 col-sm-12">
-                                   <canvas class="w-100" id="myChart"></canvas>
+                                   <canvas class="w-100 h-100" id="ChartVenta3Meses"></canvas>
                               </div>
                          </div>
                     </div>
                </div>
           </div>
-
      </div>
 </main>
 
