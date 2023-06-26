@@ -82,9 +82,10 @@
                          <a class="treeview-item" href="<?= base_url() ?>usuarios"><i class="icon fa fa-circle-chevron-right"></i>Usuarios</a>
                     </li>
                     <li>
-                         <a class="treeview-item" href="<?= base_url() ?>roles" target="" rel="noopener">
-                              <i class="icon fa fa-circle-chevron-right"></i>Roles de usuario
-                         </a>
+                         <a class="treeview-item" href="<?= base_url() ?>roles" target="" rel="noopener"><i class="icon fa fa-circle-chevron-right"></i>Roles</a>
+                    </li>
+                    <li>
+                         <a class="treeview-item" href="<?= base_url() ?>permisos" target="" rel="noopener"><i class="icon fa fa-circle-chevron-right"></i>Permisos</a>
                     </li>
                </ul>
           </li>
