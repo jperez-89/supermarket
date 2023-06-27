@@ -16,7 +16,7 @@
             <div class="tile">
                 <button onclick="OpenModal();" type="button" class="btn text-muted" data-toggle="modal" data-target="#modalPermisos"><i class="fas fa-plus-circle"></i> Nuevo Permiso</button>
                 <div class="table-responsive">
-                    <table class="table table-centered table-sm" id="tblPermisos" style="width: 100%;">
+                    <table class="table table-centered table-sm w-100" id="tblPermisos">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -28,22 +28,6 @@
                         <tbody>
                         </tbody>
                     </table>
-
-
-                    <table>
-                        <tr id="ID_Task">
-                            <td>
-                                <a href="">ID_Task</a>
-                            </td>
-                            <td>
-                                <h5>tittle</h5>
-                                <span>task</span>
-                            </td>
-                        </tr>
-                    </table>
-
-
-
                 </div>
             </div>
         </div>

@@ -33,20 +33,20 @@ class Permisos extends Controllers
                 $arrdatos[$i]['estado'] = '<span class="badge badge-success">Activo</span>';
 
                 $arrdatos[$i]['options'] = '<div class="flex-center">
-                                             <button class="btn btn-primary editPermiso">
+                                             <button class="btn btn-primary2 editPermiso">
                                                   <i class="fas fa-pencil-alt"></i>
                                              </button>
-                                             <button class="btn btn-danger deletePermiso">
+                                             <button class="btn btn-danger2 deletePermiso">
                                                   <i class="fas fa-trash"></i>
                                              </button> </div>';
             } else {
                 $arrdatos[$i]['estado'] = ' <span class="badge badge-danger">Inactivo</span>';
 
                 $arrdatos[$i]['options'] = '<div class="flex-center">
-                                             <button class="btn btn-success enablePermiso">
+                                             <button class="btn btn-success2 enablePermiso">
                                                   <i class="fas fa-sync-alt"></i>
                                              </button>
-                                             <button disabled class="btn btn-danger deletePermiso">
+                                             <button disabled class="btn btn-secondary2 deletePermiso">
                                                   <i class="fas fa-trash"></i>
                                              </button> </div>';
             }
@@ -80,7 +80,7 @@ class Permisos extends Controllers
             $request = PermisosModel::insertPermiso($nombrePermiso);
             $option = 1;
         } else {
-            // $request = $this->model->updateRol($idPermiso, $nombrePermiso, $DescripcionRol);
+            $request = PermisosModel::updatePermiso($idPermiso, $nombrePermiso);
             $option = 2;
         }
 
@@ -90,8 +90,8 @@ class Permisos extends Controllers
             } else {
                 $arrResponse = array('status' => true, 'msg' => 'Datos actualizados.');
             }
-        } elseif ($request == 'exist') {
-            $arrResponse = array('status' => false, 'msg' => 'Atencion! El permiso ya existe.');
+        } elseif ($request == 'no_exist') {
+            $arrResponse = array('status' => false, 'msg' => 'Atencion! El permiso no existe.');
         } else {
             $arrResponse = array('status' => false, 'msg' => 'No es posible almacenar los datos.');
         }
@@ -100,34 +100,36 @@ class Permisos extends Controllers
         die();
     }
 
-    public function deleteRol()
+    public function deletePermiso()
     {
-        $id = intval($_POST['id']);
-        $resquestDelete = $this->model->deleteRol($id);
+        $idPermiso = intval($_POST['idPermiso']);
+        $request = PermisosModel::deletePermiso($idPermiso);
 
-        if ($resquestDelete == 'ok') {
-            $arrResponse = array('status' => true, 'msg' => 'Rol deshabilitado.');
-        } elseif ($resquestDelete == 'exist') {
-            $arrResponse = array('status' => false, 'msg' => 'No es posible deshabilitar el Rol.');
+        if ($request > 0) {
+            $arrResponse = array('status' => true, 'msg' => 'Permiso deshabilitado.');
+        } else if ($request == 'no_exist') {
+            $arrResponse = array('status' => false, 'msg' => 'Permiso no existe.');
         } else {
-            $arrResponse = array('status' => false, 'msg' => 'No es posible eliminar los datos.');
+            $arrResponse = array('status' => false, 'msg' => 'No es posible eliminar los datos.' . $request);
         }
+
         echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
         die();
     }
 
-    public function enableRol()
+    public function enablePermiso()
     {
-        $id = intval($_POST['id']);
-        $request = $this->model->enableRol($id);
+        $idPermiso = intval($_POST['idPermiso']);
+        $request = PermisosModel::enablePermiso($idPermiso);
 
-        if ($request == 'ok') {
-            $arrResponse = array('status' => true, 'msg' => 'Rol habilitado.');
-        } elseif ($request == 'exist') {
-            $arrResponse = array('status' => false, 'msg' => 'No es posible habilitar el Rol.');
+        if ($request > 0) {
+            $arrResponse = array('status' => true, 'msg' => 'Permiso habilitado.');
+        } else if ($request == 'no_exist') {
+            $arrResponse = array('status' => false, 'msg' => 'Permiso no existe.');
         } else {
-            $arrResponse = array('status' => false, 'msg' => 'No es posible eliminar los datos.');
+            $arrResponse = array('status' => false, 'msg' => 'No es posible eliminar los datos.' . $request);
         }
+
         echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
         die();
     }

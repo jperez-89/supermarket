@@ -88,101 +88,49 @@ $(document).on('click', '.editPermiso', function (e) {
     $("#modalPermisos").modal('show')
 });
 
-$(document).on('click', '#DeleteCredito', function (e) {
+$(document).on('click', '.deletePermiso', function (e) {
     e.preventDefault();
 
     let filaEditar = $(this).closest("tr").get(0);
-    let data = tblCreditos.fnGetData(filaEditar._DT_RowIndex);
-    let idCredito = data['id'];
-    let pendiente_pago = data['pendiente_pago'];
-
-    if (pendiente_pago > 0) {
-        swal('Atención!', 'Cliente tiene saldo pendiente por pagar', 'warning');
-        return false;
-    }
+    let data = tblPermisos.fnGetData(filaEditar._DT_RowIndex);
+    let idPermiso = data['id'];
 
     const frmDatos = new FormData();
-    frmDatos.append('idCredito', idCredito);
-    const url = `${base_url}creditos/deleteCredito`;
+    frmDatos.append('idPermiso', idPermiso);
+    const url = `${base_url}permisos/deletePermiso`;
 
     const response = fnt_Fetch(url, 'post', frmDatos);
     response.then((res) => {
         if (res.status) {
-            tblCreditos._fnAjaxUpdate();
-            swal('', res.msg, "success");
+            tblPermisos._fnAjaxUpdate();
+            swalMixin('success', res.msg, 'bottom-end', 2000)
         } else {
             swal('', res.msg, "error");
         }
     });
 });
 
-$(document).on('click', '#EnableCredito', function (e) {
+$(document).on('click', '.enablePermiso', function (e) {
     e.preventDefault();
 
     let filaEditar = $(this).closest("tr").get(0);
-    let data = tblCreditos.fnGetData(filaEditar._DT_RowIndex);
-    let idCredito = data['id'];
+    let data = tblPermisos.fnGetData(filaEditar._DT_RowIndex);
+    let idPermiso = data['id'];
 
     const frmDatos = new FormData();
-    frmDatos.append('idCredito', idCredito);
-    const url = `${base_url}creditos/enableCredito`;
+    frmDatos.append('idPermiso', idPermiso);
+    const url = `${base_url}permisos/enablePermiso`;
 
     const response = fnt_Fetch(url, 'post', frmDatos);
     response.then((res) => {
         if (res.status) {
-            tblCreditos._fnAjaxUpdate();
-            swal('', res.msg, "success");
+            tblPermisos._fnAjaxUpdate();
+            swalMixin('success', res.msg, 'bottom-end', 2000)
         } else {
             swal('', res.msg, "error");
         }
     });
 });
-
-function guardarDatos(idVenta, tipoPago, pagaCon, nComprobante, vuelto) {
-    const frmDatos = new FormData();
-    const url = `${base_url}creditos/updateFactura`
-    frmDatos.append('idVenta', idVenta);
-    frmDatos.append('tipoPago', tipoPago);
-
-    if (tipoPago == 1) {
-        const response = fnt_Fetch(url, 'post', frmDatos);
-        response.then((res) => {
-            if (res.status) {
-                GenerarFactura(idVenta, pagaCon, vuelto);
-                tblCreditos._fnAjaxUpdate();
-                swal('', res.msg, "success");
-            } else {
-                swal('', res.msg, "error");
-            }
-        });
-    } else {
-        const response = fnt_Fetch(url, 'post', frmDatos);
-        response.then((res) => {
-            if (res.status) {
-                frmDatos.append('nComprobante', nComprobante);
-                const url = `${base_url}facturacion/insertarComprobante`
-
-                const response = fnt_Fetch(url, 'post', frmDatos);
-                response.then((res) => {
-                    if (res.status) {
-                        GenerarFactura(idVenta, pagaCon, vuelto);
-                        tblCreditos._fnAjaxUpdate();
-                        swal('', res.msg, "success");
-                    } else {
-                        swal('', res.msg, "error");
-                    }
-                });
-            } else {
-                swal('', res.msg, "error");
-            }
-        });
-    };
-}
-
-const GenerarFactura = async (idVenta, pagaCon, Vuelto) => {
-    generarPDF(idVenta, pagaCon, Vuelto);
-}
-
 
 nombrePermiso.onkeyup = (e) => {
     if (e.key.length != 1 || 1 + e.key.search(/^[a-zA-Z-_]/)) {
