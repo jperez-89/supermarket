@@ -35,6 +35,9 @@ class Crud extends Conexion
           } else {
                $lastInsert = 0;
           }
+
+          self::freeResult($this->cone);
+
           return $lastInsert;
      }
 
@@ -50,6 +53,8 @@ class Crud extends Conexion
           // Asociamos los valores devueltos
           $data = $result->fetch(PDO::FETCH_ASSOC);
 
+          self::freeResult($this->cone);
+
           return $data;
      }
 
@@ -60,6 +65,10 @@ class Crud extends Conexion
           $result = $this->cone->prepare($this->stringQuery);
           $result->execute();
           $data = $result->fetchall(PDO::FETCH_ASSOC);
+
+          self::freeResult($result);
+          self::freeResult($this->cone);
+
           return $data;
      }
 
@@ -70,6 +79,10 @@ class Crud extends Conexion
           $result = $this->cone->prepare($this->stringQuery);
           $result->execute();
           $data = $result->fetchall(PDO::FETCH_ASSOC);
+
+          self::freeResult($result);
+          self::freeResult($this->cone);
+
           return $data;
      }
 
@@ -81,6 +94,9 @@ class Crud extends Conexion
 
           $update = $this->cone->prepare($this->stringQuery);
           $result = $update->execute($this->arrValues);
+
+          self::freeResult($this->cone);
+
           return $result;
      }
 
@@ -90,6 +106,15 @@ class Crud extends Conexion
           $this->stringQuery = $query;
           $result = $this->cone->prepare($this->stringQuery);
           $result->execute();
+
+          self::freeResult($this->cone);
+          self::freeResult($this->cone);
+
           return $result;
+     }
+
+     public function freeResult($result)
+     {
+          unset($result);
      }
 }

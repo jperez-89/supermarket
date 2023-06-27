@@ -23,4 +23,9 @@ class Conexion
      {
           return $this->conect;
      }
+
+     public function closeConection()
+     {
+          $this->conect = null;
+     }
 }
