@@ -459,7 +459,18 @@ class Facturacion extends Controllers
 
      public function getFormaPago()
      {
-          $arrdatos = FacturacionModel::selectFormaPago();
+          if (isset($_POST)) {
+               try {
+                    $fchInicioFPagoMes = strClean($_POST['fchInicioFPagoMes']);
+                    $fchFinFPagoMes = strClean($_POST['fchFinFPagoMes']);
+
+                    $arrdatos = FacturacionModel::selectFormaPago($fchInicioFPagoMes, $fchFinFPagoMes);
+               } catch (\Throwable $th) {
+                    $arrdatos = array('status' => false, 'msg' => $th);
+               }
+          } else {
+               $arrdatos = array('status' => false, 'msg' => 'Faltan datos');
+          }
 
           echo json_encode($arrdatos, JSON_UNESCAPED_UNICODE);
           die();

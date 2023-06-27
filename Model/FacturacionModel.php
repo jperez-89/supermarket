@@ -428,11 +428,16 @@ class FacturacionModel extends Crud
           return $request;
      }
 
-     public static function selectFormaPago()
+     public static function selectFormaPago(string $fchInicio, string $fchFin)
      {
           $crud = new Crud();
 
-          $sql = "SELECT COUNT(v.id) AS totalFP, tp.nombre FROM `venta` v INNER JOIN tipo_pago tp ON tp.id = v.tipo_pago GROUP BY v.tipo_pago";
+          if ($fchInicio == '' && $fchFin == '') {
+               $sql = "SELECT COUNT(v.id) AS totalFP, tp.nombre FROM `venta` v INNER JOIN tipo_pago tp ON tp.id = v.tipo_pago GROUP BY v.tipo_pago";
+          } else {
+               $sql = "SELECT COUNT(v.id) AS totalFP, tp.nombre FROM `venta` v INNER JOIN tipo_pago tp ON tp.id = v.tipo_pago WHERE v.fecha BETWEEN $fchInicio AND $fchFin GROUP BY v.tipo_pago";
+          }
+
           $request = $crud->get_AllRegister($sql);
 
           return $request;

@@ -6,7 +6,8 @@
           <h1><?= $data['page_name'] ?></h1>
           <form class="d-flex">
                <div class="input-group">
-                    <input type="date" id="txtFecha" step="1" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" class="form-control form-control-light">
+                    <input type="date" id="txtFecha" step="1" pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" class="form-control form-control-light">
+                    <!-- pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" -->
                </div>
           </form>
      </div>
