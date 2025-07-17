@@ -25,16 +25,16 @@ Coming soon...
 <!-- ![Image text](https://github.com/jperez-89/supermarket/blob/master/Assets/images/product.jpg) -->
 
 Ventas
-Cooing soomn..
+Cooing soon..
 
 <!-- ![Image text](https://github.com/jperez-89/supermarket/blob/master/Assets/images/ventas2.jpg) -->
 
 Vista General de Facturas
-Cooing soomn..
+Cooing soon..
 
 <!-- ![Image text](https://github.com/jperez-89/supermarket/blob/master/Assets/images/facturas.jpg) -->
 
 Factura Física
-Cooing soomn..
+Cooing soon..
 
 <!-- ![Image text](https://github.com/jperez-89/supermarket/blob/master/Assets/images/factura%20fisica.jpg) -->
