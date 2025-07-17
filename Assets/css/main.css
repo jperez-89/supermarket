@@ -2,6 +2,7 @@
 /* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap'); */
 @import 'https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap';
 /* @import url('/Assets/css/Fonts-Poppins.css'); */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;1,400&display=swap');
 
 /*!
  * Bootstrap v4.3.1 (https://getbootstrap.com/)
@@ -9,7 +10,6 @@
 :root {
   --barColor: #313a46;
   --backgroudColor: #fafbfe;
-  /* --bg-color: rgba(21, 190, 241, 0.082) !important; */
   --bg-color-body: #ebf3ff !important;
   --bg-color-sidebar: #081A51 !important;
   --blue: #007bffb9;
@@ -41,7 +41,6 @@
   --bg-color-danger-light: rgba(255, 91, 91, .18);
   --color-success-light: #10c469 !important;
   --bg-color-success-light: rgba(16, 196, 105, .18);
-  /* --color-info-light: #35b8e0 !important; */
   --color-info-light: #05b0e4 !important;
   --bg-color-info-light: rgba(53, 184, 224, .18);
   --bg-color-info: rgba(72, 194, 231, 0.233);
@@ -52,7 +51,8 @@
   --breakpoint-md: 768px;
   --breakpoint-lg: 992px;
   --breakpoint-xl: 1200px;
-  --font-family-sans-serif: "Poppins", sans-serif;
+  /* --font-family-sans-serif: "Poppins", sans-serif; */
+  --font-family-sans-serif: 'Montserrat';
 }
 
 *,
@@ -82,8 +82,7 @@ section {
 }
 
 body {
-  font-family: Nunito;
-  /* font-family: var(--font-family-sans-serif); */
+  font-family: var(--font-family-sans-serif);
   margin: 0;
   font-size: 0.9rem;
   font-weight: 400;
@@ -18190,7 +18189,7 @@ be a descendant of the grid when it is being dragged.
   border-radius: 50% !important;
 }
 
-@media (max-width: 474px) {
+@media (min-width: 474px) {
   #nombre {
     display: none;
   }
@@ -18337,4 +18336,13 @@ primary:focus {
 .total h1 {
   font-weight: 900;
   font-size: 2rem;
+}
+
+.dark {
+  background-color: var(--color-titulos);
+  color: #fff;
+
+  a {
+    color: #fff;
+  }
 }

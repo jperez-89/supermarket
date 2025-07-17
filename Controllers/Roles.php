@@ -8,7 +8,7 @@ class  Roles extends Controllers
           if (!isset($_SESSION['login'])) {
                header('Location: ' . base_url() . 'login');
           }
-          
+
           // Ejecutar los metodos del Controllers
           parent::__construct();
      }
@@ -136,5 +136,44 @@ class  Roles extends Controllers
           die();
      }
 
+     public function getPermisos()
+     {
+          // Obtenemos todos los permisos del sistema
+          $arrPermisos = $this->model->getPermisos();
 
+          // Obtenemos los permisos actuales del usuario
+          $idRol = intval($_POST['idRol']);
+          $permiUsuario = $this->model->SelectPermisosUsuario($idRol);
+
+          // Validamos si el usuario tiene permisos
+          if (count($permiUsuario) > 0) {
+               // Los agregamos en un array
+               $valores = array();
+               for ($i = 0; $i < count($permiUsuario); $i++) {
+                    array_push($valores, $permiUsuario[$i]['idPermiso']);
+               }
+
+               // Validamos si el id de los permisos del sistema existen en el array creado anteriormente
+               $html = "";
+               for ($i = 0; $i < count($arrPermisos); $i++) {
+                    $sw = in_array($arrPermisos[$i]["id"], $valores) ? 'checked' : '';
+
+                    // Si existe creamos la lista con el checkbox marcado
+                    $html .= '<li> <input type="checkbox" ' . $sw . ' name="permisos[]" value="' . $arrPermisos[$i]['id'] . '"> ' . $arrPermisos[$i]['nombre'] . ' </li>';
+               }
+          }
+          // Si el usuario no tiene permisos mostramos todos los permisos
+          else {
+               $html = "<div class='row'>";
+               for ($i = 0; $i < count($arrPermisos); $i++) {
+                    $html .= ' <div class="col-md-3"> <li> <input type="checkbox" name="permisos[]" value="' . $arrPermisos[$i]['id'] . '"> ' . $arrPermisos[$i]['nombre'] . ' </li></div>';
+               }
+               $html .= '</div>';
+          }
+
+          $arrResponse = array('status' => true, 'html' => $html);
+
+          echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+          die();
+     }
 }

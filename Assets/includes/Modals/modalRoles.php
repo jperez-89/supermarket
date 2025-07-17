@@ -23,6 +23,11 @@
                                                   <label for="txtDescripcionRol" class="control-label">Descripción</label>
                                                   <input class="form-control" id="txtDescripcionRol" name="txtDescripcionRol" type="text" placeholder="Descripción">
                                              </div>
+                                             <div class="form-group">
+                                                  <label for="Permisos" class="control-label">Permisos</label>
+                                                  <ul style="list-style: none;" id="Permisos">
+                                                  </ul>
+                                             </div>
                                         </div>
                                    </div>
                                    <div class="tile-footer float-right">

@@ -208,3 +208,4 @@ $('.logout').click(function (e) {
 	a.href = `${base_url}logout`;
 	a.click();
 });
+

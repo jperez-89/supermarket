@@ -19,6 +19,7 @@
 <script type="text/javascript" src="<?php echo media(); ?>js/plugins/html5-qrcode.min.v2.3.0.js"></script>
 <script type="text/javascript" src="<?php echo media(); ?>js/plugins/main.js"></script>
 <script type="text/javascript" src="<?php echo media(); ?>js/tiff.min.js"></script>
+<script type="text/javascript" src="<?php echo media(); ?>js/setTheme.js"></script>
 <script type="text/javascript" src="<?php echo media() . $data['page_functions'] ?>"></script>
 
 <script>

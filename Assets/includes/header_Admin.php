@@ -28,7 +28,7 @@
      <link rel="stylesheet" type="text/css" href="<?php echo media() ?>css/fontawesome-6.4.0-all.css">
 </head>
 
-<body class="app sidebar-mini ">
+<body class="app sidebar-mini">
      <!-- Navbar-->
      <header class="app-header">
           <div class="app-header__logo">
@@ -40,6 +40,7 @@
 
           <!-- Navbar Right Menu-->
           <ul class="app-nav">
+               <a id="theme-switcher" class="btn"></a>
                <div class="dropdown">
                     <a id="userDrop" href="#" role="button" data-toggle="dropdown" class="nav-link" aria-haspopup="true" aria-expanded="false">
                          <span id="nombre" class="font-weight-bold text-white"> <?php echo $_SESSION['name'] ?> </span>

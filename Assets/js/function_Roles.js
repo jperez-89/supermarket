@@ -162,5 +162,23 @@ function OpenModal() {
   document.querySelector("#titleModal").innerHTML = "Nuevo Rol";
   document.querySelector("#btnText").innerHTML = "Guardar";
   document.querySelector("#frmRoles").reset();
+
+  selectPermisos(0)
+
   $("#modalRoles").modal("show");
+}
+
+function selectPermisos(idRol) {
+  const url = `${base_url}roles/getPermisos/`;
+  const frmDatos = new FormData();
+  frmDatos.append('idRol', idRol);
+
+  var response = fnt_Fetch(url, 'post', frmDatos);
+  response.then(data => {
+    if (data.status) {
+      document.getElementById('Permisos').innerHTML = data.html;
+    } else {
+      swal("", data.msg, "error");
+    }
+  })
 }

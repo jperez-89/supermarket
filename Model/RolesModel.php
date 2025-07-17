@@ -108,4 +108,21 @@ class RolesModel extends Crud
           }
           return $resquest;
      }
+
+     public function getPermisos()
+     {
+          $sql = "SELECT id, nombre, estado FROM permiso";
+          $resquest = $this->get_AllRegister($sql);
+
+          return $resquest;
+     }
+
+     public function SelectPermisosUsuario(int $idRol)
+     {
+          $this->idRol = $idRol;
+          $sql = "SELECT pr.*, p.nombre FROM rol_permiso pr INNER JOIN permiso p ON p.id = pr.idPermiso WHERE pr.idRol = $this->idRol";
+
+          $resquest = $this->get_AllRegister($sql);
+          return $resquest;
+     }
 }
