@@ -1,4 +1,5 @@
 # POS -SuperMarket
+
 ## Proyecto ideal para supermercados.
 
 **Modulos de Productos, Clientes, Usuarios, Roles, Ventas y Vista de facturas.**
@@ -6,7 +7,7 @@
 **Realizado con PHP y patrón de diseño MVC, javascript y jquery**
 
 Dashboard
-![Image text](https://github.com/jperez-89/supermarket/blob/master/Assets/images/panel.jpg)
+![Image text](https://github.com/jperez-89/supermarket/blob/master/Assets/images/panel.png)
 
 Usuarios
 ![Image text](https://github.com/jperez-89/supermarket/blob/master/Assets/images/usuarios.jpg)
